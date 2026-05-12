@@ -296,6 +296,43 @@ input,select,textarea{font-family:'Montserrat',sans-serif}
 }
 .map-pin-count{font-size:13px;font-weight:800;color:#fff}
 
+/* ── Map Filter Bar ── */
+.map-filter-bar{
+  background:#fff;padding:10px 20px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  border-bottom:1px solid var(--silver-light);
+}
+.mfb-group{display:flex;flex-direction:column;gap:3px}
+.mfb-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-xlight)}
+.mfb-chips{display:flex;gap:4px;flex-wrap:wrap}
+.mfb-chip{
+  padding:6px 12px;border-radius:20px;border:1.5px solid var(--silver-light);
+  font-size:11px;font-weight:600;color:var(--text-mid);
+  cursor:pointer;transition:all var(--transition);background:#fff;
+  white-space:nowrap;
+}
+.mfb-chip.active{border-color:var(--navy);background:var(--navy);color:#fff}
+.mfb-chip:hover:not(.active){border-color:var(--accent);color:var(--accent)}
+.mfb-clear{
+  font-size:11px;font-weight:600;color:var(--accent);
+  cursor:pointer;background:none;border:none;padding:6px 10px;
+  transition:color var(--transition);margin-left:auto;white-space:nowrap;
+}
+.mfb-clear:hover{color:var(--accent-dark);text-decoration:underline}
+.mfb-select{
+  padding:6px 12px;border:1.5px solid var(--silver-light);border-radius:20px;
+  font-size:11px;font-weight:600;color:var(--text-mid);background:#fff;
+  outline:none;cursor:pointer;transition:all var(--transition);
+}
+.mfb-select:focus{border-color:var(--accent)}
+.mfb-select.has-val{border-color:var(--navy);color:var(--navy);font-weight:700}
+.map-pin-circle.faded{
+  background:#8899A6;border-color:#A0ADB8;
+  opacity:0.45;animation:none;
+  box-shadow:0 2px 8px rgba(0,30,46,0.2);
+}
+.map-pin-label-tag.faded{background:rgba(136,153,166,0.7);opacity:0.5}
+
 /* ── Builder Showcase ── */
 .builder-showcase{background:var(--navy-mid);padding:24px 28px}
 .builder-showcase-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
@@ -648,6 +685,14 @@ html,body{overflow-x:hidden;max-width:100vw}
   .map-pin-count{font-size:15px}
   .map-pin-label-tag{font-size:10px;padding:4px 8px}
 
+  /* Map filter bar: stacked on mobile */
+  .map-filter-bar{padding:8px 12px;gap:8px}
+  .mfb-group{width:100%}
+  .mfb-chips{gap:6px}
+  .mfb-chip{padding:9px 14px;font-size:12px;min-height:44px;display:inline-flex;align-items:center}
+  .mfb-select{padding:10px 14px;font-size:13px;min-height:44px;width:100%;border-radius:10px}
+  .mfb-clear{padding:10px 12px;font-size:12px;min-height:44px;width:100%;text-align:center}
+
   /* Leaflet popups: readable on mobile */
   .leaflet-popup-content{width:calc(100vw - 60px) !important;max-width:300px !important;min-width:200px !important}
   .popup-inner{padding:14px}
@@ -862,6 +907,9 @@ html,body{overflow-x:hidden;max-width:100vw}
   .summary-hero-left .amount{font-size:22px}
   .eoi-section{margin:0 10px 10px;padding:16px 12px}
   .bs-card{padding:12px;gap:10px}
+  .map-filter-bar{padding:6px 8px;gap:6px}
+  .mfb-chip{padding:8px 12px;font-size:11px;min-height:40px}
+  .mfb-label{font-size:8px}
 }
 </style>
 </head>
@@ -910,6 +958,49 @@ html,body{overflow-x:hidden;max-width:100vw}
   <!-- VIEW: LANDING                                  -->
   <!-- ══════════════════════════════════════════════ -->
   <div class="view active" id="view-landing" style="flex-direction:column">
+
+    <!-- Map Filter Bar -->
+    <div class="map-filter-bar" id="map-filter-bar">
+      <div class="mfb-group">
+        <span class="mfb-label">Package Price</span>
+        <select class="mfb-select" id="mf-price" onchange="applyMapFilters()">
+          <option value="any">Any Price</option>
+          <option value="0-450">&lt; $450k</option>
+          <option value="450-550">$450k – $550k</option>
+          <option value="550-650">$550k – $650k</option>
+          <option value="650-750">$650k – $750k</option>
+          <option value="750-up">$750k+</option>
+        </select>
+      </div>
+      <div class="mfb-group">
+        <span class="mfb-label">Bedrooms</span>
+        <div class="mfb-chips">
+          <button class="mfb-chip active" data-filter="mf-beds" data-val="any" onclick="setMapChip(this)">Any</button>
+          <button class="mfb-chip" data-filter="mf-beds" data-val="3" onclick="setMapChip(this)">3</button>
+          <button class="mfb-chip" data-filter="mf-beds" data-val="4" onclick="setMapChip(this)">4</button>
+          <button class="mfb-chip" data-filter="mf-beds" data-val="5" onclick="setMapChip(this)">5+</button>
+        </div>
+      </div>
+      <div class="mfb-group">
+        <span class="mfb-label">Region</span>
+        <div class="mfb-chips">
+          <button class="mfb-chip active" data-filter="mf-region" data-val="all" onclick="setMapChip(this)">All Regions</button>
+          <button class="mfb-chip" data-filter="mf-region" data-val="goldcoast" onclick="setMapChip(this)">Gold Coast</button>
+          <button class="mfb-chip" data-filter="mf-region" data-val="brisbane-south" onclick="setMapChip(this)">Brisbane South</button>
+          <button class="mfb-chip" data-filter="mf-region" data-val="lockyer" onclick="setMapChip(this)">Lockyer Valley</button>
+          <button class="mfb-chip" data-filter="mf-region" data-val="central-qld" onclick="setMapChip(this)">Central QLD</button>
+        </div>
+      </div>
+      <div class="mfb-group">
+        <span class="mfb-label">Timeline</span>
+        <div class="mfb-chips">
+          <button class="mfb-chip active" data-filter="mf-timeline" data-val="all" onclick="setMapChip(this)">All</button>
+          <button class="mfb-chip" data-filter="mf-timeline" data-val="ready" onclick="setMapChip(this)">Ready Now</button>
+          <button class="mfb-chip" data-filter="mf-timeline" data-val="coming" onclick="setMapChip(this)">Coming Soon</button>
+        </div>
+      </div>
+      <button class="mfb-clear" id="mfb-clear" onclick="clearMapFilters()" style="display:none">✕ Clear All</button>
+    </div>
 
     <!-- Map Hero -->
     <div class="map-section">
@@ -1384,6 +1475,7 @@ const S = {
 };
 
 let leafletMap = null;
+const mapMarkers = {};
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 function checkAccess() {
@@ -1527,12 +1619,148 @@ function initMap() {
 
     const marker = L.marker([proj.lat, proj.lng], {icon}).addTo(leafletMap);
     marker.bindPopup(popupHtml, {maxWidth:260, minWidth:240});
+    mapMarkers[proj.id] = marker;
     pinBounds.push([proj.lat, proj.lng]);
   });
 
   if (pinBounds.length) {
     leafletMap.fitBounds(pinBounds, {padding:[60,60], maxZoom:9});
   }
+}
+
+// ── Map Filter Logic ──────────────────────────────────────────────────────────
+const BUILDER_MID_PRICES = {};
+BUILDERS.forEach(b => {
+  const m = b.priceRange.match(/\$(\d+)k/g);
+  if (m && m.length >= 2) {
+    const lo = parseInt(m[0].replace(/[$k]/g,'')) * 1000;
+    const hi = parseInt(m[1].replace(/[$k]/g,'')) * 1000;
+    BUILDER_MID_PRICES[b.id] = (lo + hi) / 2;
+  } else if (m && m.length === 1) {
+    BUILDER_MID_PRICES[b.id] = parseInt(m[0].replace(/[$k]/g,'')) * 1000 + 50000;
+  }
+});
+
+const REGION_MAP = {
+  goldcoast: ['ooranya'],
+  'brisbane-south': ['oakland','hiddenvalley'],
+  lockyer: ['woodchester'],
+  'central-qld': ['zilzie','innespark']
+};
+const REGION_BOUNDS = {
+  goldcoast: [[-27.92,153.28],[-27.80,153.42]],
+  'brisbane-south': [[-28.05,152.90],[-27.75,153.10]],
+  lockyer: [[-27.62,152.18],[-27.48,152.38]],
+  'central-qld': [[-24.95,150.25],[-23.20,152.50]]
+};
+
+const mapFilterState = {price:'any',beds:'any',region:'all',timeline:'all'};
+
+function setMapChip(btn){
+  const group = btn.getAttribute('data-filter');
+  const val = btn.getAttribute('data-val');
+  document.querySelectorAll('[data-filter="'+group+'"]').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  if(group==='mf-beds') mapFilterState.beds=val;
+  else if(group==='mf-region') mapFilterState.region=val;
+  else if(group==='mf-timeline') mapFilterState.timeline=val;
+  applyMapFilters();
+}
+
+function applyMapFilters(){
+  mapFilterState.price = document.getElementById('mf-price').value;
+  const isFiltered = mapFilterState.price!=='any'||mapFilterState.beds!=='any'||mapFilterState.region!=='all'||mapFilterState.timeline!=='all';
+  document.getElementById('mfb-clear').style.display = isFiltered?'block':'none';
+  document.getElementById('mf-price').classList.toggle('has-val',mapFilterState.price!=='any');
+
+  if(mapFilterState.region!=='all'&&REGION_BOUNDS[mapFilterState.region]){
+    leafletMap.fitBounds(REGION_BOUNDS[mapFilterState.region],{padding:[60,60],maxZoom:11});
+  } else if(mapFilterState.region==='all'){
+    const pb=PROJECTS.map(p=>[p.lat,p.lng]);
+    if(pb.length) leafletMap.fitBounds(pb,{padding:[60,60],maxZoom:9});
+  }
+
+  const builderMids = Object.values(BUILDER_MID_PRICES);
+
+  PROJECTS.forEach(proj=>{
+    const lots = ALL_LOTS[proj.id]||[];
+    const marker = mapMarkers[proj.id];
+    if(!marker) return;
+    let passes = true;
+
+    // Price filter: lot_price + any builder midpoint in range
+    if(mapFilterState.price!=='any'){
+      let hasMatch=false;
+      lots.forEach(l=>{
+        if(l.price<=0) return;
+        builderMids.forEach(mid=>{
+          if(priceInRange(l.price+mid,mapFilterState.price)) hasMatch=true;
+        });
+      });
+      if(!hasMatch) passes=false;
+    }
+
+    // Bedrooms: check if any design with that bed count fits any lot in this project
+    if(mapFilterState.beds!=='any'){
+      const target=parseInt(mapFilterState.beds);
+      const isPlus=mapFilterState.beds==='5';
+      const matchDesigns=DESIGNS.filter(d=>isPlus?d.bed>=target:d.bed===target);
+      if(!matchDesigns.length){passes=false;}
+      else{
+        const hasCompat=lots.some(l=>matchDesigns.some(d=>l.frontage>=d.minFrontage));
+        if(!hasCompat) passes=false;
+      }
+    }
+
+    // Region
+    if(mapFilterState.region!=='all'){
+      const rp=REGION_MAP[mapFilterState.region]||[];
+      if(!rp.includes(proj.id)) passes=false;
+    }
+
+    // Timeline
+    if(mapFilterState.timeline!=='all'){
+      const hasAvail=lots.some(l=>l.availability==='Available');
+      const allUnreleased=lots.length>0&&lots.every(l=>l.availability==='Unreleased');
+      if(mapFilterState.timeline==='ready'&&!hasAvail) passes=false;
+      if(mapFilterState.timeline==='coming'&&!allUnreleased) passes=false;
+    }
+
+    updateMarkerStyle(proj,marker,passes);
+  });
+}
+
+function priceInRange(pkg,range){
+  switch(range){
+    case '0-450':return pkg<450000;
+    case '450-550':return pkg>=450000&&pkg<=550000;
+    case '550-650':return pkg>=550000&&pkg<=650000;
+    case '650-750':return pkg>=650000&&pkg<=750000;
+    case '750-up':return pkg>=750000;
+    default:return true;
+  }
+}
+
+function updateMarkerStyle(proj,marker,active){
+  const lots=ALL_LOTS[proj.id]||[];
+  const avail=lots.filter(l=>l.availability==='Available').length;
+  const f=active?'':' faded';
+  const icon=L.divIcon({
+    className:'',
+    html:'<div class="map-pin-wrap"><div class="map-pin-circle'+f+'"><span class="map-pin-count">'+(avail||lots.length)+'</span></div><div class="map-pin-label-tag'+f+'">'+proj.name+'</div></div>',
+    iconSize:[80,64],iconAnchor:[40,44],popupAnchor:[0,-48]
+  });
+  marker.setIcon(icon);
+}
+
+function clearMapFilters(){
+  mapFilterState.price='any';mapFilterState.beds='any';mapFilterState.region='all';mapFilterState.timeline='all';
+  document.getElementById('mf-price').value='any';
+  document.querySelectorAll('.mfb-chip').forEach(c=>{
+    const v=c.getAttribute('data-val');
+    c.classList.toggle('active',v==='any'||v==='all');
+  });
+  applyMapFilters();
 }
 
 function viewProjectLots(projectId) {
