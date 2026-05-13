@@ -1,14 +1,44 @@
 #!/usr/bin/env python3
 """
-ProjX House & Land Design Portal — V2
-Map-first UX with dual entry paths (Land First / Builder First)
-Fetches live Oakland Estate lot data from Monday.com and generates index.html
+ProjX House & Land Design Portal — V2.3
+Map-first UX with real Monday.com data from Contract Administration workspace
+Fetches ALL active project boards and generates index.html with live stock data
 """
 
 import json, os, sys, urllib.request, datetime
 
-BOARD_ID = "5024497655"
 API_URL = "https://api.monday.com/v2"
+WORKSPACE_ID = 2429759
+
+PROJECTS_GEO = {
+    'Oakland Estate': {'suburb': 'Beaudesert', 'lat': -27.99, 'lng': 152.97, 'region': 'Scenic Rim'},
+    'Woodchester': {'suburb': 'Gatton', 'lat': -27.55, 'lng': 152.28, 'region': 'Lockyer Valley'},
+    'Fox & Shipper': {'suburb': 'Coomera', 'lat': -27.86, 'lng': 153.35, 'region': 'Gold Coast'},
+    'Lakeview Estate': {'suburb': 'Gatton', 'lat': -27.56, 'lng': 152.27, 'region': 'Lockyer Valley'},
+    'Brookdale': {'suburb': 'Park Ridge', 'lat': -27.72, 'lng': 153.04, 'region': 'Logan'},
+    'Bliss on Bracken': {'suburb': 'Bracken Ridge', 'lat': -27.32, 'lng': 153.03, 'region': 'Brisbane North'},
+    'Residences on Main': {'suburb': 'Beenleigh', 'lat': -27.71, 'lng': 153.20, 'region': 'Logan'},
+    'At Nineteen': {'suburb': 'Burpengary', 'lat': -27.16, 'lng': 152.95, 'region': 'Moreton Bay'},
+    'North Pine Golf Estate': {'suburb': 'Joyner', 'lat': -27.24, 'lng': 152.93, 'region': 'Moreton Bay'},
+    'The Reserve': {'suburb': 'Eight Mile Plains', 'lat': -27.58, 'lng': 153.10, 'region': 'Brisbane South'},
+    'Leaf Residences': {'suburb': 'Kingston', 'lat': -27.53, 'lng': 153.13, 'region': 'Brisbane South'},
+    'Grove on Goodfellows': {'suburb': 'Kallangur', 'lat': -27.25, 'lng': 152.98, 'region': 'Moreton Bay'},
+    'Eade': {'suburb': 'Byron Bay', 'lat': -28.64, 'lng': 153.62, 'region': 'Northern NSW'},
+    'Co Living Australia': {'suburb': 'Various', 'lat': -27.47, 'lng': 153.03, 'region': 'Brisbane'},
+    'Harvest': {'suburb': 'Byron Bay', 'lat': -28.65, 'lng': 153.61, 'region': 'Northern NSW'},
+    'Mountview Terraces': {'suburb': 'Beerwah', 'lat': -26.86, 'lng': 152.96, 'region': 'Sunshine Coast'},
+    'Elio': {'suburb': 'North Mackay', 'lat': -21.13, 'lng': 149.17, 'region': 'Mackay'},
+    'The Gables': {'suburb': 'Loganholme', 'lat': -27.67, 'lng': 153.20, 'region': 'Logan'},
+    'Serenity': {'suburb': 'Beerwah', 'lat': -26.85, 'lng': 152.97, 'region': 'Sunshine Coast'},
+    'Riverina': {'suburb': 'Carrara', 'lat': -28.02, 'lng': 153.37, 'region': 'Gold Coast'},
+    'Sorensen Rise': {'suburb': 'Southside', 'lat': -26.20, 'lng': 152.65, 'region': 'Gympie'},
+}
+
+REGION_ORDER = [
+    'Gold Coast', 'Brisbane South', 'Brisbane North', 'Brisbane', 'Logan',
+    'Moreton Bay', 'Lockyer Valley', 'Scenic Rim', 'Sunshine Coast',
+    'Gympie', 'Mackay', 'Northern NSW',
+]
 
 
 def get_token():
@@ -30,125 +60,93 @@ def monday_query(query, token):
         return json.loads(resp.read())
 
 
-def fetch_oakland_lots(token):
-    q = """
-    {
-      boards(ids: [5024497655]) {
-        items_page(limit: 200) {
-          items {
-            id name group { title }
-            column_values(ids: [
-              "color_mkwzqgxz",
-              "numeric_mkwtm36",
-              "numeric_mkwtgeke",
-              "dropdown_mkwtezxj",
-              "dropdown_mkwttxbv"
-            ]) { id text }
-          }
-        }
-      }
-    }
-    """
-    COL_MAP = {
-        "color_mkwzqgxz": "availability",
-        "numeric_mkwtm36": "lot_price",
-        "numeric_mkwtgeke": "lot_size",
-        "dropdown_mkwtezxj": "type",
-        "dropdown_mkwttxbv": "stage",
-    }
-
+def fetch_workspace_boards(token):
+    """Fetch all boards in the Contract Administration workspace."""
+    q = '{boards(workspace_ids: [%d], limit: 50) { id name }}' % WORKSPACE_ID
     data = monday_query(q, token)
+    return data["data"]["boards"]
+
+
+def make_slug(name):
+    return name.lower().replace(' ', '').replace('&', '').replace("'", "").replace('-', '')
+
+
+def fetch_board_lots(board_id, board_name, token):
+    """Fetch items from a board, auto-detecting availability/price/size columns."""
+    col_q = '{boards(ids: [%s]) { columns { id title type }}}' % board_id
+    col_data = monday_query(col_q, token)
+    columns = col_data["data"]["boards"][0]["columns"]
+
+    avail_col = price_col = size_col = type_col = stage_col = None
+    for col in columns:
+        t = col["title"].lower()
+        ctype = col["type"]
+        if avail_col is None and ("availab" in t or t == "status") and ctype in ("color", "dropdown", "status"):
+            avail_col = col["id"]
+        elif price_col is None and ("price" in t) and ctype in ("numeric", "numbers"):
+            price_col = col["id"]
+        elif size_col is None and ("size" in t or "area" in t or "sqm" in t) and ctype in ("numeric", "numbers"):
+            size_col = col["id"]
+        elif type_col is None and ("type" in t) and ctype in ("dropdown", "status", "color"):
+            type_col = col["id"]
+        elif stage_col is None and ("stage" in t) and ctype in ("dropdown", "status", "color", "text"):
+            stage_col = col["id"]
+
+    col_ids = [c for c in [avail_col, price_col, size_col, type_col, stage_col] if c]
+    col_ids_str = ('ids: [' + ','.join('"' + c + '"' for c in col_ids) + ']') if col_ids else ""
+
+    items_q = '{boards(ids: [%s]) { items_page(limit: 500) { items { id name group { title } column_values(%s) { id text }}}}}' % (board_id, col_ids_str)
+    data = monday_query(items_q, token)
     raw_items = data["data"]["boards"][0]["items_page"]["items"]
 
+    slug = make_slug(board_name)
     lots = []
     for item in raw_items:
-        row = {"id": item["id"], "name": item["name"], "group": item["group"]["title"]}
+        row = {}
         for cv in item["column_values"]:
-            key = COL_MAP.get(cv["id"], cv["id"])
-            row[key] = cv["text"] or ""
+            if cv["id"] == avail_col:
+                row["availability"] = cv["text"] or ""
+            elif cv["id"] == price_col:
+                row["lot_price"] = cv["text"] or ""
+            elif cv["id"] == size_col:
+                row["lot_size"] = cv["text"] or ""
+            elif cv["id"] == type_col:
+                row["type"] = cv["text"] or ""
+            elif cv["id"] == stage_col:
+                row["stage"] = cv["text"] or ""
 
         avail = row.get("availability", "")
-        if avail in ("Available", "Reserved", "Unreleased", ""):
-            lot_size = 0
-            try:
-                lot_size = float(str(row.get("lot_size", "0")).replace(",", ""))
-            except Exception:
-                pass
+        lot_size = 0
+        try:
+            lot_size = float(str(row.get("lot_size", "0")).replace(",", ""))
+        except Exception:
+            pass
+        price = 0
+        try:
+            price = float(str(row.get("lot_price", "0")).replace(",", ""))
+        except Exception:
+            pass
 
-            price = 0
-            try:
-                price = float(str(row.get("lot_price", "0")).replace(",", ""))
-            except Exception:
-                pass
+        if lot_size > 0:
+            frontage = round(lot_size / 28)
+        else:
+            frontage = 12
+        frontage = max(10, min(frontage, 25))
 
-            if lot_size > 0:
-                frontage = round(lot_size / 28)
-            else:
-                frontage = 12
-            frontage = max(10, min(frontage, 25))
-
-            lots.append({
-                "id": row["id"],
-                "name": row["name"],
-                "availability": avail if avail else "Available",
-                "price": int(price),
-                "lot_size": int(lot_size),
-                "frontage": frontage,
-                "type": row.get("type", "H&L"),
-                "stage": row.get("stage", "Stage 1"),
-                "project": "oakland",
-            })
+        lots.append({
+            "id": item["id"],
+            "name": item["name"],
+            "availability": avail if avail else "Available",
+            "price": int(price),
+            "lot_size": int(lot_size),
+            "frontage": frontage,
+            "type": row.get("type", "H&L"),
+            "stage": row.get("stage", "Stage 1"),
+            "project": slug,
+        })
 
     lots.sort(key=lambda x: x["name"])
     return lots
-
-
-# ── Static sample data ────────────────────────────────────────────────────────
-
-WOODCHESTER_LOTS = [
-    {"id":"wc1","name":"Lot 1","availability":"Available","price":245000,"lot_size":4000,"frontage":40,"type":"Rural Residential","stage":"Stage 1","project":"woodchester"},
-    {"id":"wc2","name":"Lot 2","availability":"Available","price":235000,"lot_size":3500,"frontage":35,"type":"Rural Residential","stage":"Stage 1","project":"woodchester"},
-    {"id":"wc3","name":"Lot 3","availability":"Available","price":275000,"lot_size":5200,"frontage":45,"type":"Rural Residential","stage":"Stage 1","project":"woodchester"},
-    {"id":"wc4","name":"Lot 4","availability":"Reserved","price":265000,"lot_size":4800,"frontage":42,"type":"Rural Residential","stage":"Stage 1","project":"woodchester"},
-    {"id":"wc5","name":"Lot 5","availability":"Available","price":295000,"lot_size":6100,"frontage":50,"type":"Rural Residential","stage":"Stage 2","project":"woodchester"},
-    {"id":"wc6","name":"Lot 6","availability":"Available","price":228000,"lot_size":3200,"frontage":30,"type":"Rural Residential","stage":"Stage 1","project":"woodchester"},
-]
-
-OORANYA_LOTS = [
-    {"id":"oo1","name":"Lot 101","availability":"Available","price":395000,"lot_size":450,"frontage":16,"type":"H&L","stage":"Stage 1","project":"ooranya"},
-    {"id":"oo2","name":"Lot 102","availability":"Available","price":425000,"lot_size":512,"frontage":18,"type":"H&L","stage":"Stage 1","project":"ooranya"},
-    {"id":"oo3","name":"Lot 103","availability":"Available","price":375000,"lot_size":380,"frontage":14,"type":"H&L","stage":"Stage 1","project":"ooranya"},
-    {"id":"oo4","name":"Lot 104","availability":"Reserved","price":455000,"lot_size":625,"frontage":20,"type":"H&L","stage":"Stage 2","project":"ooranya"},
-    {"id":"oo5","name":"Lot 105","availability":"Available","price":405000,"lot_size":440,"frontage":16,"type":"H&L","stage":"Stage 1","project":"ooranya"},
-    {"id":"oo6","name":"Lot 106","availability":"Available","price":440000,"lot_size":580,"frontage":20,"type":"H&L","stage":"Stage 2","project":"ooranya"},
-]
-
-ZILZIE_LOTS = [
-    {"id":"zl1","name":"Lot 1","availability":"Available","price":295000,"lot_size":620,"frontage":20,"type":"Coastal H&L","stage":"Stage 1","project":"zilzie"},
-    {"id":"zl2","name":"Lot 2","availability":"Available","price":315000,"lot_size":680,"frontage":22,"type":"Coastal H&L","stage":"Stage 1","project":"zilzie"},
-    {"id":"zl3","name":"Lot 3","availability":"Reserved","price":345000,"lot_size":740,"frontage":24,"type":"Coastal H&L","stage":"Stage 1","project":"zilzie"},
-    {"id":"zl4","name":"Lot 4","availability":"Available","price":280000,"lot_size":580,"frontage":18,"type":"Coastal H&L","stage":"Stage 1","project":"zilzie"},
-    {"id":"zl5","name":"Lot 5","availability":"Available","price":325000,"lot_size":710,"frontage":22,"type":"Coastal H&L","stage":"Stage 2","project":"zilzie"},
-    {"id":"zl6","name":"Lot 6","availability":"Available","price":360000,"lot_size":820,"frontage":26,"type":"Coastal H&L","stage":"Stage 2","project":"zilzie"},
-]
-
-HIDDEN_VALLEY_LOTS = [
-    {"id":"hv1","name":"Lot 1","availability":"Available","price":355000,"lot_size":500,"frontage":18,"type":"H&L","stage":"Stage 1","project":"hiddenvalley"},
-    {"id":"hv2","name":"Lot 2","availability":"Available","price":375000,"lot_size":528,"frontage":18,"type":"H&L","stage":"Stage 1","project":"hiddenvalley"},
-    {"id":"hv3","name":"Lot 3","availability":"Available","price":390000,"lot_size":560,"frontage":20,"type":"H&L","stage":"Stage 1","project":"hiddenvalley"},
-    {"id":"hv4","name":"Lot 4","availability":"Reserved","price":420000,"lot_size":612,"frontage":20,"type":"H&L","stage":"Stage 2","project":"hiddenvalley"},
-    {"id":"hv5","name":"Lot 5","availability":"Available","price":340000,"lot_size":480,"frontage":16,"type":"H&L","stage":"Stage 1","project":"hiddenvalley"},
-    {"id":"hv6","name":"Lot 6","availability":"Available","price":410000,"lot_size":590,"frontage":20,"type":"H&L","stage":"Stage 2","project":"hiddenvalley"},
-]
-
-INNES_PARK_LOTS = [
-    {"id":"ip1","name":"Lot 1","availability":"Available","price":195000,"lot_size":680,"frontage":20,"type":"Coastal H&L","stage":"Stage 1","project":"innespark"},
-    {"id":"ip2","name":"Lot 2","availability":"Available","price":210000,"lot_size":720,"frontage":22,"type":"Coastal H&L","stage":"Stage 1","project":"innespark"},
-    {"id":"ip3","name":"Lot 3","availability":"Available","price":185000,"lot_size":620,"frontage":18,"type":"Coastal H&L","stage":"Stage 1","project":"innespark"},
-    {"id":"ip4","name":"Lot 4","availability":"Reserved","price":235000,"lot_size":850,"frontage":24,"type":"Coastal H&L","stage":"Stage 2","project":"innespark"},
-    {"id":"ip5","name":"Lot 5","availability":"Available","price":218000,"lot_size":760,"frontage":22,"type":"Coastal H&L","stage":"Stage 1","project":"innespark"},
-    {"id":"ip6","name":"Lot 6","availability":"Available","price":245000,"lot_size":920,"frontage":26,"type":"Coastal H&L","stage":"Stage 2","project":"innespark"},
-]
 
 
 # ── HTML Template ─────────────────────────────────────────────────────────────
@@ -938,7 +936,7 @@ html,body{overflow-x:hidden;max-width:100vw}
     <div class="top-bar-left">
       <div class="top-logo" onclick="goHome()">PX</div>
       <div>
-        <div class="top-title">House &amp; Land Design Portal <span>— V2</span></div>
+        <div class="top-title">House &amp; Land Design Portal <span>— V2.3</span></div>
       </div>
     </div>
     <div class="top-bar-right">
@@ -983,12 +981,9 @@ html,body{overflow-x:hidden;max-width:100vw}
       </div>
       <div class="mfb-group">
         <span class="mfb-label">Region</span>
-        <div class="mfb-chips">
+        <div class="mfb-chips" style="overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch">
           <button class="mfb-chip active" data-filter="mf-region" data-val="all" onclick="setMapChip(this)">All Regions</button>
-          <button class="mfb-chip" data-filter="mf-region" data-val="goldcoast" onclick="setMapChip(this)">Gold Coast</button>
-          <button class="mfb-chip" data-filter="mf-region" data-val="brisbane-south" onclick="setMapChip(this)">Brisbane South</button>
-          <button class="mfb-chip" data-filter="mf-region" data-val="lockyer" onclick="setMapChip(this)">Lockyer Valley</button>
-          <button class="mfb-chip" data-filter="mf-region" data-val="central-qld" onclick="setMapChip(this)">Central QLD</button>
+          __REGION_CHIPS__
         </div>
       </div>
       <div class="mfb-group">
@@ -1360,44 +1355,9 @@ html,body{overflow-x:hidden;max-width:100vw}
 
 <script>
 // ── Injected Data ─────────────────────────────────────────────────────────────
-const OAKLAND_LOTS = __OAKLAND_DATA__;
-const ALL_LOTS = {
-  oakland: OAKLAND_LOTS,
-  woodchester: __WOODCHESTER_DATA__,
-  ooranya: __OORANYA_DATA__,
-  zilzie: __ZILZIE_DATA__,
-  hiddenvalley: __HIDDEN_VALLEY_DATA__,
-  innespark: __INNES_PARK_DATA__
-};
+const ALL_LOTS = __ALL_LOTS_DATA__;
+const PROJECTS = __PROJECTS_DATA__;
 const BUILD_DATE = "__BUILD_DATE__";
-
-// ── Static Data ───────────────────────────────────────────────────────────────
-const PROJECTS = [
-  {id:'oakland', name:'Oakland Estate', suburb:'Beaudesert', region:'South East QLD',
-   lat:-27.9857, lng:152.9715, emoji:'🌿', status:'Selling Now',
-   features:['H&L Packages','Stage 2 Now Selling','NBN Connected'],
-   description:'A master-planned community in the Scenic Rim, 55km from Brisbane CBD.'},
-  {id:'woodchester', name:'Woodchester', suburb:'Gatton', region:'Lockyer Valley',
-   lat:-27.5534, lng:152.2769, emoji:'🌾', status:'Selling Now',
-   features:['Rural Residential','Large Acreage Lots','Peaceful Lifestyle'],
-   description:'Generously sized rural residential lots in the heart of the Lockyer Valley.'},
-  {id:'ooranya', name:'Ooranya', suburb:'Coomera', region:'Gold Coast',
-   lat:-27.8600, lng:153.3500, emoji:'🏙️', status:'Now Selling',
-   features:['Gold Coast Location','Premium H&L','Coomera Hub Nearby'],
-   description:'Premium house and land packages close to Coomera Town Centre.'},
-  {id:'zilzie', name:'Zilzie Beach', suburb:'Zilzie', region:'Yeppoon',
-   lat:-23.2850, lng:150.7667, emoji:'🌊', status:'Selling Now',
-   features:['Coastal Lifestyle','500m to Beach','Affordable Entry'],
-   description:'Coastal living at its finest — just 500m from Zilzie Beach near Yeppoon.'},
-  {id:'hiddenvalley', name:'Hidden Valley', suburb:'Jimboomba', region:'South East QLD',
-   lat:-27.8300, lng:153.0100, emoji:'🏡', status:'Now Selling',
-   features:['Family Community','Logan Growth Corridor','Quick Brisbane Access'],
-   description:'A growing family-friendly community in the Logan growth corridor.'},
-  {id:'innespark', name:'Innes Park', suburb:'Innes Park', region:'Bundaberg',
-   lat:-24.8667, lng:152.3667, emoji:'🌴', status:'Selling Now',
-   features:['Bundaberg Coastal','Affordable Land','Sea-Change Lifestyle'],
-   description:'Affordable coastal land in Bundaberg\'s popular Innes Park precinct.'}
-];
 
 const BUILDERS = [
   {id:'nexgen', name:'NexGen Homes', initials:'NG', tagline:'Smart homes, smarter value',
@@ -1624,7 +1584,7 @@ function initMap() {
   });
 
   if (pinBounds.length) {
-    leafletMap.fitBounds(pinBounds, {padding:[60,60], maxZoom:9});
+    leafletMap.setView([-25.5, 152.5], 6);
   }
 }
 
@@ -1641,18 +1601,8 @@ BUILDERS.forEach(b => {
   }
 });
 
-const REGION_MAP = {
-  goldcoast: ['ooranya'],
-  'brisbane-south': ['oakland','hiddenvalley'],
-  lockyer: ['woodchester'],
-  'central-qld': ['zilzie','innespark']
-};
-const REGION_BOUNDS = {
-  goldcoast: [[-27.92,153.28],[-27.80,153.42]],
-  'brisbane-south': [[-28.05,152.90],[-27.75,153.10]],
-  lockyer: [[-27.62,152.18],[-27.48,152.38]],
-  'central-qld': [[-24.95,150.25],[-23.20,152.50]]
-};
+const REGION_MAP = __REGION_MAP_DATA__;
+const REGION_BOUNDS = __REGION_BOUNDS_DATA__;
 
 const mapFilterState = {price:'any',beds:'any',region:'all',timeline:'all'};
 
@@ -1676,8 +1626,7 @@ function applyMapFilters(){
   if(mapFilterState.region!=='all'&&REGION_BOUNDS[mapFilterState.region]){
     leafletMap.fitBounds(REGION_BOUNDS[mapFilterState.region],{padding:[60,60],maxZoom:11});
   } else if(mapFilterState.region==='all'){
-    const pb=PROJECTS.map(p=>[p.lat,p.lng]);
-    if(pb.length) leafletMap.fitBounds(pb,{padding:[60,60],maxZoom:9});
+    leafletMap.setView([-25.5, 152.5], 6);
   }
 
   const builderMids = Object.values(BUILDER_MID_PRICES);
@@ -2256,39 +2205,160 @@ function submitEOI() {
 """
 
 
-def build_html(oakland_lots):
+def build_projects_data(all_lots):
+    """Build the PROJECTS JS array from PROJECTS_GEO and lot data."""
+    projects = []
+    emojis = {'Gold Coast': '🏙️', 'Brisbane South': '🏡', 'Brisbane North': '🏘️',
+              'Brisbane': '🌆', 'Logan': '🏡', 'Moreton Bay': '🌳', 'Lockyer Valley': '🌾',
+              'Scenic Rim': '🌿', 'Sunshine Coast': '☀️', 'Gympie': '🏞️',
+              'Mackay': '🌴', 'Northern NSW': '🏖️'}
+    for name, geo in PROJECTS_GEO.items():
+        slug = make_slug(name)
+        lots = all_lots.get(slug, [])
+        avail = sum(1 for l in lots if l["availability"] == "Available")
+        region = geo['region']
+        projects.append({
+            'id': slug,
+            'name': name,
+            'suburb': geo['suburb'],
+            'region': region,
+            'lat': geo['lat'],
+            'lng': geo['lng'],
+            'emoji': emojis.get(region, '📍'),
+            'status': 'Selling Now' if avail > 0 else 'Coming Soon',
+        })
+    return projects
+
+
+def build_region_map(projects_data):
+    """Build REGION_MAP: {region_slug: [project_id, ...]}."""
+    region_map = {}
+    for p in projects_data:
+        slug = p['region'].lower().replace(' ', '-')
+        region_map.setdefault(slug, []).append(p['id'])
+    return region_map
+
+
+def build_region_bounds(projects_data):
+    """Build REGION_BOUNDS from project coordinates."""
+    region_coords = {}
+    for p in projects_data:
+        slug = p['region'].lower().replace(' ', '-')
+        region_coords.setdefault(slug, []).append((p['lat'], p['lng']))
+    bounds = {}
+    for slug, coords in region_coords.items():
+        lats = [c[0] for c in coords]
+        lngs = [c[1] for c in coords]
+        pad = 0.08
+        bounds[slug] = [[min(lats) - pad, min(lngs) - pad], [max(lats) + pad, max(lngs) + pad]]
+    return bounds
+
+
+def build_region_chips(projects_data):
+    """Build HTML region chip buttons from actual regions present."""
+    seen = set()
+    regions = []
+    for r in REGION_ORDER:
+        slug = r.lower().replace(' ', '-')
+        if any(p['region'] == r for p in projects_data) and slug not in seen:
+            regions.append((slug, r))
+            seen.add(slug)
+    # Add any regions not in REGION_ORDER
+    for p in projects_data:
+        slug = p['region'].lower().replace(' ', '-')
+        if slug not in seen:
+            regions.append((slug, p['region']))
+            seen.add(slug)
+    return '\n          '.join(
+        f'<button class="mfb-chip" data-filter="mf-region" data-val="{slug}" onclick="setMapChip(this)">{name}</button>'
+        for slug, name in regions
+    )
+
+
+def build_html(all_lots, projects_data, region_map, region_bounds, region_chips):
     now = datetime.datetime.now().strftime("%d %b %Y")
     html = HTML_TEMPLATE
-    html = html.replace("__OAKLAND_DATA__", json.dumps(oakland_lots, ensure_ascii=False))
-    html = html.replace("__WOODCHESTER_DATA__", json.dumps(WOODCHESTER_LOTS, ensure_ascii=False))
-    html = html.replace("__OORANYA_DATA__", json.dumps(OORANYA_LOTS, ensure_ascii=False))
-    html = html.replace("__ZILZIE_DATA__", json.dumps(ZILZIE_LOTS, ensure_ascii=False))
-    html = html.replace("__HIDDEN_VALLEY_DATA__", json.dumps(HIDDEN_VALLEY_LOTS, ensure_ascii=False))
-    html = html.replace("__INNES_PARK_DATA__", json.dumps(INNES_PARK_LOTS, ensure_ascii=False))
+    html = html.replace("__ALL_LOTS_DATA__", json.dumps(
+        {p['id']: all_lots.get(p['id'], []) for p in projects_data}, ensure_ascii=False))
+    html = html.replace("__PROJECTS_DATA__", json.dumps(projects_data, ensure_ascii=False))
+    html = html.replace("__REGION_MAP_DATA__", json.dumps(region_map, ensure_ascii=False))
+    html = html.replace("__REGION_BOUNDS_DATA__", json.dumps(region_bounds, ensure_ascii=False))
+    html = html.replace("__REGION_CHIPS__", region_chips)
     html = html.replace("__BUILD_DATE__", now)
     return html
 
 
 def main():
-    print("🏗  ProjX House & Land Design Portal — V2 Build")
-    print("=" * 50)
+    print("🏗  ProjX House & Land Design Portal — V2.3 Build")
+    print("=" * 55)
     try:
         token = get_token()
         print("✓  Monday.com token loaded")
     except Exception as e:
         print(f"✗  {e}")
         sys.exit(1)
-    print("→  Fetching Oakland Estate lots from Monday.com…", end="", flush=True)
+
+    print("→  Fetching boards from workspace %d…" % WORKSPACE_ID, end="", flush=True)
     try:
-        oakland_lots = fetch_oakland_lots(token)
-        avail = sum(1 for l in oakland_lots if l["availability"] == "Available")
-        print(f" done ({len(oakland_lots)} lots, {avail} available)")
+        boards = fetch_workspace_boards(token)
+        print(f" found {len(boards)} boards")
     except Exception as e:
-        print(f"\n✗  Failed to fetch lots: {e}")
-        oakland_lots = []
+        print(f"\n✗  Failed to fetch boards: {e}")
+        sys.exit(1)
+
+    # Match boards to PROJECTS_GEO by name
+    all_lots = {}
+    total_lots = 0
+    total_avail = 0
+    matched_boards = []
+
+    for board in boards:
+        board_name = board["name"]
+        # Find matching geo entry
+        geo_match = None
+        for geo_name in PROJECTS_GEO:
+            if geo_name.lower() == board_name.lower() or geo_name.lower() in board_name.lower() or board_name.lower() in geo_name.lower():
+                geo_match = geo_name
+                break
+        if not geo_match:
+            print(f"   ⚠  Skipping unmatched board: {board_name}")
+            continue
+
+        slug = make_slug(geo_match)
+        print(f"   → {geo_match} (board {board['id']})…", end="", flush=True)
+        try:
+            lots = fetch_board_lots(board["id"], geo_match, token)
+            avail = sum(1 for l in lots if l["availability"] == "Available")
+            # Keep the board with the most lots (skip empty/template boards)
+            if len(lots) > len(all_lots.get(slug, [])):
+                old_count = len(all_lots.get(slug, []))
+                if old_count > 0:
+                    total_lots -= old_count
+                    total_avail -= sum(1 for l in all_lots[slug] if l["availability"] == "Available")
+                all_lots[slug] = lots
+                total_lots += len(lots)
+                total_avail += avail
+                if geo_match not in matched_boards:
+                    matched_boards.append(geo_match)
+                print(f" {len(lots)} lots ({avail} avail)")
+            else:
+                print(f" {len(lots)} lots (skipped, keeping better board)")
+        except Exception as e:
+            print(f" FAILED: {e}")
+            if slug not in all_lots:
+                all_lots[slug] = []
+
+    print(f"\n✓  Fetched {len(matched_boards)} projects, {total_lots} total lots, {total_avail} available")
+
+    projects_data = build_projects_data(all_lots)
+    region_map = build_region_map(projects_data)
+    region_bounds = build_region_bounds(projects_data)
+    region_chips = build_region_chips(projects_data)
+
     print("→  Generating HTML…", end="", flush=True)
-    html = build_html(oakland_lots)
+    html = build_html(all_lots, projects_data, region_map, region_bounds, region_chips)
     print(" done")
+
     out_dir = os.path.dirname(os.path.abspath(__file__))
     out_path = os.path.join(out_dir, "index.html")
     with open(out_path, "w", encoding="utf-8") as f:
@@ -2297,14 +2367,16 @@ def main():
     print(f"✓  Written: {out_path} ({size_kb:.0f} KB)")
     print()
     print("📦 Summary")
-    print(f"   Oakland:       {len(oakland_lots)} lots (live Monday.com)")
-    print(f"   Woodchester:   {len(WOODCHESTER_LOTS)} lots (sample)")
-    print(f"   Ooranya:       {len(OORANYA_LOTS)} lots (sample)")
-    print(f"   Zilzie Beach:  {len(ZILZIE_LOTS)} lots (sample)")
-    print(f"   Hidden Valley: {len(HIDDEN_VALLEY_LOTS)} lots (sample)")
-    print(f"   Innes Park:    {len(INNES_PARK_LOTS)} lots (sample)")
+    for p in projects_data:
+        lots = all_lots.get(p['id'], [])
+        avail = sum(1 for l in lots if l["availability"] == "Available")
+        tag = "live" if lots else "no data"
+        print(f"   {p['name']:30s} {len(lots):3d} lots ({avail} avail) [{tag}]")
+    print(f"   {'':30s} ─────────────")
+    print(f"   {'TOTAL':30s} {total_lots:3d} lots ({total_avail} avail)")
     print(f"   Builders:      5")
     print(f"   Designs:       15")
+    print(f"   Regions:       {len(set(p['region'] for p in projects_data))}")
 
 
 if __name__ == "__main__":
