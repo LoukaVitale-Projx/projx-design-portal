@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-ProjX House & Land Design Portal — V2.3
+ProjX House & Land Design Portal — V2.4
 Map-first UX with real Monday.com data from Contract Administration workspace
-Fetches ALL active project boards and generates index.html with live stock data
+Fetches H&L project boards only, shows Available/Unreleased lots only
 """
 
 import json, os, sys, urllib.request, datetime
@@ -10,23 +10,47 @@ import json, os, sys, urllib.request, datetime
 API_URL = "https://api.monday.com/v2"
 WORKSPACE_ID = 2429759
 
+# H&L-only allowlist — exclude townhouse/apartment projects
+HL_ALLOWLIST = {
+    'Oakland Estate',
+    'Woodchester',
+    'Fox & Shipper',
+    'Lakeview Estate',
+    'Brookdale',
+    'Sorensen Rise',
+    'Riverina',
+    'At Nineteen',
+    'North Pine Golf Estate',
+    'Eade',
+    'Harvest',
+    'Elio',
+    'The Gables',
+    'Serenity',
+}
+
+EXCLUDED_BOARDS = {
+    'Bliss on Bracken',
+    'Residences on Main',
+    'Leaf Residences',
+    'Mountview Terraces',
+    'Co Living Australia',
+    'The Reserve',
+    'Grove on Goodfellows',
+}
+
+# Only Available and Unreleased lots are shown
+VISIBLE_STATUSES = {'Available', 'Unreleased'}
+
 PROJECTS_GEO = {
     'Oakland Estate': {'suburb': 'Beaudesert', 'lat': -27.99, 'lng': 152.97, 'region': 'Scenic Rim'},
     'Woodchester': {'suburb': 'Gatton', 'lat': -27.55, 'lng': 152.28, 'region': 'Lockyer Valley'},
     'Fox & Shipper': {'suburb': 'Coomera', 'lat': -27.86, 'lng': 153.35, 'region': 'Gold Coast'},
     'Lakeview Estate': {'suburb': 'Gatton', 'lat': -27.56, 'lng': 152.27, 'region': 'Lockyer Valley'},
     'Brookdale': {'suburb': 'Park Ridge', 'lat': -27.72, 'lng': 153.04, 'region': 'Logan'},
-    'Bliss on Bracken': {'suburb': 'Bracken Ridge', 'lat': -27.32, 'lng': 153.03, 'region': 'Brisbane North'},
-    'Residences on Main': {'suburb': 'Beenleigh', 'lat': -27.71, 'lng': 153.20, 'region': 'Logan'},
     'At Nineteen': {'suburb': 'Burpengary', 'lat': -27.16, 'lng': 152.95, 'region': 'Moreton Bay'},
     'North Pine Golf Estate': {'suburb': 'Joyner', 'lat': -27.24, 'lng': 152.93, 'region': 'Moreton Bay'},
-    'The Reserve': {'suburb': 'Eight Mile Plains', 'lat': -27.58, 'lng': 153.10, 'region': 'Brisbane South'},
-    'Leaf Residences': {'suburb': 'Kingston', 'lat': -27.53, 'lng': 153.13, 'region': 'Brisbane South'},
-    'Grove on Goodfellows': {'suburb': 'Kallangur', 'lat': -27.25, 'lng': 152.98, 'region': 'Moreton Bay'},
     'Eade': {'suburb': 'Byron Bay', 'lat': -28.64, 'lng': 153.62, 'region': 'Northern NSW'},
-    'Co Living Australia': {'suburb': 'Various', 'lat': -27.47, 'lng': 153.03, 'region': 'Brisbane'},
     'Harvest': {'suburb': 'Byron Bay', 'lat': -28.65, 'lng': 153.61, 'region': 'Northern NSW'},
-    'Mountview Terraces': {'suburb': 'Beerwah', 'lat': -26.86, 'lng': 152.96, 'region': 'Sunshine Coast'},
     'Elio': {'suburb': 'North Mackay', 'lat': -21.13, 'lng': 149.17, 'region': 'Mackay'},
     'The Gables': {'suburb': 'Loganholme', 'lat': -27.67, 'lng': 153.20, 'region': 'Logan'},
     'Serenity': {'suburb': 'Beerwah', 'lat': -26.85, 'lng': 152.97, 'region': 'Sunshine Coast'},
@@ -35,9 +59,8 @@ PROJECTS_GEO = {
 }
 
 REGION_ORDER = [
-    'Gold Coast', 'Brisbane South', 'Brisbane North', 'Brisbane', 'Logan',
-    'Moreton Bay', 'Lockyer Valley', 'Scenic Rim', 'Sunshine Coast',
-    'Gympie', 'Mackay', 'Northern NSW',
+    'Gold Coast', 'Logan', 'Moreton Bay', 'Lockyer Valley',
+    'Scenic Rim', 'Sunshine Coast', 'Gympie', 'Mackay', 'Northern NSW',
 ]
 
 
@@ -145,6 +168,8 @@ def fetch_board_lots(board_id, board_name, token):
             "project": slug,
         })
 
+    # Only keep lots with visible statuses (Available / Unreleased)
+    lots = [l for l in lots if l["availability"] in VISIBLE_STATUSES]
     lots.sort(key=lambda x: x["name"])
     return lots
 
@@ -1087,6 +1112,7 @@ html,body{overflow-x:hidden;max-width:100vw}
           <select id="lot-status" onchange="renderLots()">
             <option value="all">All Lots</option>
             <option value="Available">Available Only</option>
+            <option value="Unreleased">Unreleased Only</option>
           </select>
         </div>
         <div class="filter-group">
@@ -1215,6 +1241,7 @@ html,body{overflow-x:hidden;max-width:100vw}
           <select id="design-lots-status" onchange="renderDesignLots()">
             <option value="all">All</option>
             <option value="Available">Available Only</option>
+            <option value="Unreleased">Unreleased Only</option>
           </select>
         </div>
         <span class="filter-result-count" id="design-lots-count"></span>
@@ -2289,7 +2316,7 @@ def build_html(all_lots, projects_data, region_map, region_bounds, region_chips)
 
 
 def main():
-    print("🏗  ProjX House & Land Design Portal — V2.3 Build")
+    print("🏗  ProjX House & Land Design Portal — V2.4 Build")
     print("=" * 55)
     try:
         token = get_token()
@@ -2314,14 +2341,22 @@ def main():
 
     for board in boards:
         board_name = board["name"]
-        # Find matching geo entry
+        # Find matching geo entry (H&L allowlist only)
         geo_match = None
         for geo_name in PROJECTS_GEO:
             if geo_name.lower() == board_name.lower() or geo_name.lower() in board_name.lower() or board_name.lower() in geo_name.lower():
                 geo_match = geo_name
                 break
         if not geo_match:
-            print(f"   ⚠  Skipping unmatched board: {board_name}")
+            # Check if it's an excluded board vs truly unknown
+            is_excluded = any(ex.lower() in board_name.lower() or board_name.lower() in ex.lower() for ex in EXCLUDED_BOARDS)
+            if is_excluded:
+                print(f"   ✗  Excluded (not H&L): {board_name}")
+            else:
+                print(f"   ⚠  Skipping unmatched board: {board_name}")
+            continue
+        if geo_match not in HL_ALLOWLIST:
+            print(f"   ✗  Excluded (not H&L): {geo_match}")
             continue
 
         slug = make_slug(geo_match)
