@@ -1966,7 +1966,7 @@
           <div class="project-price"><strong>${p.minPrice > 0 ? fmtPrice(p.minPrice) + ' \u2013 ' + fmtPrice(p.maxPrice) : 'Pricing TBA'}</strong>${p.minPrice > 0 ? ' package range' : ''}</div>
           <div class="project-footer">
             <span class="project-lots-count">✅ ${p.availLots} of ${p.totalLots} available</span>
-            <a href="#contact" class="btn-sm">View Lots →</a>
+            <a href="#" class="btn-sm" onclick="event.preventDefault();openWizardForProject('${p.id}')">View Lots →</a>
           </div>
         </div>
       </div>
@@ -2011,7 +2011,7 @@
           <div class="popup-suburb">📍 ${p.suburb}, ${p.region}</div>
           <div class="popup-lots">✅ ${p.availLots} lots available</div>
           <div class="popup-price">${p.minPrice > 0 ? fmtPrice(p.minPrice) + ' \u2013 ' + fmtPrice(p.maxPrice) : 'Pricing TBA'}</div>
-          <a href="#contact">Explore →</a>
+          <a href="#" onclick="event.preventDefault();openWizardForProject('${p.id}')">Explore →</a>
         </div>
       `, {maxWidth: 220});
     });
@@ -2044,7 +2044,7 @@
             <div class="builder-meta-item"><strong>${b.designs}</strong><br>Designs</div>
           </div>
           <div class="builder-price">${b.priceRange}</div>
-          <a href="#designs" class="btn-sm" style="display:block;text-align:center">View Designs →</a>
+          <a href="#" class="btn-sm" style="display:block;text-align:center" onclick="event.preventDefault();openWizardForBuilder('${b.id}')">View Designs →</a>
         </div>
       </div>`;
     }).join('');
@@ -2057,7 +2057,7 @@
     grid.innerHTML = DESIGNS.map((d, i) => {
       const imgSrc = DESIGN_IMAGES[d.name] || fallbackImgs[i % fallbackImgs.length];
       return `
-      <div class="design-card" data-tier="${d.tier}">
+      <div class="design-card" data-tier="${d.tier}" style="cursor:pointer" onclick="openWizardForDesign('${d.name.replace(/'/g, "\\'")}')">
         <div class="design-img">
           <img src="${imgSrc}" alt="${d.name}" loading="lazy"
             onerror="this.src='https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80'" />
@@ -2073,7 +2073,7 @@
           </div>
           <div class="design-footer">
             <span class="design-price">${d.price}</span>
-            <span class="design-sqm">${d.sqm}m²</span>
+            <span class="design-sqm">${d.sqm}m² • Select →</span>
           </div>
         </div>
       </div>`;
@@ -2240,6 +2240,37 @@
     design: null,
     _designFilter: 'All'
   };
+
+  function openWizardForDesign(designName) {
+    const design = DESIGNS.find(function(d) { return d.name === designName; });
+    if (!design) return;
+    const builder = BUILDERS.find(function(b) { return b.name === design.builder; });
+    wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: design, _designFilter: 'All' };
+    document.getElementById('wizard').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('wizard').scrollTop = 0;
+    renderWizardStep();
+  }
+
+  function openWizardForBuilder(builderId) {
+    const builder = BUILDERS.find(function(b) { return b.id === builderId; });
+    if (!builder) return;
+    wizardState = { mode: 'builder', step: 2, region: null, project: null, builder: builder, design: null, _designFilter: 'All' };
+    document.getElementById('wizard').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('wizard').scrollTop = 0;
+    renderWizardStep();
+  }
+
+  function openWizardForProject(projectId) {
+    const project = PROJECTS.find(function(p) { return p.id === projectId; });
+    if (!project) return;
+    wizardState = { mode: 'land', step: 3, region: project.region, project: project, builder: null, design: null, _designFilter: 'All' };
+    document.getElementById('wizard').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('wizard').scrollTop = 0;
+    renderWizardStep();
+  }
 
   function openWizard(mode) {
     wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, _designFilter: 'All' };
