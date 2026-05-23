@@ -1006,6 +1006,350 @@
     .region-Redlands { background: rgba(139,92,246,0.08); color: #7c3aed; }
     .region-Regional\ QLD { background: rgba(245,158,11,0.08); color: #d97706; }
     .region-Southern\ Downs { background: rgba(249,115,22,0.08); color: #ea580c; }
+
+    /* ─── BUYER WIZARD ───────────────────────────────────────── */
+    #wizard {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: var(--bg);
+      overflow-y: auto;
+      animation: fadeIn 0.3s ease;
+    }
+    #wizard.open { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .wizard-progress-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--border);
+      z-index: 2100;
+    }
+    .wizard-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .wizard-header {
+      position: sticky;
+      top: 0;
+      z-index: 2050;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 68px;
+      gap: 16px;
+    }
+
+    .wizard-header-logo { display: flex; align-items: center; flex-shrink: 0; }
+
+    .wizard-step-info {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 6px; flex: 1;
+    }
+    .wizard-step-label {
+      font-size: 12px; font-weight: 700; color: var(--text-light); letter-spacing: 0.5px;
+    }
+    .wizard-step-dots { display: flex; gap: 6px; align-items: center; }
+    .wizard-step-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border); transition: var(--transition);
+    }
+    .wizard-step-dot.active { background: var(--accent); width: 20px; border-radius: 4px; }
+    .wizard-step-dot.done { background: var(--success); }
+
+    .wizard-close-btn {
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+      background: var(--bg-alt); border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; color: var(--text-light);
+      transition: var(--transition); font-family: inherit; line-height: 1;
+    }
+    .wizard-close-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .wizard-body { max-width: 1200px; margin: 0 auto; padding: 52px 32px; }
+
+    .wizard-step-heading { text-align: center; margin-bottom: 48px; }
+    .wizard-step-heading h2 {
+      font-size: clamp(24px, 3.5vw, 40px); font-weight: 900;
+      letter-spacing: -1.5px; color: var(--primary); margin-bottom: 10px;
+    }
+    .wizard-step-heading p {
+      font-size: 15px; color: var(--text-light); max-width: 520px;
+      margin: 0 auto; line-height: 1.65;
+    }
+
+    .wizard-back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: none; border: 1.5px solid var(--border); color: var(--text-light);
+      padding: 9px 18px; border-radius: 8px;
+      font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600;
+      cursor: pointer; margin-bottom: 32px; transition: var(--transition); min-height: 40px;
+    }
+    .wizard-back-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    .wizard-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .wizard-card-grid-lg {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    /* Region cards */
+    .wizard-region-card {
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 28px 24px;
+      cursor: pointer; transition: var(--transition);
+      box-shadow: var(--card-shadow);
+      display: flex; flex-direction: column; gap: 8px;
+      min-height: 130px;
+    }
+    .wizard-region-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: var(--card-shadow-hover); }
+    .wizard-region-name { font-size: 18px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
+    .wizard-region-meta { font-size: 13px; color: var(--text-light); }
+    .wizard-region-meta strong { color: var(--accent); }
+    .wizard-region-arrow { margin-top: auto; font-size: 20px; color: var(--accent); }
+
+    /* Project cards in wizard */
+    .wizard-project-card {
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+      cursor: pointer; transition: var(--transition); box-shadow: var(--card-shadow);
+    }
+    .wizard-project-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: var(--card-shadow-hover); }
+    .wizard-project-img { width: 100%; height: 160px; overflow: hidden; }
+    .wizard-project-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .wizard-project-card:hover .wizard-project-img img { transform: scale(1.05); }
+    .wizard-project-body { padding: 16px; }
+    .wizard-project-name { font-size: 16px; font-weight: 800; color: var(--primary); letter-spacing: -0.3px; margin-bottom: 2px; }
+    .wizard-project-suburb { font-size: 12px; color: var(--text-light); margin-bottom: 10px; }
+    .wizard-project-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+    .wizard-project-lots { color: var(--success); font-weight: 700; }
+    .wizard-project-price { color: var(--accent); font-weight: 600; }
+
+    /* Lot summary */
+    .wizard-lot-summary {
+      max-width: 600px; margin: 0 auto 40px;
+      background: var(--bg-alt); border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 36px 40px; text-align: center;
+    }
+    .wizard-lot-summary h3 { font-size: 24px; font-weight: 900; color: var(--primary); letter-spacing: -1px; margin-bottom: 8px; }
+    .wizard-lot-summary-details { display: flex; justify-content: center; gap: 32px; margin: 20px 0; flex-wrap: wrap; }
+    .wizard-lot-detail { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .wizard-lot-detail-label { font-size: 11px; color: var(--text-xlight); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+    .wizard-lot-detail-value { font-size: 18px; font-weight: 800; color: var(--primary); }
+    .wizard-lot-location { font-size: 14px; color: var(--text-light); margin-bottom: 24px; }
+    .wizard-proceed-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent); color: #fff; padding: 16px 36px;
+      border-radius: 10px; border: none; cursor: pointer;
+      font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 700;
+      transition: var(--transition); min-height: 52px;
+    }
+    .wizard-proceed-btn:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59,125,221,0.3); }
+
+    /* Builder filter tabs */
+    .wizard-filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; justify-content: center; }
+    .wizard-filter-tab {
+      padding: 9px 20px; border-radius: 50px;
+      font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700;
+      border: 1.5px solid var(--border); background: var(--bg-alt); color: var(--text-light);
+      cursor: pointer; transition: var(--transition); min-height: 40px;
+    }
+    .wizard-filter-tab:hover, .wizard-filter-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* Design cards in wizard */
+    .wizard-design-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+    }
+    .wizard-design-card {
+      background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; transition: var(--transition); box-shadow: var(--card-shadow);
+      display: flex; flex-direction: column;
+    }
+    .wizard-design-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: var(--card-shadow-hover); }
+    .wizard-design-img { width: 100%; height: 150px; overflow: hidden; }
+    .wizard-design-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .wizard-design-card:hover .wizard-design-img img { transform: scale(1.05); }
+    .wizard-design-body { padding: 14px; flex: 1; display: flex; flex-direction: column; }
+    .wizard-design-name { font-size: 14px; font-weight: 800; color: var(--primary); margin-bottom: 2px; }
+    .wizard-design-builder-tag { font-size: 11px; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+    .wizard-design-specs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; font-size: 11px; color: var(--text-light); }
+    .wizard-design-price-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 8px; border-top: 1px solid var(--border); margin-top: auto;
+    }
+    .wizard-design-price { font-size: 14px; font-weight: 800; color: var(--primary); }
+    .wizard-select-btn {
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+      background: var(--primary); color: #fff; border: none; padding: 7px 14px;
+      border-radius: 6px; cursor: pointer; transition: var(--transition); min-height: 32px;
+    }
+    .wizard-select-btn:hover { background: var(--accent); }
+
+    /* Builder cards in wizard */
+    .wizard-builder-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px; max-width: 960px; margin: 0 auto;
+    }
+    .wizard-builder-card {
+      background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-lg);
+      overflow: hidden; transition: var(--transition); box-shadow: var(--card-shadow);
+    }
+    .wizard-builder-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: var(--card-shadow-hover); }
+    .wizard-builder-img { width: 100%; height: 140px; overflow: hidden; }
+    .wizard-builder-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .wizard-builder-card:hover .wizard-builder-img img { transform: scale(1.05); }
+    .wizard-builder-body { padding: 18px; }
+    .wizard-builder-logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .wizard-builder-logo {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 900; color: #fff; flex-shrink: 0;
+    }
+    .wizard-builder-name-wrap .wizard-builder-card-name { font-size: 15px; font-weight: 800; color: var(--primary); letter-spacing: -0.3px; }
+    .wizard-builder-name-wrap .wizard-builder-card-tier { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-light); }
+    .wizard-builder-tagline { font-size: 12px; color: var(--text-light); margin-bottom: 12px; line-height: 1.5; }
+    .wizard-builder-meta-row { display: flex; gap: 16px; margin-bottom: 12px; }
+    .wizard-builder-meta-item { font-size: 11px; color: var(--text-light); }
+    .wizard-builder-meta-item strong { color: var(--primary); font-weight: 700; font-size: 13px; display: block; }
+    .wizard-builder-price-tag { font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 14px; }
+    .wizard-browse-btn {
+      display: block; width: 100%; font-family: 'Montserrat', sans-serif;
+      font-size: 13px; font-weight: 700; background: var(--primary); color: #fff;
+      border: none; padding: 11px 18px; border-radius: 8px; cursor: pointer;
+      text-align: center; transition: var(--transition); min-height: 44px;
+    }
+    .wizard-browse-btn:hover { background: var(--accent); }
+
+    /* Lead capture layout */
+    .wizard-package-layout {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+      max-width: 1000px; margin: 0 auto;
+    }
+    .wizard-summary-panel {
+      background: var(--bg-alt); border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 28px;
+    }
+    .wizard-summary-title {
+      font-size: 12px; font-weight: 700; color: var(--text-light);
+      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .wizard-summary-item {
+      display: flex; flex-direction: column; gap: 2px;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .wizard-summary-item:last-of-type { border-bottom: none; }
+    .wizard-summary-item-label { font-size: 11px; color: var(--text-xlight); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+    .wizard-summary-item-value { font-size: 15px; font-weight: 700; color: var(--primary); }
+    .wizard-summary-item-sub { font-size: 12px; color: var(--text-light); }
+    .wizard-summary-price {
+      margin-top: 16px; background: var(--primary);
+      border-radius: var(--radius); padding: 16px; text-align: center;
+    }
+    .wizard-summary-price-label { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .wizard-summary-price-value { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -1px; }
+
+    .wizard-form-panel {
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--card-shadow);
+    }
+    .wizard-form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .wizard-form-label { font-size: 11px; font-weight: 700; color: var(--primary); letter-spacing: 0.8px; text-transform: uppercase; }
+    .wizard-form-input, .wizard-form-select, .wizard-form-textarea {
+      padding: 13px 16px; border: 1.5px solid var(--border); border-radius: 9px;
+      font-family: 'Montserrat', sans-serif; font-size: 14px; color: var(--text);
+      outline: none; transition: var(--transition); background: var(--bg-alt); min-height: 48px;
+    }
+    .wizard-form-input:focus, .wizard-form-select:focus, .wizard-form-textarea:focus {
+      border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 3px rgba(59,125,221,0.1);
+    }
+    .wizard-form-textarea { resize: vertical; min-height: 90px; }
+    .wizard-submit-btn {
+      width: 100%; padding: 16px; background: var(--accent); color: #fff;
+      border: none; border-radius: 10px; font-family: 'Montserrat', sans-serif;
+      font-size: 15px; font-weight: 700; cursor: pointer; transition: var(--transition); min-height: 52px;
+    }
+    .wizard-submit-btn:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59,125,221,0.3); }
+
+    /* Wizard success screen */
+    .wizard-success { max-width: 600px; margin: 0 auto; text-align: center; padding: 40px 24px; }
+    .wizard-success-icon {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: rgba(5,150,105,0.1); border: 2px solid rgba(5,150,105,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; margin: 0 auto 24px;
+      animation: successPop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes successPop { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .wizard-success h2 { font-size: 32px; font-weight: 900; letter-spacing: -1px; color: var(--primary); margin-bottom: 8px; }
+    .wizard-success p { font-size: 15px; color: var(--text-light); margin-bottom: 8px; line-height: 1.65; }
+    .wizard-success-ref {
+      display: inline-block;
+      background: rgba(59,125,221,0.08); border: 1px solid rgba(59,125,221,0.2);
+      color: var(--accent); font-size: 14px; font-weight: 700;
+      padding: 8px 20px; border-radius: 8px; margin: 12px 0 24px;
+    }
+    .wizard-success-summary {
+      background: var(--bg-alt); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px; margin-bottom: 32px; text-align: left;
+    }
+    .wizard-success-summary-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+    }
+    .wizard-success-summary-row:last-child { border-bottom: none; }
+    .wizard-success-summary-row span:first-child { color: var(--text-light); }
+    .wizard-success-summary-row span:last-child { color: var(--primary); font-weight: 700; }
+    .wizard-success-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .wizard-restart-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--primary); color: #fff; padding: 14px 28px; border-radius: 10px;
+      border: none; cursor: pointer; font-family: 'Montserrat', sans-serif;
+      font-size: 14px; font-weight: 700; transition: var(--transition); min-height: 48px;
+    }
+    .wizard-restart-btn:hover { background: var(--primary-light); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .wizard-portal-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--primary); padding: 13px 26px; border-radius: 10px;
+      border: 1.5px solid var(--border); font-family: 'Montserrat', sans-serif;
+      font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); min-height: 48px;
+    }
+    .wizard-portal-btn:hover { border-color: var(--primary); background: var(--bg-alt); transform: translateY(-2px); }
+
+    /* Wizard responsive */
+    @media (max-width: 900px) {
+      .wizard-package-layout { grid-template-columns: 1fr; gap: 24px; }
+      .wizard-body { padding: 32px 20px; }
+      .wizard-header { padding: 0 16px; }
+    }
+    @media (max-width: 640px) {
+      .wizard-card-grid { grid-template-columns: 1fr; }
+      .wizard-card-grid-lg { grid-template-columns: 1fr; }
+      .wizard-design-grid { grid-template-columns: 1fr 1fr; }
+      .wizard-builder-grid { grid-template-columns: 1fr; max-width: 100%; }
+      .wizard-body { padding: 24px 14px; }
+      .wizard-step-heading h2 { font-size: 22px; letter-spacing: -0.5px; }
+      .wizard-lot-summary { padding: 24px 16px; }
+      .wizard-lot-summary-details { gap: 16px; }
+      .wizard-success h2 { font-size: 26px; }
+    }
+    @media (max-width: 400px) {
+      .wizard-design-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -1060,8 +1404,8 @@
       <h1 class="hero-title">Your Dream Home,<br><span class="accent">One Click Away</span></h1>
       <p class="hero-subtitle">Browse 4,500+ lots across 18 projects in South East Queensland and beyond. Match with Australia's best builders. Get your keys faster.</p>
       <div class="hero-btns">
-        <a href="#projects" class="btn-primary">🏘️ Explore Projects</a>
-        <a href="#builders" class="btn-outline">🏗️ Browse Builders</a>
+        <button class="btn-primary" onclick="openWizard('land')">🗺️ Find Land First</button>
+        <button class="btn-outline" onclick="openWizard('builder')">🏗️ Choose a Builder</button>
       </div>
       <div class="hero-stats">
         <div class="stat-item">
@@ -1417,6 +1761,23 @@
     </div>
   </div>
 </footer>
+
+<!-- ─── BUYER WIZARD ─── -->
+<div id="wizard">
+  <div class="wizard-progress-bar"><div class="wizard-progress-fill" id="wizardProgressFill"></div></div>
+  <div class="wizard-header">
+    <div class="wizard-header-logo">
+      <img src="projx-logo-dark.png" alt="ProjX" style="height:32px" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span style="display:none;font-size:20px;font-weight:900;letter-spacing:-0.5px;color:var(--primary)">ProjX</span>
+    </div>
+    <div class="wizard-step-info">
+      <div class="wizard-step-label" id="wizardStepLabel">Step 1 of 5</div>
+      <div class="wizard-step-dots" id="wizardStepDots"></div>
+    </div>
+    <button class="wizard-close-btn" onclick="closeWizard()" aria-label="Close wizard">✕</button>
+  </div>
+  <div class="wizard-body" id="wizardBody"></div>
+</div>
 
 </div><!-- /main-content -->
 
@@ -1866,6 +2227,364 @@
   // Allow enter key on gate
   document.getElementById('gateInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') checkPassword();
+  });
+
+  // ─── BUYER WIZARD ──────────────────────────────────────────────────
+
+  let wizardState = {
+    mode: null,
+    step: 1,
+    region: null,
+    project: null,
+    builder: null,
+    design: null,
+    _designFilter: 'All'
+  };
+
+  function openWizard(mode) {
+    wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, _designFilter: 'All' };
+    document.getElementById('wizard').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('wizard').scrollTop = 0;
+    renderWizardStep();
+  }
+
+  function closeWizard() {
+    document.getElementById('wizard').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function wizardBack() {
+    wizardState.step--;
+    document.getElementById('wizard').scrollTop = 0;
+    renderWizardStep();
+  }
+
+  function wizardNext() {
+    wizardState.step++;
+    document.getElementById('wizard').scrollTop = 0;
+    renderWizardStep();
+  }
+
+  function renderWizardStep() {
+    const totalSteps = wizardState.mode === 'land' ? 5 : 4;
+    const pct = (wizardState.step / totalSteps) * 100;
+    document.getElementById('wizardProgressFill').style.width = Math.min(pct, 100) + '%';
+    document.getElementById('wizardStepLabel').textContent = 'Step ' + wizardState.step + ' of ' + totalSteps;
+
+    const dotsEl = document.getElementById('wizardStepDots');
+    dotsEl.innerHTML = Array.from({length: totalSteps}, (_, i) => {
+      const cls = (i + 1 < wizardState.step) ? 'done' : (i + 1 === wizardState.step) ? 'active' : '';
+      return '<div class="wizard-step-dot ' + cls + '"></div>';
+    }).join('');
+
+    const body = document.getElementById('wizardBody');
+    if (wizardState.mode === 'land') {
+      switch (wizardState.step) {
+        case 1: body.innerHTML = renderLandStep1(); break;
+        case 2: body.innerHTML = renderLandStep2(); break;
+        case 3: body.innerHTML = renderLandStep3(); break;
+        case 4: body.innerHTML = renderLandStep4(); break;
+        default: body.innerHTML = renderLeadCapture(); break;
+      }
+    } else {
+      switch (wizardState.step) {
+        case 1: body.innerHTML = renderBuilderStep1(); break;
+        case 2: body.innerHTML = renderBuilderStep2(); break;
+        case 3: body.innerHTML = renderBuilderStep3(); break;
+        default: body.innerHTML = renderLeadCapture(); break;
+      }
+    }
+  }
+
+  // — LAND PATH —
+
+  function renderLandStep1() {
+    const regionMap = {};
+    PROJECTS.forEach(function(p) {
+      if (!regionMap[p.region]) regionMap[p.region] = {count: 0, lots: 0};
+      regionMap[p.region].count++;
+      regionMap[p.region].lots += p.availLots;
+    });
+    const regions = Object.entries(regionMap).sort(function(a, b) { return b[1].lots - a[1].lots; });
+
+    return '<div class="wizard-step-heading"><h2>Where would you like to live?</h2><p>Select a region to explore available projects</p></div>' +
+      '<div class="wizard-card-grid">' +
+      regions.map(function(entry) {
+        const region = entry[0], data = entry[1];
+        return '<div class="wizard-region-card" onclick="wizardSelectRegion(\'' + region.replace(/'/g, "\\'") + '\')">' +
+          '<div class="wizard-region-name">' + region + '</div>' +
+          '<div class="wizard-region-meta"><strong>' + data.count + '</strong> project' + (data.count !== 1 ? 's' : '') + ' · <strong>' + data.lots.toLocaleString() + '</strong> lots available</div>' +
+          '<div class="wizard-region-arrow">→</div>' +
+          '</div>';
+      }).join('') +
+      '</div>';
+  }
+
+  function wizardSelectRegion(region) {
+    wizardState.region = region;
+    wizardNext();
+  }
+
+  function renderLandStep2() {
+    const projects = PROJECTS.filter(function(p) { return p.region === wizardState.region; });
+    return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
+      '<div class="wizard-step-heading"><h2>Projects in ' + wizardState.region + '</h2><p>' + projects.length + ' project' + (projects.length !== 1 ? 's' : '') + ' available in this region</p></div>' +
+      '<div class="wizard-card-grid">' +
+      projects.map(function(p) {
+        const idx = PROJECTS.indexOf(p);
+        return '<div class="wizard-project-card" onclick="wizardSelectProject(\'' + p.id + '\')">' +
+          '<div class="wizard-project-img"><img src="' + PROJECT_IMAGES[idx % PROJECT_IMAGES.length] + '" alt="' + p.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/></div>' +
+          '<div class="wizard-project-body">' +
+          '<div class="wizard-project-name">' + p.name + '</div>' +
+          '<div class="wizard-project-suburb">📍 ' + p.suburb + '</div>' +
+          '<div class="wizard-project-meta"><span class="wizard-project-lots">✅ ' + p.availLots + ' lots</span><span class="wizard-project-price">' + (p.minPrice > 0 ? fmtPrice(p.minPrice) + ' – ' + fmtPrice(p.maxPrice) : 'Pricing TBA') + '</span></div>' +
+          '</div></div>';
+      }).join('') +
+      '</div>';
+  }
+
+  function wizardSelectProject(id) {
+    wizardState.project = PROJECTS.find(function(p) { return p.id === id; });
+    wizardNext();
+  }
+
+  function renderLandStep3() {
+    const p = wizardState.project;
+    return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
+      '<div class="wizard-step-heading"><h2>' + p.name + ' — ' + p.availLots + ' Lots Available</h2><p>Review project details before choosing your home design</p></div>' +
+      '<div class="wizard-lot-summary">' +
+      '<h3>' + p.name + '</h3>' +
+      '<div class="wizard-lot-location">📍 ' + p.suburb + ', ' + p.region + '</div>' +
+      '<div class="wizard-lot-summary-details">' +
+      '<div class="wizard-lot-detail"><span class="wizard-lot-detail-label">Lots Available</span><span class="wizard-lot-detail-value">' + p.availLots + '</span></div>' +
+      '<div class="wizard-lot-detail"><span class="wizard-lot-detail-label">Total Lots</span><span class="wizard-lot-detail-value">' + p.totalLots + '</span></div>' +
+      '<div class="wizard-lot-detail"><span class="wizard-lot-detail-label">Price Range</span><span class="wizard-lot-detail-value" style="font-size:14px">' + (p.minPrice > 0 ? fmtPrice(p.minPrice) + ' – ' + fmtPrice(p.maxPrice) : 'TBA') + '</span></div>' +
+      '</div>' +
+      '<button class="wizard-proceed-btn" onclick="wizardNext()">Continue to Choose Your Home Design →</button>' +
+      '</div>';
+  }
+
+  function renderLandStep4() {
+    const allBuilders = [];
+    DESIGNS.forEach(function(d) { if (allBuilders.indexOf(d.builder) === -1) allBuilders.push(d.builder); });
+    const activeFilter = wizardState._designFilter || 'All';
+    const filtered = (activeFilter === 'All') ? DESIGNS : DESIGNS.filter(function(d) { return d.builder === activeFilter; });
+
+    const tabs = ['All'].concat(allBuilders).map(function(b) {
+      return '<button class="wizard-filter-tab ' + (b === activeFilter ? 'active' : '') + '" onclick="wizardFilterDesigns(\'' + b.replace(/'/g, "\\'") + '\')">' + (b === 'All' ? 'All Designs' : b) + '</button>';
+    }).join('');
+
+    const cards = filtered.map(function(d) {
+      const imgSrc = DESIGN_IMAGES[d.name] || Object.values(DESIGN_IMAGES)[0];
+      return '<div class="wizard-design-card">' +
+        '<div class="wizard-design-img"><img src="' + imgSrc + '" alt="' + d.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/></div>' +
+        '<div class="wizard-design-body">' +
+        '<div class="wizard-design-name">' + d.name + '</div>' +
+        '<div class="wizard-design-builder-tag">' + d.builder + '</div>' +
+        '<div class="wizard-design-specs"><span>🛏 ' + d.beds + '</span><span>🚿 ' + d.baths + '</span><span>🚗 ' + d.garage + '</span><span>📐 ' + d.frontage + '</span></div>' +
+        '<div class="wizard-design-price-row">' +
+        '<span class="wizard-design-price">' + d.price + '</span>' +
+        '<button class="wizard-select-btn" onclick="wizardSelectDesign(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm² • Select →</button>' +
+        '</div></div></div>';
+    }).join('');
+
+    return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
+      '<div class="wizard-step-heading"><h2>Choose a home design for ' + wizardState.project.name + '</h2><p>Select a design to continue to your package summary</p></div>' +
+      '<div class="wizard-filter-tabs">' + tabs + '</div>' +
+      '<div class="wizard-design-grid">' + cards + '</div>';
+  }
+
+  function wizardFilterDesigns(filter) {
+    wizardState._designFilter = filter;
+    renderWizardStep();
+  }
+
+  function wizardSelectDesign(name) {
+    wizardState.design = DESIGNS.find(function(d) { return d.name === name; });
+    wizardNext();
+  }
+
+  // — BUILDER PATH —
+
+  function renderBuilderStep1() {
+    const builderHeaderImages = [
+      DESIGN_IMAGES['FRD Double 230'],
+      DESIGN_IMAGES['Silverwood 45'],
+      DESIGN_IMAGES['Geneva'],
+      DESIGN_IMAGES['Hampshire']
+    ];
+    const cards = BUILDERS.map(function(b, i) {
+      const initials = b.name.split(' ').map(function(w) { return w[0]; }).join('').slice(0, 2);
+      return '<div class="wizard-builder-card">' +
+        '<div class="wizard-builder-img"><img src="' + builderHeaderImages[i] + '" alt="' + b.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/></div>' +
+        '<div class="wizard-builder-body">' +
+        '<div class="wizard-builder-logo-row">' +
+        '<div class="wizard-builder-logo" style="background:' + b.color + '">' + initials + '</div>' +
+        '<div class="wizard-builder-name-wrap"><div class="wizard-builder-card-name">' + b.name + '</div><div class="wizard-builder-card-tier">' + b.tier + '</div></div>' +
+        '</div>' +
+        '<div class="wizard-builder-tagline">' + b.tagline + '</div>' +
+        '<div class="wizard-builder-meta-row">' +
+        '<div class="wizard-builder-meta-item"><strong>' + b.designs + '</strong> Designs</div>' +
+        '</div>' +
+        '<div class="wizard-builder-price-tag">' + b.priceRange + '</div>' +
+        '<button class="wizard-browse-btn" onclick="wizardSelectBuilder(\'' + b.id + '\')">Browse Designs →</button>' +
+        '</div></div>';
+    }).join('');
+
+    return '<div class="wizard-step-heading"><h2>Who would you like to build with?</h2><p>Select a builder to browse their home designs</p></div>' +
+      '<div class="wizard-builder-grid">' + cards + '</div>';
+  }
+
+  function wizardSelectBuilder(id) {
+    wizardState.builder = BUILDERS.find(function(b) { return b.id === id; });
+    wizardNext();
+  }
+
+  function renderBuilderStep2() {
+    const builderDesigns = DESIGNS.filter(function(d) { return d.builder === wizardState.builder.name; });
+    const cards = builderDesigns.map(function(d) {
+      const imgSrc = DESIGN_IMAGES[d.name] || Object.values(DESIGN_IMAGES)[0];
+      return '<div class="wizard-design-card">' +
+        '<div class="wizard-design-img"><img src="' + imgSrc + '" alt="' + d.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/></div>' +
+        '<div class="wizard-design-body">' +
+        '<div class="wizard-design-name">' + d.name + '</div>' +
+        '<div class="wizard-design-builder-tag">' + d.builder + '</div>' +
+        '<div class="wizard-design-specs"><span>🛏 ' + d.beds + '</span><span>🚿 ' + d.baths + '</span><span>🚗 ' + d.garage + '</span><span>📐 ' + d.frontage + '</span></div>' +
+        '<div class="wizard-design-price-row">' +
+        '<span class="wizard-design-price">' + d.price + '</span>' +
+        '<button class="wizard-select-btn" onclick="wizardSelectDesign(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm² • Select →</button>' +
+        '</div></div></div>';
+    }).join('');
+
+    return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
+      '<div class="wizard-step-heading"><h2>' + wizardState.builder.name + ' — Home Designs</h2><p>' + builderDesigns.length + ' designs available</p></div>' +
+      '<div class="wizard-design-grid">' + cards + '</div>';
+  }
+
+  function renderBuilderStep3() {
+    const designName = wizardState.design ? wizardState.design.name : 'home';
+    const cards = PROJECTS.map(function(p, i) {
+      return '<div class="wizard-project-card" onclick="wizardSelectProject(\'' + p.id + '\')">' +
+        '<div class="wizard-project-img"><img src="' + PROJECT_IMAGES[i % PROJECT_IMAGES.length] + '" alt="' + p.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/></div>' +
+        '<div class="wizard-project-body">' +
+        '<div class="wizard-project-name">' + p.name + '</div>' +
+        '<div class="wizard-project-suburb">📍 ' + p.suburb + ' · ' + p.region + '</div>' +
+        '<div class="wizard-project-meta"><span class="wizard-project-lots">✅ ' + p.availLots + ' lots</span><span class="wizard-project-price">' + (p.minPrice > 0 ? fmtPrice(p.minPrice) + ' – ' + fmtPrice(p.maxPrice) : 'Pricing TBA') + '</span></div>' +
+        '</div></div>';
+    }).join('');
+
+    return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
+      '<div class="wizard-step-heading"><h2>Where would you like to build your ' + designName + '?</h2><p>All projects are open to your selected design — choose the location that suits you</p></div>' +
+      '<div class="wizard-card-grid-lg">' + cards + '</div>';
+  }
+
+  // — LEAD CAPTURE (shared final step) —
+
+  function renderLeadCapture() {
+    const d = wizardState.design;
+    const p = wizardState.project;
+    const b = wizardState.builder || (d ? BUILDERS.find(function(bl) { return bl.name === d.builder; }) : null);
+    const isLand = wizardState.mode === 'land';
+
+    let summaryRows;
+    if (isLand) {
+      summaryRows = [
+        {label: 'Project', value: p ? p.name : '—', sub: p ? '📍 ' + p.suburb + ', ' + p.region : ''},
+        {label: 'Design', value: d ? d.name : '—', sub: d ? d.builder : ''},
+        {label: 'Specs', value: d ? (d.beds + '🛏 ' + d.baths + '🚿 ' + d.garage + '🚗') : '—', sub: d ? (d.sqm + 'm² · Frontage ' + d.frontage) : ''}
+      ];
+    } else {
+      summaryRows = [
+        {label: 'Builder', value: b ? b.name : '—', sub: b ? b.tier : ''},
+        {label: 'Design', value: d ? d.name : '—', sub: d ? (d.sqm + 'm² · ' + d.beds + ' bed') : ''},
+        {label: 'Project', value: p ? p.name : '—', sub: p ? '📍 ' + p.suburb + ', ' + p.region : ''}
+      ];
+    }
+
+    const priceVal = d ? d.price : 'Contact for pricing';
+
+    const summaryHTML = summaryRows.map(function(row) {
+      return '<div class="wizard-summary-item">' +
+        '<span class="wizard-summary-item-label">' + row.label + '</span>' +
+        '<span class="wizard-summary-item-value">' + row.value + '</span>' +
+        (row.sub ? '<span class="wizard-summary-item-sub">' + row.sub + '</span>' : '') +
+        '</div>';
+    }).join('');
+
+    return '<div class="wizard-step-heading"><h2>Almost there! Let’s put your package together.</h2><p>Review your selections and submit — our team will be in touch within 24 hours.</p></div>' +
+      '<div class="wizard-package-layout">' +
+      '<div class="wizard-summary-panel">' +
+      '<div class="wizard-summary-title">Your Package Summary</div>' +
+      summaryHTML +
+      '<div class="wizard-summary-price"><div class="wizard-summary-price-label">Indicative Build Price</div><div class="wizard-summary-price-value">' + priceVal + '</div></div>' +
+      '</div>' +
+      '<div class="wizard-form-panel">' +
+      '<form id="wizardLeadForm" onsubmit="submitWizardLead(event)">' +
+      '<div class="wizard-form-group"><label class="wizard-form-label">Full Name *</label><input type="text" class="wizard-form-input" id="wLeadName" placeholder="John Smith" required /></div>' +
+      '<div class="wizard-form-group"><label class="wizard-form-label">Email *</label><input type="email" class="wizard-form-input" id="wLeadEmail" placeholder="john@email.com" required /></div>' +
+      '<div class="wizard-form-group"><label class="wizard-form-label">Phone *</label><input type="tel" class="wizard-form-input" id="wLeadPhone" placeholder="04XX XXX XXX" required /></div>' +
+      '<div class="wizard-form-group"><label class="wizard-form-label">Preferred Contact Time</label><select class="wizard-form-select"><option value="anytime">Anytime</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select></div>' +
+      '<div class="wizard-form-group"><label class="wizard-form-label">Message (optional)</label><textarea class="wizard-form-textarea" placeholder="Any questions or notes for our team..."></textarea></div>' +
+      '<button type="button" class="wizard-back-btn" onclick="wizardBack()" style="margin-bottom:14px">← Back</button>' +
+      '<button type="submit" class="wizard-submit-btn">Request My Package →</button>' +
+      '</form></div>' +
+      '</div>';
+  }
+
+  function submitWizardLead(e) {
+    e.preventDefault();
+    const nameEl = document.getElementById('wLeadName');
+    const name = nameEl ? nameEl.value : 'there';
+    const firstName = name.split(' ')[0];
+    const ref = 'PX-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+    const d = wizardState.design;
+    const p = wizardState.project;
+    const b = wizardState.builder || (d ? BUILDERS.find(function(bl) { return bl.name === d.builder; }) : null);
+
+    let summaryRows;
+    if (wizardState.mode === 'land') {
+      summaryRows = [
+        {label: 'Project', value: p ? p.name + (p.suburb ? ' — ' + p.suburb : '') : '—'},
+        {label: 'Design', value: d ? d.name : '—'},
+        {label: 'Builder', value: d ? d.builder : '—'}
+      ];
+    } else {
+      summaryRows = [
+        {label: 'Builder', value: b ? b.name : '—'},
+        {label: 'Design', value: d ? d.name : '—'},
+        {label: 'Project', value: p ? p.name + (p.suburb ? ' — ' + p.suburb : '') : '—'}
+      ];
+    }
+
+    const summaryRowsHTML = summaryRows.map(function(r) {
+      return '<div class="wizard-success-summary-row"><span>' + r.label + '</span><span>' + r.value + '</span></div>';
+    }).join('');
+
+    document.getElementById('wizardProgressFill').style.width = '100%';
+    document.getElementById('wizardStepLabel').textContent = '✅ Submitted!';
+    document.getElementById('wizardStepDots').innerHTML = '';
+
+    document.getElementById('wizardBody').innerHTML =
+      '<div class="wizard-success">' +
+      '<div class="wizard-success-icon">✅</div>' +
+      '<h2>Thank you, ' + firstName + '!</h2>' +
+      '<p>Your ProjX consultant will be in touch within 24 hours.</p>' +
+      '<div class="wizard-success-ref">Reference: ' + ref + '</div>' +
+      '<div class="wizard-success-summary">' + summaryRowsHTML + '</div>' +
+      '<div class="wizard-success-btns">' +
+      '<button class="wizard-restart-btn" onclick="openWizard(\'' + wizardState.mode + '\'">🔄 Browse More Packages</button>' +
+      '<button class="wizard-portal-btn" onclick="closeWizard()">← Back to Portal</button>' +
+      '</div></div>';
+
+    document.getElementById('wizard').scrollTop = 0;
+  }
+
+  // Close wizard on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('wizard').classList.contains('open')) {
+      closeWizard();
+    }
   });
 </script>
 </body>
