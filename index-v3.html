@@ -37,7 +37,7 @@
       --transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
     body {
       font-family: 'Montserrat', sans-serif;
@@ -45,7 +45,10 @@
       color: var(--text);
       line-height: 1.6;
       overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
+
+    img { max-width: 100%; height: auto; }
 
     /* ─── PASSWORD GATE ─────────────────────────────────────── */
     #gate {
@@ -180,7 +183,7 @@
 
     /* ─── HERO ───────────────────────────────────────────────── */
     #hero {
-      min-height: 100vh;
+      min-height: 100dvh;
       background: linear-gradient(160deg, var(--bg-alt) 0%, var(--bg) 60%);
       position: relative; overflow: hidden;
       display: flex; align-items: center;
@@ -900,43 +903,82 @@
     }
 
     @media (max-width: 900px) {
-      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero-inner { grid-template-columns: 1fr; gap: 32px; }
       .hero-visual { display: none; }
+      #hero { min-height: auto; padding: 88px 24px 48px; }
       .hero-stats { grid-template-columns: repeat(2, 1fr); }
+      .hero-btns { flex-direction: column; gap: 10px; }
+      .hero-btns .btn-primary, .hero-btns .btn-outline { width: 100%; justify-content: center; text-align: center; }
       .calc-grid { grid-template-columns: 1fr; }
       .services-grid { grid-template-columns: repeat(2, 1fr); }
       .value-props { grid-template-columns: 1fr; }
       .builders-stats { grid-template-columns: repeat(2, 1fr); }
+      .builders-grid { grid-template-columns: repeat(2, 1fr); }
+      .nav-inner { height: 56px; padding: 0 16px; }
       .nav-links { display: none; }
       .nav-links.open {
         display: flex; flex-direction: column;
-        position: fixed; top: 68px; left: 0; right: 0;
+        position: fixed; top: 56px; left: 0; right: 0;
         background: var(--bg); border-bottom: 1px solid var(--border);
-        padding: 16px 32px; gap: 4px;
+        padding: 16px 24px; gap: 4px;
         box-shadow: var(--shadow-md);
+        z-index: 999;
       }
+      .nav-links.open a { padding: 12px 16px; font-size: 15px; }
       .nav-hamburger { display: flex; }
+      #map { height: 380px; }
+      .section-header { margin-bottom: 32px; }
     }
 
     @media (max-width: 640px) {
-      section { padding: 72px 20px; }
-      #hero { padding: 100px 20px 60px; }
+      section { padding: 48px 16px; }
+      #hero { padding: 72px 16px 40px; }
+      .hero-title { margin-bottom: 14px; }
+      .hero-subtitle { margin-bottom: 24px; font-size: 14px; }
+      .hero-btns { margin-bottom: 32px; }
+      .hero-badge { font-size: 10px; padding: 6px 12px; letter-spacing: 1.5px; }
+      .stat-item { padding: 14px 8px; }
+      .stat-number { font-size: 20px; }
+      .stat-label { font-size: 9px; letter-spacing: 0.5px; }
       .projects-grid { grid-template-columns: 1fr; }
+      .project-img { height: 200px; }
       .builders-grid { grid-template-columns: 1fr 1fr; }
       .designs-grid { grid-template-columns: 1fr 1fr; }
+      .design-img { height: 140px; }
+      .builder-img { height: 130px; }
       .services-grid { grid-template-columns: 1fr; }
       .builders-stats { grid-template-columns: 1fr 1fr; }
       .form-grid { grid-template-columns: 1fr; }
-      .form-card { padding: 32px 24px; }
-      .footer-grid { grid-template-columns: 1fr; }
-      .footer-bottom { flex-direction: column; align-items: flex-start; }
+      .form-card { padding: 24px 16px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
       .footer-disclaimer { text-align: left; }
-      .gate-inner { padding: 40px 28px; }
+      .gate-inner { padding: 32px 24px; max-width: 360px; }
+      .gate-inner h2 { font-size: 20px; }
+      #map { height: 300px; border-radius: var(--radius); }
+      .section-title { margin-bottom: 8px; }
+      .section-subtitle { font-size: 14px; }
+      .filter-chips { gap: 8px; }
+      .filter-chip { padding: 8px 16px; font-size: 12px; min-height: 40px; }
+      .btn-primary, .btn-outline { min-height: 48px; font-size: 14px; }
+      .btn-sm { min-height: 44px; padding: 10px 16px; }
+      .calc-result { padding: 24px 16px; }
+      .builders-stat { padding: 16px 12px; }
+      .builders-stat-num { font-size: 22px; }
+      .value-prop { padding: 28px 20px; }
     }
 
     @media (max-width: 400px) {
+      #hero { padding: 64px 14px 32px; }
+      section { padding: 40px 14px; }
       .designs-grid { grid-template-columns: 1fr; }
       .builders-grid { grid-template-columns: 1fr; }
+      .hero-stats { grid-template-columns: repeat(2, 1fr); }
+      .stat-item { padding: 12px 6px; }
+      .stat-number { font-size: 18px; }
+      .project-body { padding: 16px; }
+      .project-name { font-size: 16px; }
+      .gate-inner { padding: 28px 20px; }
     }
 
     /* ─── SCROLLBAR ──────────────────────────────────────────── */
@@ -1575,7 +1617,8 @@
   function initMap() {
     if (mapInited) return;
     mapInited = true;
-    const map = L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView([-27.5, 153.0], 7);
+    const map = L.map('map', { zoomControl: true, scrollWheelZoom: false, tap: true, dragging: !L.Browser.mobile }).setView([-27.5, 153.0], 7);
+    setTimeout(() => map.invalidateSize(), 200);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '© OpenStreetMap © CARTO',
       subdomains: 'abcd', maxZoom: 20
