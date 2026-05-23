@@ -2245,7 +2245,7 @@
     const design = DESIGNS.find(function(d) { return d.name === designName; });
     if (!design) return;
     const builder = BUILDERS.find(function(b) { return b.name === design.builder; });
-    wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: design, _designFilter: 'All' };
+    wizardState = { mode: 'builder', step: 4, region: null, project: null, builder: builder, design: design, buyerType: null, upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2255,7 +2255,7 @@
   function openWizardForBuilder(builderId) {
     const builder = BUILDERS.find(function(b) { return b.id === builderId; });
     if (!builder) return;
-    wizardState = { mode: 'builder', step: 2, region: null, project: null, builder: builder, design: null, _designFilter: 'All' };
+    wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: null, buyerType: null, upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2265,7 +2265,7 @@
   function openWizardForProject(projectId) {
     const project = PROJECTS.find(function(p) { return p.id === projectId; });
     if (!project) return;
-    wizardState = { mode: 'land', step: 3, region: project.region, project: project, builder: null, design: null, _designFilter: 'All' };
+    wizardState = { mode: 'land', step: 4, region: project.region, project: project, builder: null, design: null, buyerType: null, upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2273,7 +2273,7 @@
   }
 
   function openWizard(mode) {
-    wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, _designFilter: 'All' };
+    wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, buyerType: null, upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2298,7 +2298,7 @@
   }
 
   function renderWizardStep() {
-    const totalSteps = wizardState.mode === 'land' ? 5 : 4;
+    const totalSteps = wizardState.mode === 'land' ? 7 : 6;
     const pct = (wizardState.step / totalSteps) * 100;
     document.getElementById('wizardProgressFill').style.width = Math.min(pct, 100) + '%';
     document.getElementById('wizardStepLabel').textContent = 'Step ' + wizardState.step + ' of ' + totalSteps;
@@ -2312,17 +2312,21 @@
     const body = document.getElementById('wizardBody');
     if (wizardState.mode === 'land') {
       switch (wizardState.step) {
-        case 1: body.innerHTML = renderLandStep1(); break;
-        case 2: body.innerHTML = renderLandStep2(); break;
-        case 3: body.innerHTML = renderLandStep3(); break;
-        case 4: body.innerHTML = renderLandStep4(); break;
+        case 1: body.innerHTML = renderBuyerProfile(); break;
+        case 2: body.innerHTML = renderLandStep1(); break;
+        case 3: body.innerHTML = renderLandStep2(); break;
+        case 4: body.innerHTML = renderLandStep3(); break;
+        case 5: body.innerHTML = renderLandStep4(); break;
+        case 6: body.innerHTML = renderUpgradesStep(); break;
         default: body.innerHTML = renderLeadCapture(); break;
       }
     } else {
       switch (wizardState.step) {
-        case 1: body.innerHTML = renderBuilderStep1(); break;
-        case 2: body.innerHTML = renderBuilderStep2(); break;
-        case 3: body.innerHTML = renderBuilderStep3(); break;
+        case 1: body.innerHTML = renderBuyerProfile(); break;
+        case 2: body.innerHTML = renderBuilderStep1(); break;
+        case 3: body.innerHTML = renderBuilderStep2(); break;
+        case 4: body.innerHTML = renderBuilderStep3(); break;
+        case 5: body.innerHTML = renderUpgradesStep(); break;
         default: body.innerHTML = renderLeadCapture(); break;
       }
     }
@@ -2512,6 +2516,65 @@
 
   // — LEAD CAPTURE (shared final step) —
 
+  // ─── BUYER PROFILE STEP ─────────────────────────────────────────
+  function renderBuyerProfile() {
+    return '<div class="wizard-step-heading"><h2>Let\'s personalise your experience</h2><p>Tell us a bit about yourself so we can show you the best options.</p></div>' +
+      '<div class="wizard-card-grid" style="max-width:600px;margin:0 auto;grid-template-columns:1fr 1fr;gap:20px">' +
+      '<div class="wizard-region-card" style="text-align:center;padding:36px 24px;cursor:pointer" onclick="selectBuyerType(\'owner\')"><div style="font-size:40px;margin-bottom:14px">🏡</div><div style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:6px">Owner Occupier</div><div style="font-size:13px;color:var(--text-light)">I\'m looking for my next home to live in</div></div>' +
+      '<div class="wizard-region-card" style="text-align:center;padding:36px 24px;cursor:pointer" onclick="selectBuyerType(\'investor\')"><div style="font-size:40px;margin-bottom:14px">📈</div><div style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:6px">Investor</div><div style="font-size:13px;color:var(--text-light)">I\'m building for rental income or capital growth</div></div>' +
+      '</div>';
+  }
+
+  function selectBuyerType(type) {
+    wizardState.buyerType = type;
+    wizardNext();
+  }
+
+  // ─── UPGRADES STEP ──────────────────────────────────────────────
+  const UPGRADE_OPTIONS = [
+    {id:'ducted-ac', name:'Ducted Air Conditioning', desc:'Whole-home climate control with zoned ducted system', price:'$8,500 – $14,000', icon:'❄️'},
+    {id:'ceiling-height', name:'Increased Ceiling Heights', desc:'2.7m ceilings throughout (standard 2.4m)', price:'$4,000 – $7,500', icon:'📏'},
+    {id:'facade', name:'Premium Facade Upgrade', desc:'Rendered finish, feature brick, modern facade options', price:'$5,000 – $15,000', icon:'🏛️'},
+    {id:'kitchen', name:'Premium Kitchen Package', desc:'Stone benchtops, 900mm appliances, soft-close cabinetry', price:'$6,000 – $12,000', icon:'🍳'},
+    {id:'solar', name:'Solar Panel System', desc:'6.6kW solar + 10kW battery for energy independence', price:'$8,000 – $16,000', icon:'☀️'},
+    {id:'flooring', name:'Premium Flooring', desc:'Hybrid timber flooring throughout living areas', price:'$3,500 – $8,000', icon:'🪵'},
+    {id:'ensuite', name:'Ensuite Upgrade', desc:'Double vanity, frameless shower, floor-to-ceiling tiles', price:'$4,000 – $9,000', icon:'🚿'},
+    {id:'alfresco', name:'Alfresco Extension', desc:'Extended outdoor living area with ceiling fan', price:'$6,000 – $14,000', icon:'🌿'},
+    {id:'smart-home', name:'Smart Home Package', desc:'Smart locks, lighting, security cameras, video doorbell', price:'$3,000 – $6,000', icon:'📱'},
+    {id:'landscaping', name:'Landscaping Package', desc:'Turf, garden beds, irrigation, letterbox, clothesline', price:'$5,000 – $10,000', icon:'🌳'},
+    {id:'driveway', name:'Driveway Upgrade', desc:'Exposed aggregate or decorative concrete driveway', price:'$3,000 – $6,000', icon:'🚗'},
+    {id:'blinds', name:'Window Furnishings', desc:'Roller blinds or curtains throughout the home', price:'$2,500 – $5,000', icon:'🪟'}
+  ];
+
+  function renderUpgradesStep() {
+    const selected = wizardState.upgrades || [];
+    const cards = UPGRADE_OPTIONS.map(function(u) {
+      const isSelected = selected.indexOf(u.id) !== -1;
+      return '<div class="wizard-upgrade-card' + (isSelected ? ' selected' : '') + '" onclick="toggleUpgrade(\'' + u.id + '\')" style="background:var(--bg);border:2px solid ' + (isSelected ? 'var(--accent)' : 'var(--border)') + ';border-radius:var(--radius);padding:20px;cursor:pointer;transition:all 0.2s ease;position:relative">' +
+        (isSelected ? '<div style="position:absolute;top:10px;right:10px;background:var(--accent);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800">✓</div>' : '') +
+        '<div style="font-size:28px;margin-bottom:10px">' + u.icon + '</div>' +
+        '<div style="font-size:14px;font-weight:800;color:var(--primary);margin-bottom:4px">' + u.name + '</div>' +
+        '<div style="font-size:12px;color:var(--text-light);margin-bottom:8px;line-height:1.5">' + u.desc + '</div>' +
+        '<div style="font-size:13px;font-weight:700;color:var(--accent)">' + u.price + '</div>' +
+        '</div>';
+    }).join('');
+
+    return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
+      '<div class="wizard-step-heading"><h2>Customise Your Package</h2><p>Select any upgrades you\'re interested in — these will be included in your consultation.</p></div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:32px">' + cards + '</div>' +
+      '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">' +
+      '<span style="font-size:13px;color:var(--text-light);align-self:center">' + selected.length + ' upgrade' + (selected.length !== 1 ? 's' : '') + ' selected</span>' +
+      '<button class="wizard-submit-btn" onclick="wizardNext()" style="max-width:320px">Continue to Contact Details →</button>' +
+      '</div>';
+  }
+
+  function toggleUpgrade(id) {
+    if (!wizardState.upgrades) wizardState.upgrades = [];
+    const idx = wizardState.upgrades.indexOf(id);
+    if (idx === -1) { wizardState.upgrades.push(id); } else { wizardState.upgrades.splice(idx, 1); }
+    renderWizardStep();
+  }
+
   function renderLeadCapture() {
     const d = wizardState.design;
     const p = wizardState.project;
@@ -2534,6 +2597,13 @@
     }
 
     const priceVal = d ? d.price : 'Contact for pricing';
+    const buyerLabel = wizardState.buyerType === 'owner' ? '🏡 Owner Occupier' : wizardState.buyerType === 'investor' ? '📈 Investor' : '—';
+    const selectedUpgrades = (wizardState.upgrades || []).map(function(uid) { var u = UPGRADE_OPTIONS.find(function(x){return x.id===uid}); return u ? u.name : ''; }).filter(Boolean);
+
+    summaryRows.unshift({label: 'Buyer Type', value: buyerLabel, sub: ''});
+    if (selectedUpgrades.length > 0) {
+      summaryRows.push({label: 'Upgrades (' + selectedUpgrades.length + ')', value: selectedUpgrades.join(', '), sub: ''});
+    }
 
     const summaryHTML = summaryRows.map(function(row) {
       return '<div class="wizard-summary-item">' +
