@@ -1048,7 +1048,7 @@
     ::-webkit-scrollbar-thumb:hover { background: var(--text-xlight); }
 
     /* ─── MAIN HIDDEN UNTIL UNLOCKED ─────────────────────────── */
-    #main-content { display: none; }
+    #main-content { display: block; }
 
     /* ─── REGION COLOR MAP ───────────────────────────────────── */
     .region-Scenic\ Rim { background: rgba(245,158,11,0.08); color: #d97706; }
@@ -1415,7 +1415,7 @@
 <body>
 
 <!-- ═══════════════════ PASSWORD GATE ═══════════════════ -->
-<div id="gate">
+<div id="gate" style="display:none">
   <div class="gate-inner">
     <div class="gate-logo">
       <img src="projx-logo-dark.png" alt="ProjX" style="height:40px" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
@@ -1686,6 +1686,9 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'Enter' && document.getElementById('gate').style.display !== 'none') checkPassword();
   });
+
+  // Auto-init (gate disabled during development)
+  document.addEventListener('DOMContentLoaded', function() { initPortal(); });
 
   // ─── INIT ─────────────────────────────────────────────────────────
   function initPortal() {
