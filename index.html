@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ProjX — House & Land Design Portal</title>
+  <link rel="icon" href="favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -13,35 +14,34 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --navy: #001E2E;
-      --navy-mid: #002D44;
-      --navy-light: #003a57;
-      --accent: #00A3E0;
-      --accent-dark: #0085b8;
-      --accent-glow: rgba(0,163,224,0.15);
-      --green: #10B981;
-      --white: #ffffff;
-      --off-white: #f8fafc;
-      --gray-100: #f1f5f9;
-      --gray-200: #e2e8f0;
-      --gray-400: #94a3b8;
-      --gray-600: #475569;
-      --gray-800: #1e293b;
-      --text: #0f172a;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.08);
-      --shadow-lg: 0 10px 40px rgba(0,0,0,0.16), 0 4px 12px rgba(0,0,0,0.10);
-      --shadow-xl: 0 20px 60px rgba(0,0,0,0.20);
+      --primary: #1B2432;
+      --primary-light: #2D3748;
+      --accent: #3B7DDD;
+      --accent-hover: #2B6BC0;
+      --success: #059669;
+      --warm: #C8A96E;
+      --bg: #FFFFFF;
+      --bg-alt: #F8F9FA;
+      --bg-dark: #1B2432;
+      --text: #374151;
+      --text-light: #6B7280;
+      --text-xlight: #9CA3AF;
+      --border: #E5E7EB;
+      --card-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+      --card-shadow-hover: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 32px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.06);
+      --shadow-xl: 0 20px 60px rgba(0,0,0,0.12);
       --radius: 12px;
-      --radius-lg: 20px;
-      --transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      --radius-lg: 18px;
+      --transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
     }
 
     html { scroll-behavior: smooth; }
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background: var(--off-white);
+      background: var(--bg-alt);
       color: var(--text);
       line-height: 1.6;
       overflow-x: hidden;
@@ -50,16 +50,16 @@
     /* ─── PASSWORD GATE ─────────────────────────────────────── */
     #gate {
       position: fixed; inset: 0; z-index: 9999;
-      background: var(--navy);
+      background: var(--bg-alt);
       display: flex; align-items: center; justify-content: center;
       flex-direction: column;
     }
 
     .gate-inner {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.10);
-      backdrop-filter: blur(20px);
+      background: var(--bg);
+      border: 1px solid var(--border);
       border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
       padding: 56px 48px;
       text-align: center;
       width: min(480px, 92vw);
@@ -67,19 +67,18 @@
     }
 
     .gate-logo {
-      font-size: 32px; font-weight: 900; letter-spacing: -1px;
-      color: var(--white); margin-bottom: 6px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 8px;
     }
-    .gate-logo span { color: var(--accent); }
 
     .gate-tagline {
-      font-size: 13px; font-weight: 500; letter-spacing: 2px;
-      color: var(--accent); text-transform: uppercase; margin-bottom: 32px;
+      font-size: 12px; font-weight: 600; letter-spacing: 2.5px;
+      color: var(--text-light); text-transform: uppercase; margin-bottom: 32px;
     }
 
     .invite-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(0,163,224,0.12); border: 1px solid rgba(0,163,224,0.3);
+      background: rgba(59,125,221,0.08); border: 1px solid rgba(59,125,221,0.2);
       color: var(--accent); font-size: 11px; font-weight: 700;
       letter-spacing: 1.5px; text-transform: uppercase;
       padding: 6px 14px; border-radius: 50px; margin-bottom: 32px;
@@ -87,17 +86,17 @@
     .invite-badge::before { content: '🔒'; font-size: 10px; }
 
     .gate-subtitle {
-      color: rgba(255,255,255,0.5); font-size: 13px; margin-bottom: 28px;
+      color: var(--text-light); font-size: 13px; margin-bottom: 28px;
     }
 
     .gate-input-wrap { position: relative; margin-bottom: 16px; }
 
     .gate-input {
       width: 100%;
-      background: rgba(255,255,255,0.06);
-      border: 1.5px solid rgba(255,255,255,0.15);
+      background: var(--bg-alt);
+      border: 1.5px solid var(--border);
       border-radius: 10px;
-      color: var(--white);
+      color: var(--primary);
       font-family: 'Montserrat', sans-serif;
       font-size: 16px; font-weight: 600;
       letter-spacing: 6px; text-align: center;
@@ -105,8 +104,8 @@
       outline: none;
       transition: var(--transition);
     }
-    .gate-input::placeholder { letter-spacing: 2px; font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.3); }
-    .gate-input:focus { border-color: var(--accent); background: rgba(0,163,224,0.08); }
+    .gate-input::placeholder { letter-spacing: 2px; font-size: 13px; font-weight: 400; color: var(--text-xlight); }
+    .gate-input:focus { border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 3px rgba(59,125,221,0.1); }
     .gate-input.error { border-color: #ef4444; animation: shake 0.4s ease; }
 
     @keyframes shake {
@@ -117,13 +116,13 @@
 
     .gate-btn {
       width: 100%; padding: 16px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      background: var(--primary);
       border: none; border-radius: 10px;
-      color: var(--white); font-family: 'Montserrat', sans-serif;
-      font-size: 15px; font-weight: 700; letter-spacing: 1px;
+      color: #fff; font-family: 'Montserrat', sans-serif;
+      font-size: 15px; font-weight: 700; letter-spacing: 0.5px;
       cursor: pointer; transition: var(--transition);
     }
-    .gate-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,163,224,0.4); }
+    .gate-btn:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: var(--shadow-md); }
 
     .gate-error {
       color: #ef4444; font-size: 12px; margin-top: 10px;
@@ -134,9 +133,8 @@
     /* ─── NAVBAR ─────────────────────────────────────────────── */
     #navbar {
       position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      background: rgba(0,30,46,0.95);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
       transition: var(--transition);
     }
 
@@ -147,28 +145,28 @@
     }
 
     .nav-logo {
-      font-size: 24px; font-weight: 900; letter-spacing: -0.5px;
-      color: var(--white); text-decoration: none;
+      display: flex; align-items: center;
+      text-decoration: none;
     }
-    .nav-logo span { color: var(--accent); }
 
     .nav-links {
-      display: flex; align-items: center; gap: 8px; list-style: none;
+      display: flex; align-items: center; gap: 4px; list-style: none;
     }
     .nav-links a {
-      color: rgba(255,255,255,0.7); text-decoration: none;
-      font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
+      color: var(--text-light); text-decoration: none;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.3px;
       padding: 8px 14px; border-radius: 8px;
       transition: var(--transition);
     }
-    .nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.08); }
+    .nav-links a:hover { color: var(--primary); background: var(--bg-alt); }
 
     .nav-cta {
-      background: linear-gradient(135deg, var(--accent), var(--accent-dark)) !important;
-      color: var(--white) !important;
+      background: var(--primary) !important;
+      color: #fff !important;
       padding: 9px 20px !important;
+      border-radius: 8px !important;
     }
-    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,163,224,0.35) !important; }
+    .nav-cta:hover { background: var(--primary-light) !important; color: #fff !important; transform: translateY(-1px); box-shadow: var(--shadow-md) !important; }
 
     .nav-hamburger {
       display: none; flex-direction: column; gap: 5px;
@@ -176,32 +174,25 @@
     }
     .nav-hamburger span {
       display: block; width: 22px; height: 2px;
-      background: var(--white); border-radius: 2px;
+      background: var(--primary); border-radius: 2px;
       transition: var(--transition);
     }
 
     /* ─── HERO ───────────────────────────────────────────────── */
     #hero {
       min-height: 100vh;
-      background: linear-gradient(135deg, #000d15 0%, var(--navy) 40%, #001e35 70%, #00304d 100%);
+      background: linear-gradient(160deg, var(--bg-alt) 0%, var(--bg) 60%);
       position: relative; overflow: hidden;
       display: flex; align-items: center;
       padding: 120px 32px 80px;
+      border-bottom: 1px solid var(--border);
     }
 
     .hero-pattern {
       position: absolute; inset: 0; pointer-events: none;
       background-image:
-        radial-gradient(circle at 20% 50%, rgba(0,163,224,0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(0,163,224,0.06) 0%, transparent 40%),
-        radial-gradient(circle at 60% 80%, rgba(0,100,160,0.05) 0%, transparent 40%);
-    }
-
-    .hero-grid {
-      position: absolute; inset: 0; pointer-events: none; opacity: 0.03;
-      background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
-      background-size: 60px 60px;
+        radial-gradient(circle at 80% 20%, rgba(59,125,221,0.05) 0%, transparent 50%),
+        radial-gradient(circle at 20% 80%, rgba(200,169,110,0.04) 0%, transparent 40%);
     }
 
     .hero-inner {
@@ -212,54 +203,54 @@
 
     .hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(0,163,224,0.12); border: 1px solid rgba(0,163,224,0.3);
+      background: rgba(59,125,221,0.08); border: 1px solid rgba(59,125,221,0.2);
       color: var(--accent); font-size: 11px; font-weight: 700;
       letter-spacing: 2px; text-transform: uppercase;
       padding: 8px 16px; border-radius: 50px; margin-bottom: 24px;
     }
-    .hero-badge .dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+    .hero-badge .dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
 
     .hero-title {
-      font-size: clamp(36px, 4.5vw, 62px);
-      font-weight: 900; line-height: 1.08; letter-spacing: -2px;
-      color: var(--white); margin-bottom: 20px;
+      font-size: clamp(36px, 4.5vw, 60px);
+      font-weight: 900; line-height: 1.07; letter-spacing: -2.5px;
+      color: var(--primary); margin-bottom: 20px;
     }
     .hero-title .accent { color: var(--accent); }
 
     .hero-subtitle {
-      font-size: clamp(15px, 1.6vw, 18px); font-weight: 400;
-      color: rgba(255,255,255,0.65); line-height: 1.7;
-      max-width: 520px; margin-bottom: 40px;
+      font-size: clamp(15px, 1.6vw, 17px); font-weight: 400;
+      color: var(--text-light); line-height: 1.75;
+      max-width: 500px; margin-bottom: 40px;
     }
 
     .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 56px; }
 
     .btn-primary {
       display: inline-flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-      color: var(--white); padding: 16px 32px;
+      background: var(--primary);
+      color: #fff; padding: 15px 30px;
       border-radius: 10px; font-family: 'Montserrat', sans-serif;
-      font-size: 14px; font-weight: 700; letter-spacing: 0.5px;
+      font-size: 14px; font-weight: 700; letter-spacing: 0.3px;
       border: none; cursor: pointer; text-decoration: none;
       transition: var(--transition);
     }
-    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,163,224,0.45); }
+    .btn-primary:hover { background: var(--primary-light); transform: translateY(-2px); box-shadow: var(--shadow-md); }
 
     .btn-outline {
       display: inline-flex; align-items: center; gap: 8px;
-      background: transparent; color: var(--white);
-      padding: 15px 30px; border-radius: 10px;
-      border: 1.5px solid rgba(255,255,255,0.3);
+      background: transparent; color: var(--primary);
+      padding: 14px 28px; border-radius: 10px;
+      border: 1.5px solid var(--border);
       font-family: 'Montserrat', sans-serif;
-      font-size: 14px; font-weight: 600; letter-spacing: 0.5px;
+      font-size: 14px; font-weight: 600; letter-spacing: 0.3px;
       cursor: pointer; text-decoration: none; transition: var(--transition);
     }
-    .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,0.08); transform: translateY(-3px); }
+    .btn-outline:hover { border-color: var(--primary); background: var(--bg-alt); transform: translateY(-2px); }
 
     .hero-stats {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      background: var(--primary);
       border-radius: var(--radius); overflow: hidden;
     }
 
@@ -271,22 +262,18 @@
 
     .stat-number {
       font-size: clamp(22px, 2.5vw, 30px); font-weight: 900;
-      color: var(--accent); letter-spacing: -1px; line-height: 1;
+      color: #fff; letter-spacing: -1px; line-height: 1;
       margin-bottom: 4px;
     }
 
     .stat-label {
-      font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5);
+      font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.45);
       letter-spacing: 1px; text-transform: uppercase;
     }
 
-    .hero-visual {
-      position: relative;
-    }
+    .hero-visual { position: relative; }
 
-    .hero-img-stack {
-      position: relative; height: 480px;
-    }
+    .hero-img-stack { position: relative; height: 480px; }
 
     .hero-img-main {
       position: absolute; top: 0; right: 0;
@@ -301,15 +288,15 @@
       width: 55%; height: 220px;
       border-radius: var(--radius); overflow: hidden;
       box-shadow: var(--shadow-xl);
-      border: 3px solid var(--navy);
+      border: 3px solid var(--bg);
     }
     .hero-img-secondary img { width: 100%; height: 100%; object-fit: cover; }
 
     .hero-img-badge {
       position: absolute; top: 20px; left: 0;
-      background: var(--green); color: var(--white);
+      background: var(--success); color: #fff;
       padding: 8px 16px; border-radius: 8px;
-      font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
       box-shadow: var(--shadow-md);
     }
 
@@ -320,26 +307,26 @@
 
     .section-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(0,163,224,0.08); border: 1px solid rgba(0,163,224,0.2);
+      background: rgba(59,125,221,0.07); border: 1px solid rgba(59,125,221,0.15);
       color: var(--accent); font-size: 11px; font-weight: 700;
       letter-spacing: 2px; text-transform: uppercase;
       padding: 6px 14px; border-radius: 50px; margin-bottom: 14px;
     }
 
     .section-title {
-      font-size: clamp(28px, 3.5vw, 44px); font-weight: 900;
-      letter-spacing: -1.5px; color: var(--navy); line-height: 1.1;
+      font-size: clamp(26px, 3vw, 40px); font-weight: 900;
+      letter-spacing: -1.5px; color: var(--primary); line-height: 1.1;
       margin-bottom: 12px;
     }
 
     .section-subtitle {
-      font-size: 16px; color: var(--gray-600); font-weight: 400;
-      max-width: 600px; line-height: 1.7;
+      font-size: 15px; color: var(--text-light); font-weight: 400;
+      max-width: 600px; line-height: 1.75;
     }
 
     .section-header { margin-bottom: 52px; }
 
-    /* ─── FADE IN ANIMATION ──────────────────────────────────── */
+    /* ─── FADE IN ──────────────────────────────────────────────── */
     .fade-in {
       opacity: 0; transform: translateY(24px);
       transition: opacity 0.6s ease, transform 0.6s ease;
@@ -351,7 +338,7 @@
     .fade-in-delay-4 { transition-delay: 0.4s; }
 
     /* ─── PROJECTS ───────────────────────────────────────────── */
-    #projects { background: var(--off-white); }
+    #projects { background: var(--bg-alt); }
 
     .projects-grid {
       display: grid;
@@ -360,25 +347,25 @@
     }
 
     .project-card {
-      background: var(--white); border-radius: var(--radius-lg);
-      overflow: hidden; box-shadow: var(--shadow-sm);
-      transition: var(--transition); border: 1px solid var(--gray-200);
+      background: var(--bg); border-radius: var(--radius-lg);
+      overflow: hidden; box-shadow: var(--card-shadow);
+      transition: var(--transition); border: 1px solid var(--border);
     }
     .project-card:hover {
-      transform: translateY(-6px); box-shadow: var(--shadow-lg);
-      border-color: rgba(0,163,224,0.3);
+      transform: translateY(-5px); box-shadow: var(--card-shadow-hover);
+      border-color: rgba(59,125,221,0.25);
     }
 
     .project-img {
       width: 100%; height: 200px; overflow: hidden; position: relative;
     }
     .project-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-    .project-card:hover .project-img img { transform: scale(1.06); }
+    .project-card:hover .project-img img { transform: scale(1.05); }
 
     .project-lots-badge {
       position: absolute; top: 12px; right: 12px;
-      background: var(--green); color: var(--white);
-      font-size: 11px; font-weight: 800; letter-spacing: 0.5px;
+      background: var(--success); color: #fff;
+      font-size: 11px; font-weight: 800; letter-spacing: 0.3px;
       padding: 5px 11px; border-radius: 6px;
     }
 
@@ -386,112 +373,112 @@
 
     .project-region {
       display: inline-block;
-      background: rgba(0,163,224,0.08); color: var(--accent);
       font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
       text-transform: uppercase; padding: 4px 10px; border-radius: 4px;
       margin-bottom: 10px;
     }
 
     .project-name {
-      font-size: 18px; font-weight: 800; color: var(--navy);
+      font-size: 18px; font-weight: 800; color: var(--primary);
       letter-spacing: -0.5px; margin-bottom: 2px;
     }
 
     .project-suburb {
-      font-size: 13px; color: var(--gray-600); margin-bottom: 14px;
+      font-size: 13px; color: var(--text-light); margin-bottom: 14px;
     }
 
     .project-price {
-      font-size: 13px; color: var(--gray-600); margin-bottom: 16px;
+      font-size: 13px; color: var(--text-light); margin-bottom: 16px;
     }
-    .project-price strong { color: var(--navy); font-weight: 700; }
+    .project-price strong { color: var(--primary); font-weight: 700; }
 
     .project-footer {
       display: flex; align-items: center; justify-content: space-between;
-      padding-top: 14px; border-top: 1px solid var(--gray-100);
+      padding-top: 14px; border-top: 1px solid var(--border);
     }
 
     .project-lots-count {
-      font-size: 13px; font-weight: 700; color: var(--green);
+      font-size: 13px; font-weight: 700; color: var(--success);
     }
 
     .btn-sm {
       font-family: 'Montserrat', sans-serif;
-      font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-      color: var(--white); border: none; padding: 9px 18px;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
+      background: var(--primary);
+      color: #fff; border: none; padding: 9px 18px;
       border-radius: 8px; cursor: pointer; text-decoration: none;
       transition: var(--transition);
     }
-    .btn-sm:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,163,224,0.35); }
+    .btn-sm:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: var(--card-shadow-hover); }
 
     /* ─── MAP ────────────────────────────────────────────────── */
-    #map-section { background: var(--navy); }
-    #map-section .section-title { color: var(--white); }
-    #map-section .section-subtitle { color: rgba(255,255,255,0.6); }
-    #map-section .section-badge { background: rgba(0,163,224,0.15); }
+    #map-section { background: var(--bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    #map-section .section-title { color: var(--primary); }
+    #map-section .section-subtitle { color: var(--text-light); }
 
     #map {
       height: 520px; border-radius: var(--radius-lg);
-      overflow: hidden; box-shadow: var(--shadow-xl);
-      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden; box-shadow: var(--card-shadow-hover);
+      border: 1px solid var(--border);
     }
 
     /* ─── BUILDERS ───────────────────────────────────────────── */
-    #builders { background: var(--white); }
+    #builders { background: var(--bg-alt); }
 
     .builders-grid {
       display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px;
     }
 
     .builder-card {
-      background: var(--off-white); border-radius: var(--radius-lg);
-      overflow: hidden; border: 1.5px solid var(--gray-200);
+      background: var(--bg); border-radius: var(--radius-lg);
+      overflow: hidden; border: 1px solid var(--border);
+      box-shadow: var(--card-shadow);
       transition: var(--transition);
     }
     .builder-card:hover {
-      transform: translateY(-6px); box-shadow: var(--shadow-lg);
-      border-color: transparent;
+      transform: translateY(-5px); box-shadow: var(--card-shadow-hover);
+      border-color: rgba(59,125,221,0.25);
     }
 
     .builder-img {
       width: 100%; height: 150px; overflow: hidden;
     }
     .builder-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
-    .builder-card:hover .builder-img img { transform: scale(1.06); }
+    .builder-card:hover .builder-img img { transform: scale(1.05); }
 
     .builder-body { padding: 18px; }
 
     .builder-logo-circle {
       width: 48px; height: 48px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 900; color: var(--white);
+      font-size: 14px; font-weight: 900; color: #fff;
       margin-bottom: 10px; margin-top: -34px; position: relative;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      border: 2.5px solid var(--white);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border: 2.5px solid var(--bg);
     }
 
     .builder-tier {
       display: inline-block; font-size: 10px; font-weight: 700;
       letter-spacing: 1px; text-transform: uppercase;
       padding: 3px 9px; border-radius: 4px; margin-bottom: 8px;
-      background: var(--gray-100); color: var(--gray-600);
+      background: var(--bg-alt); color: var(--text-light);
+      border: 1px solid var(--border);
     }
 
     .builder-name {
-      font-size: 16px; font-weight: 800; color: var(--navy);
+      font-size: 16px; font-weight: 800; color: var(--primary);
       letter-spacing: -0.3px; margin-bottom: 4px;
     }
 
     .builder-tagline {
-      font-size: 11px; color: var(--gray-600); margin-bottom: 12px; line-height: 1.5;
+      font-size: 11px; color: var(--text-light); margin-bottom: 12px; line-height: 1.5;
     }
 
     .builder-meta {
       display: flex; gap: 14px; margin-bottom: 14px;
     }
-    .builder-meta-item { font-size: 11px; color: var(--gray-600); }
-    .builder-meta-item strong { color: var(--navy); font-weight: 700; font-size: 13px; }
+    .builder-meta-item { font-size: 11px; color: var(--text-light); }
+    .builder-meta-item strong { color: var(--primary); font-weight: 700; font-size: 13px; }
 
     .builder-price {
       font-size: 13px; font-weight: 700; color: var(--accent);
@@ -499,7 +486,7 @@
     }
 
     /* ─── DESIGNS ────────────────────────────────────────────── */
-    #designs { background: var(--gray-100); }
+    #designs { background: var(--bg); }
 
     .filter-chips {
       display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 36px;
@@ -509,12 +496,12 @@
       padding: 9px 20px; border-radius: 50px;
       font-family: 'Montserrat', sans-serif;
       font-size: 13px; font-weight: 700;
-      border: 1.5px solid var(--gray-200);
-      background: var(--white); color: var(--gray-600);
+      border: 1.5px solid var(--border);
+      background: var(--bg-alt); color: var(--text-light);
       cursor: pointer; transition: var(--transition);
     }
     .filter-chip:hover, .filter-chip.active {
-      background: var(--navy); color: var(--white); border-color: var(--navy);
+      background: var(--primary); color: #fff; border-color: var(--primary);
     }
 
     .designs-grid {
@@ -522,23 +509,23 @@
     }
 
     .design-card {
-      background: var(--white); border-radius: var(--radius);
-      overflow: hidden; box-shadow: var(--shadow-sm);
-      border: 1px solid var(--gray-200); transition: var(--transition);
+      background: var(--bg); border-radius: var(--radius);
+      overflow: hidden; box-shadow: var(--card-shadow);
+      border: 1px solid var(--border); transition: var(--transition);
     }
-    .design-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .design-card:hover { transform: translateY(-5px); box-shadow: var(--card-shadow-hover); border-color: rgba(59,125,221,0.25); }
     .design-card.hidden { display: none; }
 
     .design-img {
       width: 100%; height: 160px; overflow: hidden;
     }
     .design-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
-    .design-card:hover .design-img img { transform: scale(1.06); }
+    .design-card:hover .design-img img { transform: scale(1.05); }
 
     .design-body { padding: 14px; }
 
     .design-name {
-      font-size: 15px; font-weight: 800; color: var(--navy);
+      font-size: 14px; font-weight: 800; color: var(--primary);
       letter-spacing: -0.3px; margin-bottom: 2px;
     }
 
@@ -548,51 +535,51 @@
     }
 
     .design-specs {
-      display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
+      display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
     }
     .design-spec {
-      display: flex; align-items: center; gap: 4px;
-      font-size: 11px; color: var(--gray-600); font-weight: 500;
+      display: flex; align-items: center; gap: 3px;
+      font-size: 11px; color: var(--text-light); font-weight: 500;
     }
-    .design-spec .icon { font-size: 13px; }
+    .design-spec .icon { font-size: 12px; }
 
     .design-footer {
       display: flex; align-items: center; justify-content: space-between;
-      padding-top: 10px; border-top: 1px solid var(--gray-100);
+      padding-top: 10px; border-top: 1px solid var(--border);
     }
 
-    .design-price { font-size: 14px; font-weight: 800; color: var(--navy); }
-    .design-sqm { font-size: 11px; color: var(--gray-400); }
+    .design-price { font-size: 14px; font-weight: 800; color: var(--primary); }
+    .design-sqm { font-size: 11px; color: var(--text-xlight); }
 
     /* ─── CALCULATOR ─────────────────────────────────────────── */
-    #calculator { background: var(--white); }
+    #calculator { background: var(--bg-alt); }
 
     .calc-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
-      background: var(--off-white);
-      border: 1px solid var(--gray-200);
+      background: var(--bg);
+      border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 48px; box-shadow: var(--shadow-md);
+      padding: 48px; box-shadow: var(--card-shadow);
     }
 
     .calc-group { margin-bottom: 28px; }
     .calc-label {
       display: flex; justify-content: space-between; align-items: center;
-      font-size: 13px; font-weight: 700; color: var(--navy);
+      font-size: 13px; font-weight: 700; color: var(--primary);
       margin-bottom: 10px;
     }
-    .calc-label span { font-size: 15px; color: var(--accent); font-weight: 800; }
+    .calc-label span { font-size: 14px; color: var(--accent); font-weight: 800; }
 
     .calc-slider {
       width: 100%; -webkit-appearance: none; appearance: none;
-      height: 5px; border-radius: 3px; outline: none;
-      background: linear-gradient(to right, var(--accent) 0%, var(--gray-200) 0%);
+      height: 4px; border-radius: 3px; outline: none;
+      background: linear-gradient(to right, var(--accent) 0%, var(--border) 0%);
       cursor: pointer;
     }
     .calc-slider::-webkit-slider-thumb {
       -webkit-appearance: none; width: 20px; height: 20px;
       border-radius: 50%; background: var(--accent);
-      border: 2px solid var(--white); box-shadow: 0 2px 8px rgba(0,163,224,0.4);
+      border: 2px solid #fff; box-shadow: 0 2px 8px rgba(59,125,221,0.3);
       cursor: pointer; transition: transform 0.15s;
     }
     .calc-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
@@ -601,74 +588,75 @@
       display: flex; gap: 12px; align-items: center; margin-top: 10px;
     }
     .calc-input {
-      flex: 1; padding: 10px 14px; border: 1.5px solid var(--gray-200);
+      flex: 1; padding: 10px 14px; border: 1.5px solid var(--border);
       border-radius: 8px; font-family: 'Montserrat', sans-serif;
-      font-size: 14px; font-weight: 600; color: var(--navy);
-      outline: none; transition: var(--transition);
+      font-size: 14px; font-weight: 600; color: var(--primary);
+      outline: none; transition: var(--transition); background: var(--bg-alt);
     }
-    .calc-input:focus { border-color: var(--accent); }
+    .calc-input:focus { border-color: var(--accent); background: var(--bg); box-shadow: 0 0 0 3px rgba(59,125,221,0.1); }
 
     .loan-toggle {
-      display: flex; gap: 0; background: var(--gray-200); border-radius: 8px; padding: 3px;
+      display: flex; gap: 0; background: var(--border); border-radius: 8px; padding: 3px;
     }
     .loan-toggle-btn {
       padding: 8px 20px; border: none; background: transparent;
       font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700;
-      color: var(--gray-600); cursor: pointer; border-radius: 6px;
+      color: var(--text-light); cursor: pointer; border-radius: 6px;
       transition: var(--transition);
     }
-    .loan-toggle-btn.active { background: var(--navy); color: var(--white); }
+    .loan-toggle-btn.active { background: var(--primary); color: #fff; }
 
     .calc-results { display: flex; flex-direction: column; justify-content: center; }
 
     .calc-result-main {
-      background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+      background: var(--primary);
       border-radius: var(--radius); padding: 32px;
       text-align: center; margin-bottom: 20px;
     }
 
-    .calc-result-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
-    .calc-result-value { font-size: 48px; font-weight: 900; color: var(--accent); letter-spacing: -2px; line-height: 1; }
-    .calc-result-sub { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+    .calc-result-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+    .calc-result-value { font-size: 48px; font-weight: 900; color: #fff; letter-spacing: -2px; line-height: 1; }
+    .calc-result-sub { font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 6px; }
 
     .calc-result-row {
       display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;
     }
     .calc-result-item {
-      background: var(--gray-100); border-radius: 10px; padding: 16px;
+      background: var(--bg-alt); border: 1px solid var(--border); border-radius: 10px; padding: 16px;
     }
-    .calc-result-item-label { font-size: 11px; color: var(--gray-400); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 4px; }
-    .calc-result-item-value { font-size: 16px; font-weight: 800; color: var(--navy); }
+    .calc-result-item-label { font-size: 11px; color: var(--text-xlight); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .calc-result-item-value { font-size: 16px; font-weight: 800; color: var(--primary); }
 
     .btn-green {
       display: block; width: 100%; padding: 16px;
-      background: linear-gradient(135deg, var(--green), #059669);
-      color: var(--white); border: none; border-radius: 10px;
+      background: var(--success);
+      color: #fff; border: none; border-radius: 10px;
       font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700;
       cursor: pointer; text-align: center; transition: var(--transition);
     }
-    .btn-green:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(16,185,129,0.4); }
+    .btn-green:hover { background: #047857; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(5,150,105,0.3); }
 
     .calc-powered {
-      text-align: center; font-size: 11px; color: var(--gray-400);
+      text-align: center; font-size: 11px; color: var(--text-xlight);
       margin-top: 10px; font-weight: 600;
     }
 
     /* ─── PARTNER SERVICES ───────────────────────────────────── */
-    #services { background: var(--off-white); }
+    #services { background: var(--bg); border-top: 1px solid var(--border); }
 
     .services-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
     }
 
     .service-card {
-      background: var(--white); border-radius: var(--radius-lg);
-      padding: 32px; border: 1.5px solid var(--gray-200);
+      background: var(--bg-alt); border-radius: var(--radius-lg);
+      padding: 32px; border: 1px solid var(--border);
+      box-shadow: var(--card-shadow);
       transition: var(--transition); text-align: center;
     }
     .service-card:hover {
-      transform: translateY(-6px); box-shadow: var(--shadow-lg);
-      border-color: rgba(0,163,224,0.3);
+      transform: translateY(-5px); box-shadow: var(--card-shadow-hover);
+      border-color: rgba(59,125,221,0.25); background: var(--bg);
     }
 
     .service-icon {
@@ -678,12 +666,12 @@
     }
 
     .service-title {
-      font-size: 17px; font-weight: 800; color: var(--navy);
+      font-size: 17px; font-weight: 800; color: var(--primary);
       margin-bottom: 8px; letter-spacing: -0.3px;
     }
 
     .service-desc {
-      font-size: 13px; color: var(--gray-600); line-height: 1.6;
+      font-size: 13px; color: var(--text-light); line-height: 1.65;
       margin-bottom: 20px;
     }
 
@@ -694,20 +682,20 @@
 
     /* ─── FOR BUILDERS ───────────────────────────────────────── */
     #for-builders {
-      background: linear-gradient(135deg, #000d15, var(--navy) 40%, #001525);
+      background: var(--bg-dark);
       padding: 96px 32px;
       position: relative; overflow: hidden;
     }
 
     .builders-pattern {
       position: absolute; inset: 0; pointer-events: none;
-      background-image: radial-gradient(circle at 10% 50%, rgba(0,163,224,0.06) 0%, transparent 50%),
-        radial-gradient(circle at 90% 30%, rgba(0,163,224,0.04) 0%, transparent 40%);
+      background-image: radial-gradient(circle at 10% 50%, rgba(59,125,221,0.05) 0%, transparent 50%),
+        radial-gradient(circle at 90% 30%, rgba(200,169,110,0.04) 0%, transparent 40%);
     }
 
-    #for-builders .section-title { color: var(--white); }
-    #for-builders .section-subtitle { color: rgba(255,255,255,0.6); }
-    #for-builders .section-badge { background: rgba(0,163,224,0.15); }
+    #for-builders .section-title { color: #fff; }
+    #for-builders .section-subtitle { color: rgba(255,255,255,0.55); }
+    #for-builders .section-badge { background: rgba(59,125,221,0.12); border-color: rgba(59,125,221,0.25); }
 
     .value-props {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
@@ -720,22 +708,22 @@
       border-radius: var(--radius-lg); padding: 36px;
       transition: var(--transition);
     }
-    .value-prop:hover { background: rgba(255,255,255,0.07); border-color: rgba(0,163,224,0.3); }
+    .value-prop:hover { background: rgba(255,255,255,0.07); border-color: rgba(59,125,221,0.3); }
 
     .value-prop-icon {
       width: 52px; height: 52px; border-radius: 12px;
-      background: rgba(0,163,224,0.15); border: 1px solid rgba(0,163,224,0.25);
+      background: rgba(59,125,221,0.12); border: 1px solid rgba(59,125,221,0.2);
       display: flex; align-items: center; justify-content: center;
       font-size: 22px; margin-bottom: 20px;
     }
 
     .value-prop-title {
-      font-size: 20px; font-weight: 800; color: var(--white);
+      font-size: 20px; font-weight: 800; color: #fff;
       letter-spacing: -0.5px; margin-bottom: 10px;
     }
 
     .value-prop-desc {
-      font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7;
+      font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.75;
     }
 
     .builders-stats {
@@ -751,19 +739,19 @@
       border-right: 1px solid rgba(255,255,255,0.08);
     }
     .builders-stat:last-child { border-right: none; }
-    .builders-stat-num { font-size: 36px; font-weight: 900; color: var(--accent); letter-spacing: -1.5px; }
-    .builders-stat-label { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 600; letter-spacing: 0.5px; margin-top: 4px; }
+    .builders-stat-num { font-size: 36px; font-weight: 900; color: #fff; letter-spacing: -1.5px; }
+    .builders-stat-label { font-size: 12px; color: rgba(255,255,255,0.4); font-weight: 600; letter-spacing: 0.5px; margin-top: 4px; }
 
     .builders-cta { text-align: center; }
 
     /* ─── EOI FORM ───────────────────────────────────────────── */
-    #contact { background: var(--gray-100); }
+    #contact { background: var(--bg-alt); }
 
     .form-card {
       max-width: 720px; margin: 0 auto;
-      background: var(--white); border-radius: var(--radius-lg);
+      background: var(--bg); border-radius: var(--radius-lg);
       padding: 52px; box-shadow: var(--shadow-lg);
-      border: 1px solid var(--gray-200);
+      border: 1px solid var(--border);
     }
 
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -772,63 +760,64 @@
     .form-group.full { grid-column: 1 / -1; }
 
     .form-label {
-      font-size: 12px; font-weight: 700; color: var(--navy);
-      letter-spacing: 0.5px; text-transform: uppercase;
+      font-size: 11px; font-weight: 700; color: var(--primary);
+      letter-spacing: 0.8px; text-transform: uppercase;
     }
 
     .form-input, .form-select, .form-textarea {
       padding: 13px 16px;
-      border: 1.5px solid var(--gray-200); border-radius: 9px;
+      border: 1.5px solid var(--border); border-radius: 9px;
       font-family: 'Montserrat', sans-serif; font-size: 14px;
       color: var(--text); outline: none; transition: var(--transition);
-      background: var(--off-white);
+      background: var(--bg-alt);
     }
     .form-input:focus, .form-select:focus, .form-textarea:focus {
-      border-color: var(--accent); background: var(--white);
-      box-shadow: 0 0 0 3px rgba(0,163,224,0.1);
+      border-color: var(--accent); background: var(--bg);
+      box-shadow: 0 0 0 3px rgba(59,125,221,0.1);
     }
 
     .form-textarea { resize: vertical; min-height: 100px; }
 
     .form-submit {
       width: 100%; margin-top: 8px; padding: 16px;
-      background: linear-gradient(135deg, var(--navy), var(--navy-light));
-      color: var(--white); border: none; border-radius: 10px;
+      background: var(--primary);
+      color: #fff; border: none; border-radius: 10px;
       font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 700;
-      cursor: pointer; transition: var(--transition); letter-spacing: 0.5px;
+      cursor: pointer; transition: var(--transition); letter-spacing: 0.3px;
     }
-    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,30,46,0.3); }
+    .form-submit:hover { background: var(--primary-light); transform: translateY(-2px); box-shadow: var(--shadow-md); }
 
     /* ─── MODAL ──────────────────────────────────────────────── */
     .modal-overlay {
       display: none; position: fixed; inset: 0; z-index: 9998;
-      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
       align-items: center; justify-content: center;
     }
     .modal-overlay.show { display: flex; }
 
     .modal-box {
-      background: var(--white); border-radius: var(--radius-lg);
+      background: var(--bg); border-radius: var(--radius-lg);
       padding: 48px; text-align: center; max-width: 440px; width: 90%;
       animation: modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      border: 1px solid var(--border); box-shadow: var(--shadow-xl);
     }
-    @keyframes modalIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes modalIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     .modal-icon { font-size: 52px; margin-bottom: 16px; }
-    .modal-title { font-size: 26px; font-weight: 900; color: var(--navy); letter-spacing: -1px; margin-bottom: 8px; }
+    .modal-title { font-size: 26px; font-weight: 900; color: var(--primary); letter-spacing: -1px; margin-bottom: 8px; }
     .modal-ref { font-size: 16px; color: var(--accent); font-weight: 700; margin-bottom: 12px; }
-    .modal-desc { font-size: 14px; color: var(--gray-600); line-height: 1.6; margin-bottom: 28px; }
+    .modal-desc { font-size: 14px; color: var(--text-light); line-height: 1.65; margin-bottom: 28px; }
     .modal-close {
-      padding: 13px 32px; background: var(--navy); color: var(--white);
+      padding: 13px 32px; background: var(--primary); color: #fff;
       border: none; border-radius: 9px; font-family: 'Montserrat', sans-serif;
       font-size: 14px; font-weight: 700; cursor: pointer; transition: var(--transition);
     }
-    .modal-close:hover { background: var(--navy-light); }
+    .modal-close:hover { background: var(--primary-light); }
 
     /* ─── FOOTER ─────────────────────────────────────────────── */
     footer {
-      background: #000d15;
-      padding: 64px 32px 32px; color: rgba(255,255,255,0.7);
+      background: var(--bg-dark);
+      padding: 64px 32px 32px; color: rgba(255,255,255,0.6);
     }
 
     .footer-inner { max-width: 1280px; margin: 0 auto; }
@@ -838,67 +827,69 @@
       gap: 48px; margin-bottom: 48px;
     }
 
-    .footer-brand-logo { font-size: 26px; font-weight: 900; color: var(--white); margin-bottom: 12px; }
-    .footer-brand-logo span { color: var(--accent); }
+    .footer-brand-logo {
+      display: flex; align-items: center; margin-bottom: 14px;
+    }
 
     .footer-desc {
-      font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.5);
+      font-size: 13px; line-height: 1.75; color: rgba(255,255,255,0.4);
       max-width: 280px; margin-bottom: 20px;
     }
 
-    .footer-contact { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.9; }
-    .footer-contact a { color: var(--accent); text-decoration: none; }
+    .footer-contact { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.9; }
+    .footer-contact a { color: rgba(255,255,255,0.7); text-decoration: none; transition: var(--transition); }
+    .footer-contact a:hover { color: #fff; }
 
     .footer-col-title {
-      font-size: 12px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--white); margin-bottom: 16px;
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: rgba(255,255,255,0.9); margin-bottom: 16px;
     }
 
     .footer-links { list-style: none; }
     .footer-links li { margin-bottom: 10px; }
     .footer-links a {
-      font-size: 13px; color: rgba(255,255,255,0.5); text-decoration: none;
+      font-size: 13px; color: rgba(255,255,255,0.4); text-decoration: none;
       transition: var(--transition);
     }
-    .footer-links a:hover { color: var(--accent); }
+    .footer-links a:hover { color: #fff; }
 
-    .footer-socials { display: flex; gap: 10px; margin-top: 16px; }
+    .footer-socials { display: flex; gap: 10px; margin-top: 18px; }
     .footer-social {
       width: 36px; height: 36px; border-radius: 8px;
-      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
       display: flex; align-items: center; justify-content: center;
       font-size: 14px; cursor: pointer; transition: var(--transition); text-decoration: none;
     }
     .footer-social:hover { background: var(--accent); border-color: var(--accent); }
 
     .footer-bottom {
-      padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.08);
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: gap;
-      gap: 12px;
+      padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap;
     }
-    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.4); }
-    .footer-disclaimer { font-size: 11px; color: rgba(255,255,255,0.3); max-width: 500px; text-align: right; }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
+    .footer-disclaimer { font-size: 11px; color: rgba(255,255,255,0.25); max-width: 500px; text-align: right; }
 
     /* ─── LEAFLET POPUP ──────────────────────────────────────── */
     .leaflet-popup-content-wrapper {
-      background: var(--navy); color: var(--white); border-radius: 10px;
-      box-shadow: var(--shadow-xl); border: 1px solid rgba(255,255,255,0.1);
+      background: var(--bg); color: var(--text); border-radius: 10px;
+      box-shadow: var(--shadow-xl); border: 1px solid var(--border);
       padding: 0;
     }
     .leaflet-popup-content { margin: 0; padding: 16px; }
-    .leaflet-popup-tip { background: var(--navy); }
+    .leaflet-popup-tip { background: var(--bg); }
 
-    .popup-inner .popup-name { font-size: 14px; font-weight: 800; color: var(--white); margin-bottom: 3px; }
-    .popup-inner .popup-suburb { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 10px; }
-    .popup-inner .popup-lots { font-size: 12px; color: var(--green); font-weight: 700; margin-bottom: 4px; }
+    .popup-inner .popup-name { font-size: 14px; font-weight: 800; color: var(--primary); margin-bottom: 3px; }
+    .popup-inner .popup-suburb { font-size: 12px; color: var(--text-light); margin-bottom: 10px; }
+    .popup-inner .popup-lots { font-size: 12px; color: var(--success); font-weight: 700; margin-bottom: 4px; }
     .popup-inner .popup-price { font-size: 12px; color: var(--accent); margin-bottom: 12px; }
     .popup-inner a {
       display: inline-block; padding: 7px 16px;
-      background: var(--accent); color: var(--white);
+      background: var(--primary); color: #fff;
       border-radius: 6px; font-size: 12px; font-weight: 700;
       text-decoration: none; transition: var(--transition);
     }
-    .popup-inner a:hover { background: var(--accent-dark); }
+    .popup-inner a:hover { background: var(--primary-light); }
 
     /* ─── RESPONSIVE ─────────────────────────────────────────── */
     @media (max-width: 1100px) {
@@ -917,7 +908,13 @@
       .value-props { grid-template-columns: 1fr; }
       .builders-stats { grid-template-columns: repeat(2, 1fr); }
       .nav-links { display: none; }
-      .nav-links.open { display: flex; flex-direction: column; position: fixed; top: 68px; left: 0; right: 0; background: rgba(0,30,46,0.98); padding: 20px 32px; gap: 4px; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; top: 68px; left: 0; right: 0;
+        background: var(--bg); border-bottom: 1px solid var(--border);
+        padding: 16px 32px; gap: 4px;
+        box-shadow: var(--shadow-md);
+      }
       .nav-hamburger { display: flex; }
     }
 
@@ -944,22 +941,29 @@
 
     /* ─── SCROLLBAR ──────────────────────────────────────────── */
     ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: var(--navy); }
-    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg-alt); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-xlight); }
 
     /* ─── MAIN HIDDEN UNTIL UNLOCKED ─────────────────────────── */
     #main-content { display: none; }
 
     /* ─── REGION COLOR MAP ───────────────────────────────────── */
-    .region-Scenic\ Rim { background: rgba(245,158,11,0.1); color: #d97706; }
-    .region-Lockyer\ Valley { background: rgba(16,185,129,0.1); color: #059669; }
-    .region-Gold\ Coast { background: rgba(236,72,153,0.1); color: #db2777; }
-    .region-Logan { background: rgba(139,92,246,0.1); color: #7c3aed; }
-    .region-Moreton\ Bay { background: rgba(59,130,246,0.1); color: #2563eb; }
-    .region-Northern\ NSW { background: rgba(249,115,22,0.1); color: #ea580c; }
-    .region-Mackay { background: rgba(20,184,166,0.1); color: #0d9488; }
-    .region-Sunshine\ Coast { background: rgba(234,179,8,0.1); color: #ca8a04; }
-    .region-Gympie { background: rgba(239,68,68,0.1); color: #dc2626; }
+    .region-Scenic\ Rim { background: rgba(245,158,11,0.08); color: #d97706; }
+    .region-Lockyer\ Valley { background: rgba(5,150,105,0.08); color: #059669; }
+    .region-Gold\ Coast { background: rgba(236,72,153,0.08); color: #db2777; }
+    .region-Logan { background: rgba(139,92,246,0.08); color: #7c3aed; }
+    .region-Moreton\ Bay { background: rgba(59,130,246,0.08); color: #2563eb; }
+    .region-Northern\ NSW { background: rgba(249,115,22,0.08); color: #ea580c; }
+    .region-Mackay { background: rgba(20,184,166,0.08); color: #0d9488; }
+    .region-Sunshine\ Coast { background: rgba(234,179,8,0.08); color: #ca8a04; }
+    .region-Gympie { background: rgba(239,68,68,0.08); color: #dc2626; }
+    .region-Somerset { background: rgba(59,125,221,0.08); color: var(--accent); }
+    .region-Toowoomba { background: rgba(200,169,110,0.1); color: #a07c3e; }
+    .region-Ipswich { background: rgba(20,184,166,0.08); color: #0d9488; }
+    .region-Redlands { background: rgba(139,92,246,0.08); color: #7c3aed; }
+    .region-Regional\ QLD { background: rgba(245,158,11,0.08); color: #d97706; }
+    .region-Southern\ Downs { background: rgba(249,115,22,0.08); color: #ea580c; }
   </style>
 </head>
 <body>
@@ -967,7 +971,10 @@
 <!-- ═══════════════════ PASSWORD GATE ═══════════════════ -->
 <div id="gate">
   <div class="gate-inner">
-    <div class="gate-logo">Proj<span>X</span></div>
+    <div class="gate-logo">
+      <img src="projx-logo-dark.png" alt="ProjX" style="height:40px" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span style="display:none;font-size:28px;font-weight:900;letter-spacing:-1px;color:var(--primary)">ProjX</span>
+    </div>
     <div class="gate-tagline">House &amp; Land Design Portal</div>
     <div class="invite-badge">Invitation Only</div>
     <p class="gate-subtitle">This portal is exclusively available to invited buyers and partners.</p>
@@ -985,7 +992,10 @@
 <!-- ─── NAVBAR ─── -->
 <nav id="navbar">
   <div class="nav-inner">
-    <a href="#hero" class="nav-logo">Proj<span>X</span></a>
+    <a href="#hero" class="nav-logo">
+      <img src="projx-logo-dark.png" alt="ProjX" style="height:36px" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span style="display:none;font-size:22px;font-weight:900;letter-spacing:-0.5px;color:var(--primary)">ProjX</span>
+    </a>
     <ul class="nav-links" id="navLinks">
       <li><a href="#projects">Projects</a></li>
       <li><a href="#builders">Builders</a></li>
@@ -1002,7 +1012,6 @@
 <!-- ─── HERO ─── -->
 <section id="hero">
   <div class="hero-pattern"></div>
-  <div class="hero-grid"></div>
   <div class="hero-inner">
     <div class="hero-content">
       <div class="hero-badge"><div class="dot"></div> Live Platform — Updated Daily</div>
@@ -1033,12 +1042,12 @@
     </div>
     <div class="hero-visual">
       <div class="hero-img-stack">
-        <div class="hero-img-badge">14 Active Projects</div>
+        <div class="hero-img-badge">18 Active Projects</div>
         <div class="hero-img-main">
-          <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=500&fit=crop&q=85" alt="Luxury home" />
+          <img src="https://www.metricon.com.au/home-designs/hampshire/exterior/Hampshire-Stamford.jpg" alt="Premium home" loading="eager" onerror="this.src='https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=500&fit=crop&q=85'" />
         </div>
         <div class="hero-img-secondary">
-          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=280&fit=crop&q=85" alt="Modern home" />
+          <img src="https://www.metricon.com.au/home-designs/glendale/facades/Isla-as-displayed-on-the-Glendale.jpg" alt="Modern home" loading="eager" onerror="this.src='https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=280&fit=crop&q=85'" />
         </div>
       </div>
     </div>
@@ -1061,7 +1070,7 @@
 <section id="map-section">
   <div class="section-inner">
     <div class="section-header fade-in">
-      <div class="section-badge" style="background:rgba(0,163,224,0.15)">🗺️ Project Locations</div>
+      <div class="section-badge">🗺️ Project Locations</div>
       <h2 class="section-title">Projects Across Australia</h2>
       <p class="section-subtitle">From the Gold Coast hinterland to Byron Bay and Mackay — ProjX covers the growth corridors that matter.</p>
     </div>
@@ -1087,7 +1096,7 @@
     <div class="section-header fade-in">
       <div class="section-badge">🏠 Home Designs</div>
       <h2 class="section-title">Browse Home Designs</h2>
-      <p class="section-subtitle">15 curated designs from 5 builders — filtered by your budget and lifestyle.</p>
+      <p class="section-subtitle">20 curated designs from 4 builders — filtered by your budget and lifestyle.</p>
     </div>
     <div class="filter-chips" id="filterChips">
       <button class="filter-chip active" data-filter="all" onclick="filterDesigns('all')">All Designs</button>
@@ -1175,28 +1184,28 @@
     </div>
     <div class="services-grid">
       <div class="service-card fade-in fade-in-delay-1">
-        <div class="service-icon" style="background:rgba(16,185,129,0.1)">🏦</div>
+        <div class="service-icon" style="background:rgba(5,150,105,0.08)">🏦</div>
         <div class="service-title">Home Loans</div>
         <div class="service-highlight">Compare 40+ lenders</div>
         <div class="service-desc">Access Australia's largest mortgage broking network. Get pre-approved in 48 hours with expert guidance throughout.</div>
         <button class="btn-sm">Get Pre-Approved</button>
       </div>
       <div class="service-card fade-in fade-in-delay-2">
-        <div class="service-icon" style="background:rgba(59,130,246,0.1)">⚖️</div>
+        <div class="service-icon" style="background:rgba(59,125,221,0.08)">⚖️</div>
         <div class="service-title">Conveyancing</div>
         <div class="service-highlight">Fixed-fee from $1,200</div>
         <div class="service-desc">Expert property law at a fixed price. Our conveyancers specialise in new land contracts across Queensland and NSW.</div>
         <button class="btn-sm">Get a Quote</button>
       </div>
       <div class="service-card fade-in fade-in-delay-3">
-        <div class="service-icon" style="background:rgba(245,158,11,0.1)">🛡️</div>
+        <div class="service-icon" style="background:rgba(245,158,11,0.08)">🛡️</div>
         <div class="service-title">Home Insurance</div>
         <div class="service-highlight">Protect from day one</div>
         <div class="service-desc">Compare home and construction insurance policies. Protect your biggest investment from the moment you sign.</div>
         <button class="btn-sm">Compare Policies</button>
       </div>
       <div class="service-card fade-in fade-in-delay-4">
-        <div class="service-icon" style="background:rgba(139,92,246,0.1)">📈</div>
+        <div class="service-icon" style="background:rgba(139,92,246,0.08)">📈</div>
         <div class="service-title">Financial Planning</div>
         <div class="service-highlight">Structure your wealth</div>
         <div class="service-desc">First home buyer? Investor? Our financial planners help you structure smarter. SMSF, investment strategy, and more.</div>
@@ -1251,7 +1260,7 @@
       </div>
     </div>
     <div class="builders-cta fade-in">
-      <a href="#contact" class="btn-primary" style="font-size:16px;padding:18px 48px;">🤝 Become a Partner Builder</a>
+      <a href="#contact" class="btn-primary" style="font-size:16px;padding:18px 48px;background:var(--warm);color:#1B2432">🤝 Become a Partner Builder</a>
     </div>
   </div>
 </section>
@@ -1316,8 +1325,11 @@
   <div class="footer-inner">
     <div class="footer-grid">
       <div>
-        <div class="footer-brand-logo">Proj<span>X</span></div>
-        <p class="footer-desc">Australia's premier house &amp; land marketplace. Connecting buyers, builders, and developers across 14 projects in the nation's fastest-growing corridors.</p>
+        <div class="footer-brand-logo">
+          <img src="projx-logo-light.png" alt="ProjX" style="height:36px" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <span style="display:none;font-size:24px;font-weight:900;letter-spacing:-0.5px;color:#fff">ProjX</span>
+        </div>
+        <p class="footer-desc">Australia's premier house &amp; land marketplace. Connecting buyers, builders, and developers across 18 projects in the nation's fastest-growing corridors.</p>
         <div class="footer-contact">
           <a href="mailto:info@projxaustralia.com.au">info@projxaustralia.com.au</a><br>
           1300 PROJX (776 59)
@@ -1342,9 +1354,9 @@
         <div class="footer-col-title">Projects</div>
         <ul class="footer-links">
           <li><a href="#projects">Oakland Estate</a></li>
-          <li><a href="#projects">Brookdale</a></li>
-          <li><a href="#projects">Fox &amp; Shipper</a></li>
-          <li><a href="#projects">Harvest</a></li>
+          <li><a href="#projects">Woodchester Estate</a></li>
+          <li><a href="#projects">Sorensen Rise</a></li>
+          <li><a href="#projects">Harvest Estate</a></li>
           <li><a href="#projects">Riverina</a></li>
         </ul>
       </div>
@@ -1378,25 +1390,57 @@
 </div>
 
 <script>
-  // ─── DATA ─────────────────────────────────────────────────────────
-  const HOUSE_IMAGES = [
-    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1600573472591-ee6e7e55d182?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1599427303058-f04cbcf4756f?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?w=600&h=400&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1625602812206-5ec545ca1231?w=600&h=400&fit=crop&q=80'
+  // ─── DESIGN IMAGES ────────────────────────────────────────────────
+  const DESIGN_IMAGES = {
+    // FRD Homes
+    'FRD Single 170': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Contemporary-Greenbank.png',
+    'FRD Single 195': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Traditional-Greenbank.png',
+    'FRD Double 230': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Hamptons-home.jpg',
+    'FRD Dual Key 260': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Contemporary-Greenbank.png',
+    'FRD Duplex 200': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Traditional-Greenbank.png',
+    // Creation Homes
+    'Hillcrest 18': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R1_10_Hip_Hillcrest-16_DS_230530-scaled.jpg',
+    'Fairview 20': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R1_10_Gable-Hampton_Fairview-20_230523-1.jpg',
+    'Southcote 23': 'https://qld.creationhomes.com.au/wp-content/uploads/2024/07/R1_12.5_Flat_Southcote-23_LS_230524-scaled.jpg',
+    'Fernbrook 28': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R2_12.5_Hamptons_Brookside-33_LS3_230428.jpg',
+    'Silverwood 45': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R2_12.5_Hamptons_Silverwood-45_LS_240321.jpg',
+    // AVIA Homes
+    'Marseille': 'https://framerusercontent.com/images/4SYNhhT0LE7A7F9ibPpaMypqCVU.jpg?scale-down-to=1024',
+    'Dublin': 'https://framerusercontent.com/images/8jJn3N4PRgDX1wwiJWy3Iy251vY.jpg?scale-down-to=1024',
+    'Geneva': 'https://framerusercontent.com/images/MR5sh6ih0HrjUC2Gu5VL5LriU0.jpg?scale-down-to=1024',
+    'Almada 210': 'https://framerusercontent.com/images/4SYNhhT0LE7A7F9ibPpaMypqCVU.jpg?scale-down-to=1024',
+    'Catalina': 'https://framerusercontent.com/images/8jJn3N4PRgDX1wwiJWy3Iy251vY.jpg?scale-down-to=1024',
+    // Metricon
+    'Kirra': 'https://www.metricon.com.au/home-designs/kirra/facades/Kirra_Modern_Light-scheme_FINAL3840-x2160.jpg',
+    'Amira': 'https://www.metricon.com.au/home-designs/amira/facades/Amira-28-facade-cut-for-web_2026-01-14-225151_gdtz.jpg',
+    'Glendale': 'https://www.metricon.com.au/home-designs/glendale/facades/Isla-as-displayed-on-the-Glendale.jpg',
+    'Doulton': 'https://www.metricon.com.au/home-designs/doulton/facades/Doulton-56-Classique-Facade-Burwood-vic-1.jpg',
+    'Hampshire': 'https://www.metricon.com.au/home-designs/hampshire/exterior/Hampshire-Stamford.jpg'
+  };
+
+  // Fallback pool for project cards (premium renders cycling)
+  const PROJECT_IMAGES = [
+    'https://www.metricon.com.au/home-designs/hampshire/exterior/Hampshire-Stamford.jpg',
+    'https://www.metricon.com.au/home-designs/glendale/facades/Isla-as-displayed-on-the-Glendale.jpg',
+    'https://www.metricon.com.au/home-designs/doulton/facades/Doulton-56-Classique-Facade-Burwood-vic-1.jpg',
+    'https://www.metricon.com.au/home-designs/amira/facades/Amira-28-facade-cut-for-web_2026-01-14-225151_gdtz.jpg',
+    'https://www.metricon.com.au/home-designs/kirra/facades/Kirra_Modern_Light-scheme_FINAL3840-x2160.jpg',
+    'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R2_12.5_Hamptons_Silverwood-45_LS_240321.jpg',
+    'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R2_12.5_Hamptons_Brookside-33_LS3_230428.jpg',
+    'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R1_10_Gable-Hampton_Fairview-20_230523-1.jpg',
+    'https://framerusercontent.com/images/MR5sh6ih0HrjUC2Gu5VL5LriU0.jpg?scale-down-to=1024',
+    'https://framerusercontent.com/images/8jJn3N4PRgDX1wwiJWy3Iy251vY.jpg?scale-down-to=1024',
+    'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Hamptons-home.jpg',
+    'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Contemporary-Greenbank.png',
+    'https://www.metricon.com.au/home-designs/hampshire/exterior/Hampshire-Stamford.jpg',
+    'https://qld.creationhomes.com.au/wp-content/uploads/2024/07/R1_12.5_Flat_Southcote-23_LS_230524-scaled.jpg',
+    'https://framerusercontent.com/images/4SYNhhT0LE7A7F9ibPpaMypqCVU.jpg?scale-down-to=1024',
+    'https://www.metricon.com.au/home-designs/kirra/facades/Kirra_Modern_Light-scheme_FINAL3840-x2160.jpg',
+    'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R1_10_Hip_Hillcrest-16_DS_230530-scaled.jpg',
+    'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Traditional-Greenbank.png'
   ];
 
+  // ─── DATA ─────────────────────────────────────────────────────────
   const PROJECTS = [
     {id:"peregian", name:"Peregian Springs", suburb:"Peregian Springs", region:"Sunshine Coast", lat:-26.49, lng:153.09, totalLots:1500, availLots:1500, minPrice:0, maxPrice:0},
     {id:"bellmere", name:"Bellmere", suburb:"Bellmere", region:"Moreton Bay", lat:-27.08, lng:152.88, totalLots:1200, availLots:1200, minPrice:0, maxPrice:0},
@@ -1419,10 +1463,10 @@
   ];
 
   const BUILDERS = [
-    {id:'frd', name:'FRD Homes', color:'#10B981', tier:'Wholesale', tagline:'Queensland\'s #1 wholesale builder — proven, consistent, trusted', designs:5, priceRange:'$245k – $380k'},
-    {id:'creation', name:'Creation Homes', color:'#3B82F6', tier:'Entry–Mid', tagline:'Award-winning QLD builder — fixed-price, premium inclusions', designs:5, priceRange:'$285k – $460k'},
-    {id:'avia', name:'AVIA Homes', color:'#8B5CF6', tier:'Mid-Range', tagline:'Homes worth living in — 1,200+ completed, on time, above standard', designs:5, priceRange:'$340k – $520k'},
-    {id:'metricon', name:'Metricon', color:'#F59E0B', tier:'Premium', tagline:'Australia\'s largest builder — HomeSolution to Signature range', designs:5, priceRange:'$380k – $650k'}
+    {id:'frd', name:'FRD Homes', color:'#059669', tier:'Wholesale', tagline:'Queensland\'s #1 wholesale builder — proven, consistent, trusted', designs:5, priceRange:'$245k – $380k'},
+    {id:'creation', name:'Creation Homes', color:'#3B7DDD', tier:'Entry–Mid', tagline:'Award-winning QLD builder — fixed-price, premium inclusions', designs:5, priceRange:'$285k – $460k'},
+    {id:'avia', name:'AVIA Homes', color:'#7C3AED', tier:'Mid-Range', tagline:'Homes worth living in — 1,200+ completed, on time, above standard', designs:5, priceRange:'$340k – $520k'},
+    {id:'metricon', name:'Metricon', color:'#C8A96E', tier:'Premium', tagline:'Australia\'s largest builder — HomeSolution to Signature range', designs:5, priceRange:'$380k – $650k'}
   ];
 
   const DESIGNS = [
@@ -1458,13 +1502,14 @@
     const err = document.getElementById('gateError');
     const inp = document.getElementById('gateInput');
     if (val === 'LV9') {
-      document.getElementById('gate').style.opacity = '0';
-      document.getElementById('gate').style.transition = 'opacity 0.6s ease';
+      const gate = document.getElementById('gate');
+      gate.style.opacity = '0';
+      gate.style.transition = 'opacity 0.5s ease';
       setTimeout(() => {
-        document.getElementById('gate').style.display = 'none';
+        gate.style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
         initPortal();
-      }, 600);
+      }, 500);
     } else {
       inp.classList.add('error');
       err.classList.add('show');
@@ -1507,7 +1552,8 @@
     grid.innerHTML = PROJECTS.map((p, i) => `
       <div class="project-card fade-in" style="transition-delay:${(i%3)*0.08}s">
         <div class="project-img">
-          <img src="${HOUSE_IMAGES[i % HOUSE_IMAGES.length]}" alt="${p.name}" loading="lazy" />
+          <img src="${PROJECT_IMAGES[i % PROJECT_IMAGES.length]}" alt="${p.name}" loading="lazy"
+            onerror="this.src='https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80'" />
           <div class="project-lots-badge">${p.availLots} Lots Available</div>
         </div>
         <div class="project-body">
@@ -1530,7 +1576,7 @@
     if (mapInited) return;
     mapInited = true;
     const map = L.map('map', { zoomControl: true, scrollWheelZoom: false }).setView([-27.5, 153.0], 7);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '© OpenStreetMap © CARTO',
       subdomains: 'abcd', maxZoom: 20
     }).addTo(map);
@@ -1539,8 +1585,8 @@
       const icon = L.divIcon({
         className: '',
         html: `<div style="
-          background:linear-gradient(135deg,#001E2E,#002D44);
-          border:2px solid #00A3E0;
+          background:#1B2432;
+          border:2px solid #3B7DDD;
           color:#fff;
           font-family:Montserrat,sans-serif;
           font-size:11px;
@@ -1548,9 +1594,9 @@
           padding:5px 9px;
           border-radius:8px;
           white-space:nowrap;
-          box-shadow:0 4px 16px rgba(0,0,0,0.5);
+          box-shadow:0 2px 8px rgba(0,0,0,0.18);
           cursor:pointer;
-        ">${p.availLots} <span style="color:#00A3E0">lots</span></div>`,
+        ">${p.availLots} <span style="color:#3B7DDD">lots</span></div>`,
         iconAnchor: [28, 16]
       });
 
@@ -1570,12 +1616,20 @@
   // ─── BUILDERS ─────────────────────────────────────────────────────
   function renderBuilders() {
     const grid = document.getElementById('buildersGrid');
+    // Use specific renders for each builder header image
+    const builderHeaderImages = [
+      DESIGN_IMAGES['FRD Double 230'],
+      DESIGN_IMAGES['Silverwood 45'],
+      DESIGN_IMAGES['Geneva'],
+      DESIGN_IMAGES['Hampshire']
+    ];
     grid.innerHTML = BUILDERS.map((b, i) => {
       const initials = b.name.split(' ').map(w=>w[0]).join('').slice(0,2);
       return `
       <div class="builder-card fade-in fade-in-delay-${i%4+1}">
         <div class="builder-img">
-          <img src="${HOUSE_IMAGES[(i+4) % HOUSE_IMAGES.length]}" alt="${b.name}" loading="lazy" />
+          <img src="${builderHeaderImages[i]}" alt="${b.name}" loading="lazy"
+            onerror="this.src='https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80'" />
         </div>
         <div class="builder-body">
           <div class="builder-logo-circle" style="background:${b.color}">${initials}</div>
@@ -1595,10 +1649,14 @@
   // ─── DESIGNS ──────────────────────────────────────────────────────
   function renderDesigns() {
     const grid = document.getElementById('designsGrid');
-    grid.innerHTML = DESIGNS.map((d, i) => `
+    const fallbackImgs = Object.values(DESIGN_IMAGES);
+    grid.innerHTML = DESIGNS.map((d, i) => {
+      const imgSrc = DESIGN_IMAGES[d.name] || fallbackImgs[i % fallbackImgs.length];
+      return `
       <div class="design-card" data-tier="${d.tier}">
         <div class="design-img">
-          <img src="${HOUSE_IMAGES[i % HOUSE_IMAGES.length]}" alt="${d.name}" loading="lazy" />
+          <img src="${imgSrc}" alt="${d.name}" loading="lazy"
+            onerror="this.src='https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80'" />
         </div>
         <div class="design-body">
           <div class="design-name">${d.name}</div>
@@ -1614,8 +1672,8 @@
             <span class="design-sqm">${d.sqm}m²</span>
           </div>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
 
   function filterDesigns(filter) {
@@ -1626,9 +1684,9 @@
       if (filter === 'all') {
         card.classList.remove('hidden');
       } else if (filter === 'entry') {
-        card.classList.toggle('hidden', !tier.includes('entry'));
+        card.classList.toggle('hidden', tier !== 'entry');
       } else if (filter === 'mid') {
-        card.classList.toggle('hidden', !tier.includes('mid'));
+        card.classList.toggle('hidden', tier !== 'mid');
       } else if (filter === 'premium') {
         card.classList.toggle('hidden', tier !== 'premium');
       }
@@ -1672,7 +1730,6 @@
     document.getElementById('totalRepayment').textContent = formatMoney(totalRepayment);
     document.getElementById('lvr').textContent = lvr + '%';
 
-    // Update slider fill
     syncSliders();
   }
 
@@ -1682,7 +1739,7 @@
       if (!el) return;
       const min = parseFloat(el.min), max = parseFloat(el.max), val = parseFloat(el.value);
       const pct = ((val - min) / (max - min)) * 100;
-      el.style.background = `linear-gradient(to right, #00A3E0 ${pct}%, #e2e8f0 ${pct}%)`;
+      el.style.background = `linear-gradient(to right, #3B7DDD ${pct}%, #E5E7EB ${pct}%)`;
     });
   }
 
@@ -1744,13 +1801,13 @@
   function animateCounter(el) {
     const target = parseInt(el.dataset.target);
     const suffix = el.dataset.suffix || '';
-    const duration = 1500;
+    const duration = 1400;
     const start = performance.now();
     function update(now) {
       const elapsed = now - start;
       const progress = Math.min(elapsed / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      el.textContent = Math.floor(eased * target) + (progress < 1 ? '' : suffix);
+      el.textContent = Math.floor(eased * target) + (progress >= 1 ? suffix : '');
       if (progress < 1) requestAnimationFrame(update);
     }
     requestAnimationFrame(update);
