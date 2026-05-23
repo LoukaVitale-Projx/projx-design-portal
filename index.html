@@ -183,11 +183,10 @@
 
     /* ─── HERO ───────────────────────────────────────────────── */
     #hero {
-      min-height: 100dvh;
-      background: linear-gradient(160deg, var(--bg-alt) 0%, var(--bg) 60%);
-      position: relative; overflow: hidden;
-      display: flex; align-items: center;
-      padding: 120px 32px 80px;
+      min-height: 55vh;
+      background: linear-gradient(160deg, var(--bg-alt) 0%, #eef0f3 50%, var(--bg) 100%);
+      display: flex; align-items: center; justify-content: center;
+      padding: 100px 32px 60px;
       border-bottom: 1px solid var(--border);
     }
 
@@ -415,14 +414,57 @@
     .btn-sm:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: var(--card-shadow-hover); }
 
     /* ─── MAP ────────────────────────────────────────────────── */
-    #map-section { background: var(--bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    #map-section .section-title { color: var(--primary); }
-    #map-section .section-subtitle { color: var(--text-light); }
-
     #map {
       height: 520px; border-radius: var(--radius-lg);
       overflow: hidden; box-shadow: var(--card-shadow-hover);
       border: 1px solid var(--border);
+    }
+
+    /* ─── ESTATES ───────────────────────────────────────────── */
+    #estates { background: var(--bg-alt); }
+
+    .estates-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+    }
+
+    .toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-light);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-btn.active {
+      background: var(--bg);
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .toggle-btn:hover:not(.active) {
+      color: var(--primary);
     }
 
     /* ─── BUILDERS ───────────────────────────────────────────── */
@@ -1383,11 +1425,9 @@
       <span style="display:none;font-size:22px;font-weight:900;letter-spacing:-0.5px;color:var(--primary)">ProjX</span>
     </a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="#projects">Projects</a></li>
+      <li><a href="#estates">Estates</a></li>
       <li><a href="#builders">Builders</a></li>
-      <li><a href="#designs">Designs</a></li>
-      <li><a href="#calculator">Calculator</a></li>
-      <li><a href="#contact" class="nav-cta">Register Interest</a></li>
+      <li><a href="#" class="nav-cta" onclick="event.preventDefault();openWizard('land')">Register Interest</a></li>
     </ul>
     <button class="nav-hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -1396,71 +1436,38 @@
 </nav>
 
 <!-- ─── HERO ─── -->
-<section id="hero">
-  <div class="hero-pattern"></div>
-  <div class="hero-inner">
-    <div class="hero-content">
-      <div class="hero-badge"><div class="dot"></div> Live Platform — Updated Daily</div>
-      <h1 class="hero-title">Your Dream Home,<br><span class="accent">One Click Away</span></h1>
-      <p class="hero-subtitle">Browse 4,500+ lots across 18 projects in South East Queensland and beyond. Match with Australia's best builders. Get your keys faster.</p>
-      <div class="hero-btns">
-        <button class="btn-primary" onclick="openWizard('land')">🗺️ Find Land First</button>
-        <button class="btn-outline" onclick="openWizard('builder')">🏗️ Choose a Builder</button>
-      </div>
-      <div class="hero-stats">
-        <div class="stat-item">
-          <div class="stat-number" data-target="4500" data-suffix="+">0</div>
-          <div class="stat-label">Lots in Pipeline</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number" data-target="18">0</div>
-          <div class="stat-label">Active Projects</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number" data-target="12">0</div>
-          <div class="stat-label">Regions</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number" data-target="4">0</div>
-          <div class="stat-label">Partner Builders</div>
-        </div>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="hero-img-stack">
-        <div class="hero-img-badge">18 Active Projects</div>
-        <div class="hero-img-main">
-          <img src="https://www.metricon.com.au/home-designs/hampshire/exterior/Hampshire-Stamford.jpg" alt="Premium home" loading="eager" onerror="this.src='https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=500&fit=crop&q=85'" />
-        </div>
-        <div class="hero-img-secondary">
-          <img src="https://www.metricon.com.au/home-designs/glendale/facades/Isla-as-displayed-on-the-Glendale.jpg" alt="Modern home" loading="eager" onerror="this.src='https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=280&fit=crop&q=85'" />
-        </div>
-      </div>
-    </div>
+<section id="hero" style="min-height:auto;padding:100px 32px 32px">
+  <div style="max-width:700px;margin:0 auto;text-align:center">
+    <h1 class="hero-title" style="font-size:clamp(24px,3.5vw,36px);margin-bottom:10px">House & Land Packages</h1>
+    <p style="font-size:15px;color:var(--text-light);margin:0">4,500+ lots across 18 projects. Select an estate below to get started.</p>
   </div>
 </section>
 
-<!-- ─── PROJECTS ─── -->
-<section id="projects">
+<!-- ─── ESTATES ─── -->
+<section id="estates">
   <div class="section-inner">
-    <div class="section-header fade-in">
-      <div class="section-badge">📍 Live Inventory</div>
-      <h2 class="section-title">Live Inventory Across South East<br>Queensland &amp; Beyond</h2>
-      <p class="section-subtitle">18 active projects delivering premium house &amp; land packages across South East Queensland's fastest-growing corridors.</p>
+    <div class="estates-header fade-in">
+      <div>
+        <h2 class="section-title">Our Estates</h2>
+        <p class="section-subtitle">18 active projects — 4,500+ lots available</p>
+      </div>
+      <div class="view-toggle">
+        <button class="toggle-btn" onclick="switchView('list')" id="toggleList">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="1" width="16" height="2.5" rx="1"/><rect x="0" y="6.75" width="16" height="2.5" rx="1"/><rect x="0" y="12.5" width="16" height="2.5" rx="1"/></svg>
+          List
+        </button>
+        <button class="toggle-btn active" onclick="switchView('map')" id="toggleMap">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M5 1L0 3v12l5-2 6 2 5-2V1l-5 2-6-2zm0 1.5v10l-3.5 1.4V3.5L5 2.5zm1 10V2.5L11 4.3v10.2l-5-1.7zm6 .1V2.6l3.5-1.4v10.4L12 12.6z"/></svg>
+          Map
+        </button>
+      </div>
     </div>
-    <div class="projects-grid" id="projectsGrid"></div>
-  </div>
-</section>
-
-<!-- ─── MAP ─── -->
-<section id="map-section">
-  <div class="section-inner">
-    <div class="section-header fade-in">
-      <div class="section-badge">🗺️ Project Locations</div>
-      <h2 class="section-title">Projects Across Australia</h2>
-      <p class="section-subtitle">From the Gold Coast hinterland to Byron Bay and Mackay — ProjX covers the growth corridors that matter.</p>
+    <div id="listView" style="display:none">
+      <div id="projectsGrid" class="projects-grid"></div>
     </div>
-    <div id="map" class="fade-in"></div>
+    <div id="mapView">
+      <div id="map" style="height:600px"></div>
+    </div>
   </div>
 </section>
 
@@ -1468,291 +1475,28 @@
 <section id="builders">
   <div class="section-inner">
     <div class="section-header fade-in">
-      <div class="section-badge">🏗️ Partner Builders</div>
-      <h2 class="section-title">Partner Builders</h2>
+      <div class="section-badge">🏗️ Builder Partners</div>
+      <h2 class="section-title">Our Builder Partners</h2>
       <p class="section-subtitle">Handpicked builders delivering quality homes across our projects — from entry level to premium architecturally designed homes.</p>
     </div>
     <div class="builders-grid" id="buildersGrid"></div>
   </div>
 </section>
 
-<!-- ─── DESIGNS ─── -->
-<section id="designs">
-  <div class="section-inner">
-    <div class="section-header fade-in">
-      <div class="section-badge">🏠 Home Designs</div>
-      <h2 class="section-title">Browse Home Designs</h2>
-      <p class="section-subtitle">20 curated designs from 4 builders — filtered by your budget and lifestyle.</p>
-    </div>
-    <div class="filter-chips" id="filterChips">
-      <button class="filter-chip active" data-filter="all" onclick="filterDesigns('all')">All Designs</button>
-      <button class="filter-chip" data-filter="entry" onclick="filterDesigns('entry')">Entry Level</button>
-      <button class="filter-chip" data-filter="mid" onclick="filterDesigns('mid')">Mid Range</button>
-      <button class="filter-chip" data-filter="premium" onclick="filterDesigns('premium')">Premium</button>
-    </div>
-    <div class="designs-grid" id="designsGrid"></div>
-  </div>
-</section>
 
-<!-- ─── CALCULATOR ─── -->
-<section id="calculator">
-  <div class="section-inner">
-    <div class="section-header fade-in">
-      <div class="section-badge">🧮 Finance Tool</div>
-      <h2 class="section-title">Mortgage Calculator</h2>
-      <p class="section-subtitle">Understand your borrowing power instantly. Calculate real repayments in seconds.</p>
-    </div>
-    <div class="calc-grid fade-in">
-      <!-- Inputs -->
-      <div class="calc-inputs">
-        <div class="calc-group">
-          <div class="calc-label">Property Price <span id="priceDisplay">$650,000</span></div>
-          <input type="range" class="calc-slider" id="priceSlider" min="300000" max="2000000" step="5000" value="650000" oninput="updateCalc()" />
-          <div class="calc-input-row">
-            <input type="text" class="calc-input" id="priceInput" value="$650,000" onchange="syncFromInput('price')" />
-          </div>
-        </div>
-        <div class="calc-group">
-          <div class="calc-label">Deposit <span id="depositDisplay">10% ($65,000)</span></div>
-          <input type="range" class="calc-slider" id="depositSlider" min="5" max="30" step="1" value="10" oninput="updateCalc()" />
-        </div>
-        <div class="calc-group">
-          <div class="calc-label">Interest Rate <span id="rateDisplay">6.29%</span></div>
-          <input type="text" class="calc-input" id="rateInput" value="6.29" style="max-width:120px" oninput="updateCalc()" />
-        </div>
-        <div class="calc-group">
-          <div class="calc-label">Loan Term</div>
-          <div class="loan-toggle">
-            <button class="loan-toggle-btn active" id="term25" onclick="setTerm(25)">25 years</button>
-            <button class="loan-toggle-btn" id="term30" onclick="setTerm(30)">30 years</button>
-          </div>
-        </div>
-      </div>
-      <!-- Results -->
-      <div class="calc-results">
-        <div class="calc-result-main">
-          <div class="calc-result-label">Monthly Repayment</div>
-          <div class="calc-result-value" id="monthlyResult">$0</div>
-          <div class="calc-result-sub">Principal &amp; Interest</div>
-        </div>
-        <div class="calc-result-row">
-          <div class="calc-result-item">
-            <div class="calc-result-item-label">Loan Amount</div>
-            <div class="calc-result-item-value" id="loanAmount">$0</div>
-          </div>
-          <div class="calc-result-item">
-            <div class="calc-result-item-label">Total Interest</div>
-            <div class="calc-result-item-value" id="totalInterest">$0</div>
-          </div>
-          <div class="calc-result-item">
-            <div class="calc-result-item-label">Total Repayment</div>
-            <div class="calc-result-item-value" id="totalRepayment">$0</div>
-          </div>
-          <div class="calc-result-item">
-            <div class="calc-result-item-label">LVR</div>
-            <div class="calc-result-item-value" id="lvr">90%</div>
-          </div>
-        </div>
-        <button class="btn-green">🏦 Get Pre-Approved Today</button>
-        <p class="calc-powered">Powered by Mortgage Choice — Australia's largest mortgage broking franchise</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── PARTNER SERVICES ─── -->
-<section id="services">
-  <div class="section-inner">
-    <div class="section-header fade-in">
-      <div class="section-badge">🤝 Trusted Partners</div>
-      <h2 class="section-title">Complete Your Journey</h2>
-      <p class="section-subtitle">Our trusted partners make the entire home-buying process seamless — from finance to keys.</p>
-    </div>
-    <div class="services-grid">
-      <div class="service-card fade-in fade-in-delay-1">
-        <div class="service-icon" style="background:rgba(5,150,105,0.08)">🏦</div>
-        <div class="service-title">Home Loans</div>
-        <div class="service-highlight">Compare 40+ lenders</div>
-        <div class="service-desc">Access Australia's largest mortgage broking network. Get pre-approved in 48 hours with expert guidance throughout.</div>
-        <button class="btn-sm">Get Pre-Approved</button>
-      </div>
-      <div class="service-card fade-in fade-in-delay-2">
-        <div class="service-icon" style="background:rgba(59,125,221,0.08)">⚖️</div>
-        <div class="service-title">Conveyancing</div>
-        <div class="service-highlight">Fixed-fee from $1,200</div>
-        <div class="service-desc">Expert property law at a fixed price. Our conveyancers specialise in new land contracts across Queensland and NSW.</div>
-        <button class="btn-sm">Get a Quote</button>
-      </div>
-      <div class="service-card fade-in fade-in-delay-3">
-        <div class="service-icon" style="background:rgba(245,158,11,0.08)">🛡️</div>
-        <div class="service-title">Home Insurance</div>
-        <div class="service-highlight">Protect from day one</div>
-        <div class="service-desc">Compare home and construction insurance policies. Protect your biggest investment from the moment you sign.</div>
-        <button class="btn-sm">Compare Policies</button>
-      </div>
-      <div class="service-card fade-in fade-in-delay-4">
-        <div class="service-icon" style="background:rgba(139,92,246,0.08)">📈</div>
-        <div class="service-title">Financial Planning</div>
-        <div class="service-highlight">Structure your wealth</div>
-        <div class="service-desc">First home buyer? Investor? Our financial planners help you structure smarter. SMSF, investment strategy, and more.</div>
-        <button class="btn-sm">Book Consultation</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── FOR BUILDERS ─── -->
-<section id="for-builders">
-  <div class="builders-pattern"></div>
-  <div class="section-inner" style="position:relative;z-index:1">
-    <div class="section-header fade-in" style="max-width:700px">
-      <div class="section-badge">🏗️ Builder Partnership</div>
-      <h2 class="section-title">Partner With ProjX</h2>
-      <p class="section-subtitle">Get your designs in front of qualified buyers across 4,500+ lots in 18 active projects — zero upfront cost.</p>
-    </div>
-    <div class="value-props">
-      <div class="value-prop fade-in fade-in-delay-1">
-        <div class="value-prop-icon">🎯</div>
-        <div class="value-prop-title">Qualified Leads</div>
-        <div class="value-prop-desc">Every EOI comes with lot preference, budget range, and design selection already confirmed. No tire-kickers. No cold leads. Just buyers ready to build.</div>
-      </div>
-      <div class="value-prop fade-in fade-in-delay-2">
-        <div class="value-prop-icon">⚡</div>
-        <div class="value-prop-title">Instant Matching</div>
-        <div class="value-prop-desc">Our algorithm automatically matches your designs to compatible lots by frontage, price range, and region. Your designs appear where they actually fit.</div>
-      </div>
-      <div class="value-prop fade-in fade-in-delay-3">
-        <div class="value-prop-icon">💰</div>
-        <div class="value-prop-title">Zero Upfront Cost</div>
-        <div class="value-prop-desc">Commission-based partnership model. You only pay when a buyer signs a build contract. No platform fees, no monthly subscription. Pure performance.</div>
-      </div>
-    </div>
-    <div class="builders-stats fade-in">
-      <div class="builders-stat">
-        <div class="builders-stat-num">4,500+</div>
-        <div class="builders-stat-label">Lots in Pipeline</div>
-      </div>
-      <div class="builders-stat">
-        <div class="builders-stat-num">$1B+</div>
-        <div class="builders-stat-label">Pipeline Value</div>
-      </div>
-      <div class="builders-stat">
-        <div class="builders-stat-num">9</div>
-        <div class="builders-stat-label">Regions</div>
-      </div>
-      <div class="builders-stat">
-        <div class="builders-stat-num">40+</div>
-        <div class="builders-stat-label">EOIs / Month</div>
-      </div>
-    </div>
-    <div class="builders-cta fade-in">
-      <a href="#contact" class="btn-primary" style="font-size:16px;padding:18px 48px;background:var(--warm);color:#1B2432">🤝 Become a Partner Builder</a>
-    </div>
-  </div>
-</section>
-
-<!-- ─── EOI FORM ─── -->
-<section id="contact">
-  <div class="section-inner">
-    <div class="section-header fade-in" style="text-align:center;max-width:600px;margin-left:auto;margin-right:auto">
-      <div class="section-badge">📋 Register Now</div>
-      <h2 class="section-title">Expression of Interest</h2>
-      <p class="section-subtitle">Tell us about your dream home and we'll match you with the perfect lot and builder.</p>
-    </div>
-    <div class="form-card fade-in">
-      <form id="eoiForm" onsubmit="submitEOI(event)">
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Full Name *</label>
-            <input type="text" class="form-input" placeholder="John Smith" required />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Email *</label>
-            <input type="email" class="form-input" placeholder="john@email.com" required />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Phone *</label>
-            <input type="tel" class="form-input" placeholder="04XX XXX XXX" required />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Budget Range</label>
-            <select class="form-select">
-              <option value="">Select budget...</option>
-              <option>$400k – $500k</option>
-              <option>$500k – $600k</option>
-              <option>$600k – $750k</option>
-              <option>$750k – $1M</option>
-              <option>$1M+</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Interested Project</label>
-            <select class="form-select" id="projectSelect"></select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Preferred Builder</label>
-            <select class="form-select" id="builderSelect"></select>
-          </div>
-          <div class="form-group full">
-            <label class="form-label">Message</label>
-            <textarea class="form-textarea" placeholder="Tell us about your dream home, timeline, or any questions..."></textarea>
-          </div>
-          <div class="form-group full">
-            <button type="submit" class="form-submit">Submit Expression of Interest →</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</section>
 
 <!-- ─── FOOTER ─── -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-grid">
+    <div style="margin-bottom:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
       <div>
         <div class="footer-brand-logo">
           <img src="projx-logo-light.png" alt="ProjX" style="height:36px" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
           <span style="display:none;font-size:24px;font-weight:900;letter-spacing:-0.5px;color:#fff">ProjX</span>
         </div>
-        <p class="footer-desc">Australia's premier house &amp; land marketplace. Connecting buyers, builders, and developers across 18 projects in the nation's fastest-growing corridors.</p>
-        <div class="footer-contact">
-          <a href="mailto:info@projxaustralia.com.au">info@projxaustralia.com.au</a><br>
-          1300 PROJX (776 59)
-        </div>
-        <div class="footer-socials">
-          <a class="footer-social">📘</a>
-          <a class="footer-social">📸</a>
-          <a class="footer-social">💼</a>
-          <a class="footer-social">🐦</a>
-        </div>
       </div>
-      <div>
-        <div class="footer-col-title">Platform</div>
-        <ul class="footer-links">
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#builders">Builders</a></li>
-          <li><a href="#designs">Designs</a></li>
-          <li><a href="#calculator">Calculator</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="footer-col-title">Projects</div>
-        <ul class="footer-links">
-          <li><a href="#projects">Oakland Estate</a></li>
-          <li><a href="#projects">Woodchester Estate</a></li>
-          <li><a href="#projects">Sorensen Rise</a></li>
-          <li><a href="#projects">Harvest Estate</a></li>
-          <li><a href="#projects">Riverina</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="footer-col-title">Company</div>
-        <ul class="footer-links">
-          <li><a href="#for-builders">Partner with Us</a></li>
-          <li><a href="#services">Partner Services</a></li>
-          <li><a href="#contact">Register Interest</a></li>
-        </ul>
+      <div class="footer-contact">
+        <a href="mailto:info@projxaustralia.com.au">info@projxaustralia.com.au</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -1929,13 +1673,8 @@
   function initPortal() {
     renderProjects();
     renderBuilders();
-    renderDesigns();
-    renderForm();
     initMap();
     initObserver();
-    initCounters();
-    updateCalc();
-    syncSliders();
   }
 
   // ─── NAV ──────────────────────────────────────────────────────────
@@ -1978,12 +1717,12 @@
   function initMap() {
     if (mapInited) return;
     mapInited = true;
-    const map = L.map('map', { zoomControl: true, scrollWheelZoom: false, tap: true, dragging: !L.Browser.mobile }).setView([-27.5, 153.0], 7);
-    setTimeout(() => map.invalidateSize(), 200);
+    window._portalMap = L.map('map', { zoomControl: true, scrollWheelZoom: false, tap: true, dragging: !L.Browser.mobile }).setView([-27.5, 153.0], 7);
+    setTimeout(() => window._portalMap.invalidateSize(), 200);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '© OpenStreetMap © CARTO',
       subdomains: 'abcd', maxZoom: 20
-    }).addTo(map);
+    }).addTo(window._portalMap);
 
     PROJECTS.forEach(p => {
       const icon = L.divIcon({
@@ -2004,7 +1743,7 @@
         iconAnchor: [28, 16]
       });
 
-      const marker = L.marker([p.lat, p.lng], {icon}).addTo(map);
+      const marker = L.marker([p.lat, p.lng], {icon}).addTo(window._portalMap);
       marker.bindPopup(`
         <div class="popup-inner">
           <div class="popup-name">${p.name}</div>
@@ -2229,6 +1968,41 @@
     if (e.key === 'Enter') checkPassword();
   });
 
+  // ─── VIEW SWITCHER ────────────────────────────────────────────
+  function switchView(view) {
+    document.getElementById('listView').style.display = view === 'list' ? 'block' : 'none';
+    document.getElementById('mapView').style.display = view === 'map' ? 'block' : 'none';
+    document.getElementById('toggleList').classList.toggle('active', view === 'list');
+    document.getElementById('toggleMap').classList.toggle('active', view === 'map');
+    if (view === 'map' && !mapInited) {
+      initMap();
+    }
+    if (view === 'map' && mapInited && window._portalMap) {
+      setTimeout(function() { window._portalMap.invalidateSize(); }, 100);
+    }
+  }
+
+  // ─── WIZARD CALCULATOR ──────────────────────────────────────
+  function updateWizardCalc() {
+    var priceEl = document.getElementById('wCalcPrice');
+    var depEl = document.getElementById('wCalcDeposit');
+    var rateEl = document.getElementById('wCalcRate');
+    var termEl = document.getElementById('wCalcTerm');
+    if (!priceEl || !depEl || !rateEl || !termEl) return;
+    var price = parseInt(priceEl.value);
+    var depPct = parseInt(depEl.value);
+    var rate = parseFloat(rateEl.value);
+    var term = parseInt(termEl.value);
+    var dep = Math.round(price * depPct / 100);
+    var loan = price - dep;
+    var mr = rate / 100 / 12;
+    var n = term * 12;
+    var mp = mr > 0 ? loan * (mr * Math.pow(1+mr,n)) / (Math.pow(1+mr,n)-1) : loan / n;
+    document.getElementById('wCalcPriceLabel').textContent = '$' + price.toLocaleString();
+    document.getElementById('wCalcDepositLabel').textContent = depPct + '% ($' + dep.toLocaleString() + ')';
+    document.getElementById('wCalcResult').textContent = '$' + Math.round(mp).toLocaleString();
+  }
+
   // ─── BUYER WIZARD ──────────────────────────────────────────────────
 
   let wizardState = {
@@ -2318,7 +2092,7 @@
         case 4: body.innerHTML = renderLandStep3(); break;
         case 5: body.innerHTML = renderLandStep4(); break;
         case 6: body.innerHTML = renderUpgradesStep(); break;
-        default: body.innerHTML = renderLeadCapture(); break;
+        default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
       }
     } else {
       switch (wizardState.step) {
@@ -2327,7 +2101,7 @@
         case 3: body.innerHTML = renderBuilderStep2(); break;
         case 4: body.innerHTML = renderBuilderStep3(); break;
         case 5: body.innerHTML = renderUpgradesStep(); break;
-        default: body.innerHTML = renderLeadCapture(); break;
+        default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
       }
     }
   }
@@ -2622,6 +2396,14 @@
       '</div>' +
       '<div class="wizard-form-panel">' +
       '<form id="wizardLeadForm" onsubmit="submitWizardLead(event)">' +
+      '<details class="wizard-calc-details" style="margin-bottom:20px;border:1px solid var(--border);border-radius:10px;overflow:hidden">' +
+      '<summary style="padding:14px 18px;font-size:14px;font-weight:700;color:var(--primary);cursor:pointer;background:var(--bg-alt)">🧮 Repayment Calculator</summary>' +
+      '<div style="padding:18px">' +
+      '<div style="margin-bottom:12px"><label style="font-size:12px;font-weight:600;color:var(--text-light);display:block;margin-bottom:4px">Property Price</label><input type="range" min="300000" max="2000000" value="650000" step="10000" id="wCalcPrice" oninput="updateWizardCalc()" style="width:100%"/><div style="font-size:14px;font-weight:700;color:var(--primary)" id="wCalcPriceLabel">$650,000</div></div>' +
+      '<div style="margin-bottom:12px"><label style="font-size:12px;font-weight:600;color:var(--text-light);display:block;margin-bottom:4px">Deposit</label><input type="range" min="5" max="30" value="10" step="1" id="wCalcDeposit" oninput="updateWizardCalc()" style="width:100%"/><div style="font-size:14px;font-weight:700;color:var(--primary)" id="wCalcDepositLabel">10% ($65,000)</div></div>' +
+      '<div style="display:flex;gap:12px;margin-bottom:12px"><div style="flex:1"><label style="font-size:12px;font-weight:600;color:var(--text-light);display:block;margin-bottom:4px">Rate (%)</label><input type="number" value="6.29" step="0.01" id="wCalcRate" oninput="updateWizardCalc()" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font-size:14px"/></div><div style="flex:1"><label style="font-size:12px;font-weight:600;color:var(--text-light);display:block;margin-bottom:4px">Term</label><select id="wCalcTerm" onchange="updateWizardCalc()" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font-size:14px"><option value="30">30 years</option><option value="25">25 years</option></select></div></div>' +
+      '<div style="background:var(--bg-alt);border-radius:8px;padding:14px;text-align:center"><div style="font-size:12px;color:var(--text-light);margin-bottom:4px">Estimated Monthly Repayment</div><div style="font-size:28px;font-weight:900;color:var(--primary)" id="wCalcResult">$3,610</div></div>' +
+      '</div></details>' +
       '<div class="wizard-form-group"><label class="wizard-form-label">Full Name *</label><input type="text" class="wizard-form-input" id="wLeadName" placeholder="John Smith" required /></div>' +
       '<div class="wizard-form-group"><label class="wizard-form-label">Email *</label><input type="email" class="wizard-form-input" id="wLeadEmail" placeholder="john@email.com" required /></div>' +
       '<div class="wizard-form-group"><label class="wizard-form-label">Phone *</label><input type="tel" class="wizard-form-input" id="wLeadPhone" placeholder="04XX XXX XXX" required /></div>' +
