@@ -1481,6 +1481,11 @@
       </div>
     </div>
     <div id="listView" style="display:none">
+      <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">
+        <button class="estate-filter filter-chip active" data-filter="all" onclick="renderProjects('all')">All Estates</button>
+        <button class="estate-filter filter-chip" data-filter="available" onclick="renderProjects('available')" style="border-color:#059669;color:#059669">🟢 Available Now</button>
+        <button class="estate-filter filter-chip" data-filter="coming-soon" onclick="renderProjects('coming-soon')" style="border-color:#D97706;color:#D97706">🟡 Coming Soon</button>
+      </div>
       <div id="projectsGrid" class="projects-grid"></div>
     </div>
     <div id="mapView">
@@ -1710,27 +1715,43 @@
   }
 
   // ─── PROJECTS ─────────────────────────────────────────────────────
-  function renderProjects() {
+  function getProjectStatus(p) {
+    return p.minPrice > 0 ? 'available' : 'coming-soon';
+  }
+
+  function renderProjects(filter) {
+    filter = filter || 'all';
     const grid = document.getElementById('projectsGrid');
-    grid.innerHTML = PROJECTS.map((p, i) => `
-      <div class="project-card fade-in" style="transition-delay:${(i%3)*0.08}s">
+    const filtered = filter === 'all' ? PROJECTS : PROJECTS.filter(p => getProjectStatus(p) === filter);
+    grid.innerHTML = filtered.map((p, i) => {
+      const status = getProjectStatus(p);
+      const statusLabel = status === 'available' ? 'Available Now' : 'Coming Soon';
+      const statusColor = status === 'available' ? '#059669' : '#D97706';
+      const statusBg = status === 'available' ? 'rgba(5,150,105,0.1)' : 'rgba(217,119,6,0.1)';
+      return `
+      <div class="project-card fade-in" data-status="${status}" style="transition-delay:${(i%3)*0.08}s">
         <div class="project-img">
-          <img src="${PROJECT_IMAGES[i % PROJECT_IMAGES.length]}" alt="${p.name}" loading="lazy"
+          <img src="${PROJECT_IMAGES[PROJECTS.indexOf(p) % PROJECT_IMAGES.length]}" alt="${p.name}" loading="lazy"
             onerror="this.src='https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80'" />
-          <div class="project-lots-badge">${p.availLots} Lots Available</div>
+          <div class="project-lots-badge">${p.availLots} Lots</div>
+          <div style="position:absolute;top:12px;left:12px;background:${statusBg};color:${statusColor};font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:0.5px;border:1px solid ${statusColor}20">${statusLabel}</div>
         </div>
         <div class="project-body">
           <div class="project-region region-${p.region.replace(/ /g, '\\ ')}">${p.region}</div>
           <div class="project-name">${p.name}</div>
           <div class="project-suburb">📍 ${p.suburb}</div>
-          <div class="project-price"><strong>${p.minPrice > 0 ? fmtPrice(p.minPrice) + ' \u2013 ' + fmtPrice(p.maxPrice) : 'Pricing TBA'}</strong>${p.minPrice > 0 ? ' package range' : ''}</div>
+          <div class="project-price"><strong>${p.minPrice > 0 ? fmtPrice(p.minPrice) + ' \u2013 ' + fmtPrice(p.maxPrice) : 'Pricing TBA'}</strong>${p.minPrice > 0 ? ' lot price range' : ''}</div>
           <div class="project-footer">
-            <span class="project-lots-count">✅ ${p.availLots} of ${p.totalLots} available</span>
-            <a href="#" class="btn-sm" onclick="event.preventDefault();openWizardForProject('${p.id}')">View Lots →</a>
+            <span class="project-lots-count">${p.totalLots} total lots</span>
+            <a href="#" class="btn-sm" onclick="event.preventDefault();openWizardForProject('${p.id}')">${status === 'available' ? 'Explore →' : 'Register Interest →'}</a>
           </div>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
+    // Update filter chip active states
+    document.querySelectorAll('.estate-filter').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.filter === filter);
+    });
   }
 
   // ─── MAP ──────────────────────────────────────────────────────────
@@ -1753,9 +1774,11 @@
 
     PROJECTS.forEach(p => {
       const label = shortName(p.name);
+      const status = getProjectStatus(p);
+      const dotColor = status === 'available' ? '#059669' : '#D97706';
       const icon = L.divIcon({
         className: 'map-pin',
-        html: '<div class="pin-dot"></div><div class="pin-label">' + label + '</div>',
+        html: '<div class="pin-dot" style="background:' + dotColor + '"></div><div class="pin-label">' + label + '</div>',
         iconSize: [0, 0],
         iconAnchor: [6, 6]
       });
