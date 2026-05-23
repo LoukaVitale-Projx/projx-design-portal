@@ -916,25 +916,43 @@
     .footer-disclaimer { font-size: 11px; color: rgba(255,255,255,0.25); max-width: 500px; text-align: right; }
 
     /* ─── LEAFLET POPUP ──────────────────────────────────────── */
+    /* Map pins — clean dot + label */
+    .map-pin { position: relative; }
+    .pin-dot {
+      width: 12px; height: 12px;
+      background: #1B2432;
+      border: 2.5px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      position: relative; z-index: 2;
+    }
+    .pin-label {
+      position: absolute;
+      top: 16px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(27,36,50,0.9);
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      letter-spacing: 0.2px;
+    }
+    @media (max-width: 640px) {
+      .pin-label { font-size: 9px; padding: 2px 5px; }
+      .pin-dot { width: 10px; height: 10px; }
+    }
+
     .leaflet-popup-content-wrapper {
-      background: var(--bg); color: var(--text); border-radius: 10px;
+      background: var(--bg); color: var(--text); border-radius: 12px;
       box-shadow: var(--shadow-xl); border: 1px solid var(--border);
       padding: 0;
     }
-    .leaflet-popup-content { margin: 0; padding: 16px; }
+    .leaflet-popup-content { margin: 0; padding: 0; }
     .leaflet-popup-tip { background: var(--bg); }
-
-    .popup-inner .popup-name { font-size: 14px; font-weight: 800; color: var(--primary); margin-bottom: 3px; }
-    .popup-inner .popup-suburb { font-size: 12px; color: var(--text-light); margin-bottom: 10px; }
-    .popup-inner .popup-lots { font-size: 12px; color: var(--success); font-weight: 700; margin-bottom: 4px; }
-    .popup-inner .popup-price { font-size: 12px; color: var(--accent); margin-bottom: 12px; }
-    .popup-inner a {
-      display: inline-block; padding: 7px 16px;
-      background: var(--primary); color: #fff;
-      border-radius: 6px; font-size: 12px; font-weight: 700;
-      text-decoration: none; transition: var(--transition);
-    }
-    .popup-inner a:hover { background: var(--primary-light); }
 
     /* ─── RESPONSIVE ─────────────────────────────────────────── */
     @media (max-width: 1100px) {
@@ -1724,35 +1742,31 @@
       subdomains: 'abcd', maxZoom: 20
     }).addTo(window._portalMap);
 
+    // Short name for pin labels
+    function shortName(name) {
+      if (name.length <= 12) return name;
+      return name.replace(' Estate', '').replace(' Springs', '').replace(' Point', ' Pt').replace('North Pine Golf Estate', 'Nth Pine Golf');
+    }
+
     PROJECTS.forEach(p => {
+      const label = shortName(p.name);
       const icon = L.divIcon({
-        className: '',
-        html: `<div style="
-          background:#1B2432;
-          border:2px solid #3B7DDD;
-          color:#fff;
-          font-family:Montserrat,sans-serif;
-          font-size:11px;
-          font-weight:800;
-          padding:5px 9px;
-          border-radius:8px;
-          white-space:nowrap;
-          box-shadow:0 2px 8px rgba(0,0,0,0.18);
-          cursor:pointer;
-        ">${p.availLots} <span style="color:#3B7DDD">lots</span></div>`,
-        iconAnchor: [28, 16]
+        className: 'map-pin',
+        html: '<div class="pin-dot"></div><div class="pin-label">' + label + '</div>',
+        iconSize: [0, 0],
+        iconAnchor: [6, 6]
       });
 
       const marker = L.marker([p.lat, p.lng], {icon}).addTo(window._portalMap);
-      marker.bindPopup(`
-        <div class="popup-inner">
-          <div class="popup-name">${p.name}</div>
-          <div class="popup-suburb">📍 ${p.suburb}, ${p.region}</div>
-          <div class="popup-lots">✅ ${p.availLots} lots available</div>
-          <div class="popup-price">${p.minPrice > 0 ? fmtPrice(p.minPrice) + ' \u2013 ' + fmtPrice(p.maxPrice) : 'Pricing TBA'}</div>
-          <a href="#" onclick="event.preventDefault();openWizardForProject('${p.id}')">Explore →</a>
-        </div>
-      `, {maxWidth: 220});
+      marker.bindPopup(
+        '<div style="font-family:Montserrat,sans-serif;padding:4px">' +
+        '<div style="font-size:15px;font-weight:800;color:#1B2432;margin-bottom:4px">' + p.name + '</div>' +
+        '<div style="font-size:12px;color:#6B7280;margin-bottom:8px">' + p.suburb + ', ' + p.region + '</div>' +
+        '<div style="font-size:13px;font-weight:700;color:#059669;margin-bottom:4px">' + p.availLots + ' lots available</div>' +
+        '<div style="font-size:12px;color:#6B7280;margin-bottom:10px">' + (p.minPrice > 0 ? fmtPrice(p.minPrice) + ' \u2013 ' + fmtPrice(p.maxPrice) : 'Pricing TBA') + '</div>' +
+        '<a href="#" onclick="event.preventDefault();openWizardForProject(\'' + p.id + '\')" style="display:block;text-align:center;background:#1B2432;color:#fff;padding:10px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:700">Explore ' + p.name + ' \u2192</a>' +
+        '</div>'
+      , {maxWidth: 240, minWidth: 200});
     });
   }
 
