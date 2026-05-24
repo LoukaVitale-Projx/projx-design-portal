@@ -2455,8 +2455,7 @@
 
  function renderLandStep2() {
  const projects = PROJECTS.filter(function(p) { return p.region === wizardState.region; });
- return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
- '<div class="wizard-step-heading"><h2>Projects in ' + wizardState.region + '</h2><p>' + projects.length + ' project' + (projects.length !== 1 ? 's' : '') + ' available in this region</p></div>' +
+ return  '<div class="wizard-step-heading"><h2>Projects in ' + wizardState.region + '</h2><p>' + projects.length + ' project' + (projects.length !== 1 ? 's' : '') + ' available in this region</p></div>' +
  '<div class="wizard-card-grid">' +
  projects.map(function(p) {
  const idx = PROJECTS.indexOf(p);
@@ -2698,8 +2697,7 @@
  '</div></div>';
  }).join('');
 
- return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
- '<div class="wizard-step-heading"><h2>Compatible designs for ' + wizardState.project.name + '</h2><p>' + (maxFrontage < 99 ? 'Showing designs that fit your ' + frontageLabel + ' wide lot — ' + filtered.length + ' designs available' : 'Select a design to continue') + '</p></div>' +
+ return  '<div class="wizard-step-heading"><h2>Compatible designs for ' + wizardState.project.name + '</h2><p>' + (maxFrontage < 99 ? 'Showing designs that fit your ' + frontageLabel + ' wide lot — ' + filtered.length + ' designs available' : 'Select a design to continue') + '</p></div>' +
  '<div class="wizard-filter-tabs">' + tabs + '</div>' +
  '<div class="wizard-design-grid">' + cards + '</div>';
  }
@@ -2771,8 +2769,7 @@
  '</div></div>';
  }).join('');
 
- return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
- '<div class="wizard-step-heading"><h2>' + wizardState.builder.name + ' — Home Designs</h2><p>' + builderDesigns.length + ' designs available</p></div>' +
+ return  '<div class="wizard-step-heading"><h2>' + wizardState.builder.name + ' — Home Designs</h2><p>' + builderDesigns.length + ' designs available</p></div>' +
  '<div class="wizard-design-grid">' + cards + '</div>';
  }
 
@@ -2904,8 +2901,7 @@
  '</div>';
  }).join('');
 
- return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
- '<div class="wizard-step-heading"><h2>Customise Your Package</h2><p>Select any upgrades you\'re interested in — these will be included in your consultation.</p></div>' +
+ return  '<div class="wizard-step-heading"><h2>Customise Your Package</h2><p>Select any upgrades you\'re interested in — these will be included in your consultation.</p></div>' +
  '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:32px">' + cards + '</div>' +
  '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">' +
  '<span style="font-size:13px;color:var(--text-light);align-self:center">' + selected.length + ' upgrade' + (selected.length !== 1 ? 's' : '') + ' selected</span>' +
@@ -3217,7 +3213,6 @@
  '<div class="wizard-form-group"><label class="wizard-form-label">Phone *</label><input type="tel" class="wizard-form-input" id="wLeadPhone" placeholder="04XX XXX XXX" required /></div>' +
  '<div class="wizard-form-group"><label class="wizard-form-label">Preferred Contact Time</label><select class="wizard-form-select"><option value="anytime">Anytime</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select></div>' +
  '<div class="wizard-form-group"><label class="wizard-form-label">Message (optional)</label><textarea class="wizard-form-textarea" placeholder="Any questions or notes for our team..."></textarea></div>' +
- '<button type="button" class="wizard-back-btn" onclick="wizardBack()" style="margin-bottom:14px">← Back</button>' +
  '<button type="submit" class="wizard-submit-btn">Request My Package →</button>' +
  '</form></div>' +
  '</div>';
