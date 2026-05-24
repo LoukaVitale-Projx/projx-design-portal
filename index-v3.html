@@ -2051,15 +2051,8 @@
  const label = shortName(p.name);
  const status = getProjectStatus(p);
  const dotColor = status === 'available' ? '#059669' : '#D97706';
- const icon = L.divIcon({
-        className: '',
-        html: '<div style="width:10px;height:10px;background:' + dotColor + ';border:2px solid #fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></div>',
-        iconSize: [10, 10],
-        iconAnchor: [5, 5]
-      })
-
- const marker = L.marker([p.lat, p.lng], {icon}).addTo(window._portalMap);
-      marker.bindTooltip(label, {permanent: true, direction: 'bottom', offset: [0, 6], className: 'pin-tooltip'});
+ const marker = L.circleMarker([p.lat, p.lng], {radius: 6, fillColor: dotColor, color: '#fff', weight: 2, fillOpacity: 1}).addTo(window._portalMap);
+      marker.bindTooltip(label, {permanent: true, direction: 'bottom', offset: [0, 10], className: 'pin-tooltip'});
  window._mapMarkers[p.id] = marker;
  marker.bindPopup(
  '<div style="font-family:Montserrat,sans-serif">' +
@@ -2847,13 +2840,8 @@
  PROJECTS.forEach(function(p) {
  var status = getProjectStatus(p);
  var dotColor = status === 'available' ? '#059669' : '#D97706';
- var icon = L.divIcon({
-        className: '',
-        html: '<div style="width:10px;height:10px;background:' + dotColor + ';border:2px solid #fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></div>',
-        iconSize: [10, 10],
-        iconAnchor: [5, 5]
-      })
- var marker = L.marker([p.lat, p.lng], {icon: icon}).addTo(wMap);
+ // circleMarker used instead
+ var marker = L.circleMarker([p.lat, p.lng], {radius: 6, fillColor: dotColor, color: '#fff', weight: 2, fillOpacity: 1}).addTo(wMap);
  marker.bindTooltip(p.name, {permanent: true, direction: 'bottom', offset: [0, 6], className: 'pin-tooltip'});
  marker.on('click', function() { showProjectDetail(p.id); });
  });
