@@ -2328,7 +2328,7 @@
  const design = DESIGNS.find(function(d) { return d.name === designName; });
  if (!design) return;
  const builder = BUILDERS.find(function(b) { return b.name === design.builder; });
- wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: design, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
+ wizardState = { mode: 'builder', step: 2, region: null, project: null, builder: builder, design: design, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
  document.getElementById('wizard').classList.add('open');
  document.body.style.overflow = 'hidden';
  document.getElementById('wizard').scrollTop = 0;
@@ -2338,7 +2338,7 @@
  function openWizardForBuilder(builderId) {
  const builder = BUILDERS.find(function(b) { return b.id === builderId; });
  if (!builder) return;
- wizardState = { mode: 'builder', step: 2, region: null, project: null, builder: builder, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
+ wizardState = { mode: 'builder', step: 1, region: null, project: null, builder: builder, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
  document.getElementById('wizard').classList.add('open');
  document.body.style.overflow = 'hidden';
  document.getElementById('wizard').scrollTop = 0;
@@ -2348,7 +2348,7 @@
  function openWizardForProject(projectId) {
  const project = PROJECTS.find(function(p) { return p.id === projectId; });
  if (!project) return;
- wizardState = { mode: 'land', step: 3, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
+ wizardState = { mode: 'land', step: 1, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
  document.getElementById('wizard').classList.add('open');
  document.body.style.overflow = 'hidden';
  document.getElementById('wizard').scrollTop = 0;
@@ -2385,7 +2385,7 @@
  }
 
  function renderWizardStep() {
- const totalSteps = wizardState.mode === 'land' ? 5 : 4;
+ const totalSteps = wizardState.mode === 'land' ? 3 : 3;
  const pct = (wizardState.step / totalSteps) * 100;
  document.getElementById('wizardProgressFill').style.width = Math.min(pct, 100) + '%';
  document.getElementById('wizardStepLabel').textContent = 'Step ' + wizardState.step + ' of ' + totalSteps;
@@ -2605,7 +2605,7 @@
  '<div style="font-size:16px;font-weight:800;color:var(--primary);margin-bottom:6px">Lots Coming Soon</div>' +
  '<div style="font-size:13px;color:var(--text-light);margin-bottom:20px">Lot details and pricing for ' + p.name + ' are being finalised. Register your interest to be first notified.</div>' +
  '<a href="#" onclick="event.preventDefault()" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;font-family:Montserrat,sans-serif;margin:0 auto 16px;transition:all 0.2s">Download Brochure</a>' +
- '<button class="wizard-submit-btn" onclick="wizardState.selectedFrontage=null;wizardState.step=' + (wizardState.mode === 'land' ? 5 : 4) + ';renderWizardStep()" style="max-width:300px;margin:0 auto">Register Interest \u2192</button>' +
+ '<button class="wizard-submit-btn" onclick="wizardState.selectedFrontage=null;wizardState.step=' + (wizardState.mode === 'land' ? 3 : 3) + ';renderWizardStep()" style="max-width:300px;margin:0 auto">Register Interest \u2192</button>' +
  '</div>';
  }
 
