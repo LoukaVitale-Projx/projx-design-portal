@@ -1965,14 +1965,18 @@
 
       const marker = L.marker([p.lat, p.lng], {icon}).addTo(window._portalMap);
       marker.bindPopup(
-        '<div style="font-family:Montserrat,sans-serif;padding:4px">' +
-        '<div style="font-size:15px;font-weight:800;color:#1B2432;margin-bottom:4px">' + p.name + '</div>' +
-        '<div style="font-size:12px;color:#6B7280;margin-bottom:8px">' + p.suburb + ', ' + p.region + '</div>' +
-        '<div style="font-size:13px;font-weight:700;color:#059669;margin-bottom:4px">' + p.availLots + ' lots available</div>' +
-        '<div style="font-size:12px;color:#6B7280;margin-bottom:10px">' + (p.minPrice > 0 ? fmtPrice(p.minPrice) + ' \u2013 ' + fmtPrice(p.maxPrice) : 'Pricing TBA') + '</div>' +
-        '<a href="#" onclick="event.preventDefault();openWizardForProject(\'' + p.id + '\')" style="display:block;text-align:center;background:#1B2432;color:#fff;padding:10px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:700">Explore ' + p.name + ' \u2192</a>' +
-        '</div>'
-      , {maxWidth: 240, minWidth: 200});
+        '<div style="font-family:Montserrat,sans-serif;margin:-14px -16px;overflow:hidden">' +
+        '<div style="height:120px;overflow:hidden"><img src="' + getProjectImage(p) + '" style="width:100%;height:100%;object-fit:cover" onerror="this.onerror=null"/></div>' +
+        '<div style="padding:14px 16px">' +
+        '<div style="font-size:14px;font-weight:800;color:#1B2432;margin-bottom:2px">' + p.name + '</div>' +
+        '<div style="font-size:11px;color:#6B7280;margin-bottom:10px">' + p.suburb + ', ' + p.region + '</div>' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:12px">' +
+        '<span style="font-size:12px;font-weight:700;color:#059669">' + p.availLots + ' lots</span>' +
+        '<span style="font-size:12px;font-weight:600;color:#6B7280">' + (p.minPrice > 0 ? fmtPrice(p.minPrice) + ' \u2013 ' + fmtPrice(p.maxPrice) : 'Pricing TBA') + '</span>' +
+        '</div>' +
+        '<a href="#" onclick="event.preventDefault();openWizardForProject(\'' + p.id + '\')" style="display:block;text-align:center;background:#1B2432;color:#fff;padding:10px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:700">Explore \u2192</a>' +
+        '</div></div>'
+      , {maxWidth: 260, minWidth: 220, className: 'projx-popup'});
     });
   }
 
