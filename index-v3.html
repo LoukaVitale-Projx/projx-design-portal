@@ -2497,16 +2497,17 @@
     let calcHTML = '';
     if (showCalc) {
       const d = wizardState.design;
-      const defaultPrice = d ? parseInt(d.price.replace(/[^0-9]/g, '')) * 1000 || 650000 : 650000;
-      // Use lot price + build price if available
-      const lots = (SAMPLE_LOTS[wizardState.project ? wizardState.project.id : ''] || []);
-      const selectedLot = (wizardState.selectedLots || []).length > 0 ? lots.find(function(l) { return l.id === wizardState.selectedLots[0]; }) : null;
-      const lotPrice = selectedLot ? selectedLot.price : 0;
-      const buildPrice = d ? parseInt(d.price.replace(/[^0-9]/g, '')) || 0 : 0;
-      const totalEst = lotPrice + buildPrice > 0 ? lotPrice + buildPrice : 650000;
+      // Calculate package price for calculator default
+      const buildPriceRaw = d ? (parseInt(d.price.replace(/[^0-9]/g, '')) || 0) : 0;
+      const frontageVal = wizardState.selectedFrontage;
+      const projLotsCalc = SAMPLE_LOTS[wizardState.project ? wizardState.project.id : ''] || [];
+      const matchLotsCalc = frontageVal ? projLotsCalc.filter(function(l) { return l.frontage === frontageVal; }) : [];
+      const landPriceCalc = matchLotsCalc.length > 0 ? Math.min.apply(null, matchLotsCalc.map(function(l) { return l.price; })) : 0;
+      const totalEst = landPriceCalc + buildPriceRaw > 0 ? landPriceCalc + buildPriceRaw : 650000;
 
       calcHTML = '<div style="margin-top:20px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:24px">' +
-        '<div style="font-size:15px;font-weight:800;color:var(--primary);margin-bottom:16px">\uD83E\uDDEE Repayment Calculator</div>' +
+        '<div style="font-size:15px;font-weight:800;color:var(--primary);margin-bottom:4px">Mortgage Choice Repayment Calculator</div>' +
+        '<div style="font-size:12px;color:var(--text-light);margin-bottom:16px">Powered by <strong>Mortgage Choice</strong> \u2014 Australia\'s largest mortgage broking franchise</div>' +
         '<div style="margin-bottom:14px">' +
         '<label style="font-size:12px;font-weight:600;color:var(--text-light);display:block;margin-bottom:6px">Estimated Package Price</label>' +
         '<input type="range" min="300000" max="2000000" value="' + totalEst + '" step="10000" id="fCalcPrice" oninput="updateFinanceCalc()" style="width:100%;accent-color:var(--accent)"/>' +
@@ -2645,7 +2646,7 @@
       '<div class="wizard-form-panel">' +
       '<form id="wizardLeadForm" onsubmit="submitWizardLead(event)">' +
       '<details class="wizard-calc-details" style="margin-bottom:20px;border:1px solid var(--border);border-radius:10px;overflow:hidden">' +
-      '<summary style="padding:14px 18px;font-size:14px;font-weight:700;color:var(--primary);cursor:pointer;background:var(--bg-alt)">🧮 Repayment Calculator</summary>' +
+      '<summary style="padding:14px 18px;font-size:14px;font-weight:700;color:var(--primary);cursor:pointer;background:var(--bg-alt)">Mortgage Choice Repayment Calculator</summary>' +
       '<div style="padding:18px">' +
       '<div style="margin-bottom:12px"><label style="font-size:12px;font-weight:600;color:var(--text-light);display:block;margin-bottom:4px">Property Price</label><input type="range" min="300000" max="2000000" value="650000" step="10000" id="wCalcPrice" oninput="updateWizardCalc()" style="width:100%"/><div style="font-size:14px;font-weight:700;color:var(--primary)" id="wCalcPriceLabel">$650,000</div></div>' +
       '<div style="margin-bottom:12px"><label style="font-size:12px;font-weight:600;color:var(--text-light);display:block;margin-bottom:4px">Deposit</label><input type="range" min="5" max="30" value="10" step="1" id="wCalcDeposit" oninput="updateWizardCalc()" style="width:100%"/><div style="font-size:14px;font-weight:700;color:var(--primary)" id="wCalcDepositLabel">10% ($65,000)</div></div>' +
