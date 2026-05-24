@@ -2487,7 +2487,7 @@
 
   // ─── FINANCE QUALIFICATION STEP ───────────────────────────────────
   function renderFinanceStep() {
-    const showCalc = wizardState.financeStatus === 'yes';
+    const showCalc = wizardState.financeStatus === 'no' || wizardState.financeStatus === 'help';
     const answered = !!wizardState.financeStatus;
 
     let calcHTML = '';
@@ -2559,7 +2559,7 @@
   function selectFinance(status) {
     wizardState.financeStatus = status;
     renderWizardStep();
-    if (status === 'yes') setTimeout(updateFinanceCalc, 100);
+    if (status === 'no' || status === 'help') setTimeout(updateFinanceCalc, 100);
   }
 
   function updateFinanceCalc() {
@@ -2600,7 +2600,15 @@
       ];
     }
 
-    const priceVal = d ? d.price : 'Contact for pricing';
+    // Calculate total package price (land + build)
+    const buildPrice = d ? (parseInt(d.price.replace(/[^0-9]/g, '')) || 0) : 0;
+    const frontage = wizardState.selectedFrontage;
+    const projLots = SAMPLE_LOTS[p ? p.id : ''] || [];
+    const matchLots = frontage ? projLots.filter(function(l) { return l.frontage === frontage; }) : [];
+    const landFrom = matchLots.length > 0 ? Math.min.apply(null, matchLots.map(function(l) { return l.price; })) : 0;
+    const totalPkg = landFrom > 0 && buildPrice > 0 ? landFrom + buildPrice : 0;
+    const priceVal = totalPkg > 0 ? 'From $' + Math.round(totalPkg).toLocaleString() : (d ? d.price : 'Contact for pricing');
+    const priceBreakdown = totalPkg > 0 ? 'Land from $' + Math.round(landFrom).toLocaleString() + ' + Build ' + d.price : '';
     const buyerLabel = wizardState.buyerType === 'owner' ? '🏡 Owner Occupier' : wizardState.buyerType === 'investor' ? '📈 Investor' : '—';
     const selectedUpgrades = (wizardState.upgrades || []).map(function(uid) { var u = UPGRADE_OPTIONS.find(function(x){return x.id===uid}); return u ? u.name : ''; }).filter(Boolean);
 
@@ -2624,7 +2632,11 @@
       '<div class="wizard-summary-panel">' +
       '<div class="wizard-summary-title">Your Package Summary</div>' +
       summaryHTML +
-      '<div class="wizard-summary-price"><div class="wizard-summary-price-label">Indicative Build Price</div><div class="wizard-summary-price-value">' + priceVal + '</div></div>' +
+      '<div class="wizard-summary-price">' +
+      '<div class="wizard-summary-price-label">Indicative Package Price</div>' +
+      '<div class="wizard-summary-price-value">' + priceVal + '</div>' +
+      (priceBreakdown ? '<div style="font-size:11px;color:var(--text-light);margin-top:4px">' + priceBreakdown + '</div>' : '') +
+      '</div>' +
       '</div>' +
       '<div class="wizard-form-panel">' +
       '<form id="wizardLeadForm" onsubmit="submitWizardLead(event)">' +
