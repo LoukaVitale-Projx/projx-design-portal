@@ -2399,10 +2399,10 @@
 
  function renderWizardStep() {
     wizardState._inDetail = false;
- const totalSteps = wizardState.mode === 'land' ? 4 : 5;
+ const totalSteps = 4;
  const pct = (wizardState.step / totalSteps) * 100;
  document.getElementById('wizardProgressFill').style.width = Math.min(pct, 100) + '%';
- document.getElementById('wizardStepLabel').textContent = 'Step ' + (wizardHistory.length + 1);
+ document.getElementById('wizardStepLabel').textContent = 'Step ' + wizardState.step + ' of ' + totalSteps;
 
  const dotsEl = document.getElementById('wizardStepDots');
  dotsEl.innerHTML = Array.from({length: totalSteps}, (_, i) => {
@@ -2415,23 +2415,17 @@
  switch (wizardState.step) {
  case 1: body.innerHTML = renderLandStep3(); break;
  case 2: body.innerHTML = renderLandStep4(); break;
- default:
-      wizardState.step = totalSteps;
-      document.getElementById('wizardProgressFill').style.width = '100%';
-      document.getElementById('wizardStepLabel').textContent = 'Step ' + totalSteps + ' of ' + totalSteps;
-      dotsEl.innerHTML = Array.from({length: totalSteps}, function(_, i) { return '<div class="wizard-step-dot ' + (i + 1 < totalSteps ? 'done' : 'active') + '"></div>'; }).join('');
-      body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
+ case 3: body.innerHTML = renderUpgradesStep(); break;
+ case 4: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
+ default: wizardState.step = 4; body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
  }
  } else {
  switch (wizardState.step) {
  case 1: body.innerHTML = renderBuilderStep2(); break;
  case 2: body.innerHTML = renderBuilderStep3(); break;
- default:
-      wizardState.step = totalSteps;
-      document.getElementById('wizardProgressFill').style.width = '100%';
-      document.getElementById('wizardStepLabel').textContent = 'Step ' + totalSteps + ' of ' + totalSteps;
-      dotsEl.innerHTML = Array.from({length: totalSteps}, function(_, i) { return '<div class="wizard-step-dot ' + (i + 1 < totalSteps ? 'done' : 'active') + '"></div>'; }).join('');
-      body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
+ case 3: body.innerHTML = renderUpgradesStep(); break;
+ case 4: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
+ default: wizardState.step = 4; body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
  }
  }
  // Keep compare pill in sync
