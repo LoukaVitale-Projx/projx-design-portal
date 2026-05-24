@@ -2367,31 +2367,35 @@
  renderWizardStep();
  }
 
- function closeWizard() {
+ var wizardHistory = [];
+
+  function wizardPushState(label) {
+    wizardHistory.push({ step: wizardState.step, inDetail: wizardState._inDetail, label: label || '' });
+  }
+
+  function closeWizard() {
  document.getElementById('wizard').classList.remove('open');
  document.body.style.overflow = '';
  }
 
  function headerBack() {
-    if (wizardState._inDetail) {
-      wizardState._inDetail = false;
+    if (wizardHistory.length > 0) {
+      var prev = wizardHistory.pop();
+      wizardState.step = prev.step;
+      wizardState._inDetail = prev.inDetail;
+      document.getElementById('wizard').scrollTop = 0;
       renderWizardStep();
-      return;
+    } else {
+      closeWizard();
     }
-    wizardBack();
   }
 
   function wizardBack() {
- wizardState.step--;
- if (wizardState.step < 1) {
- closeWizard();
- return;
- }
- document.getElementById('wizard').scrollTop = 0;
- renderWizardStep();
- }
+    headerBack();
+  }
 
  function wizardNext() {
+    wizardPushState('step-' + wizardState.step);
  wizardState.step++;
  document.getElementById('wizard').scrollTop = 0;
  renderWizardStep();
@@ -3240,7 +3244,7 @@
  '</div>';
  }).join('');
 
- return '<div style="margin-bottom:16px"><button onclick="headerBack()" style="background:none;border:1.5px solid var(--border);color:var(--text-light);padding:10px 20px;border-radius:8px;font-family:Montserrat,sans-serif;font-size:13px;font-weight:600;cursor:pointer">← Go Back</button></div>' + '<div class="wizard-step-heading"><h2>Almost there! Let’s put your package together.</h2><p>Review your selections and submit — our team will be in touch within 24 hours.</p></div>' +
+ return '<div class="wizard-step-heading"><h2>Almost there! Let’s put your package together.</h2><p>Review your selections and submit — our team will be in touch within 24 hours.</p></div>' +
  '<div class="wizard-package-layout">' +
  '<div class="wizard-summary-panel">' +
  '<div class="wizard-summary-title">Your Package Summary</div>' +
