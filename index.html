@@ -2484,15 +2484,6 @@
  function showProjectDetail(projectId) {
     wizardPushState('projects');
     wizardState._inDetail = true;
-    var ts = wizardState.mode === 'land' ? 4 : 5;
-    var vs = wizardState.step + 1;
-    document.getElementById('wizardProgressFill').style.width = (vs / ts * 100) + '%';
-    document.getElementById('wizardStepLabel').textContent = 'Step ' + vs + ' of ' + ts;
-    var dotsEl = document.getElementById('wizardStepDots');
-    dotsEl.innerHTML = Array.from({length: ts}, function(_, i) {
-      var cls = (i + 1 < vs) ? 'done' : (i + 1 === vs) ? 'active' : '';
-      return '<div class="wizard-step-dot ' + cls + '"></div>';
-    }).join('');
  var p = PROJECTS.find(function(pp) { return pp.id === projectId; });
  if (!p) return;
  var imgSrc = getProjectImage(p);
@@ -2948,16 +2939,6 @@
  function showDesignDetail(designName, keepScroll) {
     wizardPushState('designs');
     wizardState._inDetail = true;
-    // Update step display
-    var ts = wizardState.mode === 'land' ? 4 : 5;
-    var vs = wizardState.step + 1;
-    document.getElementById('wizardProgressFill').style.width = (vs / ts * 100) + '%';
-    document.getElementById('wizardStepLabel').textContent = 'Step ' + vs + ' of ' + ts;
-    var dotsEl = document.getElementById('wizardStepDots');
-    dotsEl.innerHTML = Array.from({length: ts}, function(_, i) {
-      var cls = (i + 1 < vs) ? 'done' : (i + 1 === vs) ? 'active' : '';
-      return '<div class="wizard-step-dot ' + cls + '"></div>';
-    }).join('');
  var d = DESIGNS.find(function(dd) { return dd.name === designName; });
  if (!d) return;
  var imgSrc = DESIGN_IMAGES[d.name] || Object.values(DESIGN_IMAGES)[0];
