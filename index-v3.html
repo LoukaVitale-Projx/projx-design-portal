@@ -3159,60 +3159,49 @@
       var d = DESIGNS.find(function(x) { return x.name === s.designName; });
       if (!d) return '';
       var imgSrc = DESIGN_IMAGES[d.name] || Object.values(DESIGN_IMAGES)[0];
+      var desc = (typeof DESIGN_DESCRIPTIONS !== 'undefined' && DESIGN_DESCRIPTIONS[d.name]) ? DESIGN_DESCRIPTIONS[d.name] : '';
 
-      // Land + total price if project + frontage selected
-      var landSection = '';
+      var landFrom = 0, totalPkg = 0, buildPrice = parseInt(d.price.replace(/[^0-9]/g, '')) || 0;
       var p = wizardState.project;
       var frontage = wizardState.selectedFrontage;
       if (p && frontage) {
         var projLots = SAMPLE_LOTS[p.id] || [];
         var matchLots = projLots.filter(function(l) { return l.frontage === frontage; });
-        var landFrom = matchLots.length > 0 ? Math.min.apply(null, matchLots.map(function(l) { return l.price; })) : 0;
-        var buildPrice = parseInt(d.price.replace(/[^0-9]/g, '')) || 0;
-        if (landFrom > 0) {
-          landSection =
-            '<div style="background:var(--bg-alt);border-radius:8px;padding:10px 12px;margin-top:8px">' +
-            '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-xlight);margin-bottom:4px">Land from</div>' +
-            '<div style="font-size:14px;font-weight:800;color:var(--primary)">$' + Math.round(landFrom/1000) + 'k</div>' +
-            '</div>' +
-            '<div style="background:rgba(59,125,221,0.06);border:1px solid rgba(59,125,221,0.15);border-radius:8px;padding:10px 12px;margin-top:6px">' +
-            '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--accent);margin-bottom:4px">Total package</div>' +
-            '<div style="font-size:18px;font-weight:900;color:var(--accent)">From $' + Math.round((landFrom + buildPrice) / 1000) + 'k</div>' +
-            '</div>';
-        }
+        landFrom = matchLots.length > 0 ? Math.min.apply(null, matchLots.map(function(l) { return l.price; })) : 0;
+        totalPkg = landFrom > 0 ? landFrom + buildPrice : 0;
       }
 
-      return '<div style="flex:1;min-width:220px;max-width:300px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--card-shadow)">' +
-        '<div style="height:160px;overflow:hidden"><img src="' + imgSrc + '" alt="' + d.name + '" style="width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/></div>' +
-        '<div style="padding:18px;flex:1;display:flex;flex-direction:column;gap:8px">' +
-        '<div style="font-size:16px;font-weight:900;color:var(--primary);letter-spacing:-0.3px">' + d.name + '</div>' +
-        '<div style="font-size:12px;color:var(--accent);font-weight:600">' + d.builder + '</div>' +
-        '<div style="display:flex;gap:10px;font-size:12px;color:var(--text-light);flex-wrap:wrap;margin-bottom:2px">' +
-        '<span>\uD83D\uDECF ' + d.beds + '</span><span>\uD83D\uDEBF ' + d.baths + '</span><span>\uD83D\uDE97 ' + d.garage + '</span>' +
+      return '<div style="flex:1;min-width:280px;max-width:380px;background:var(--bg);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column">' +
+        '<div style="height:220px;overflow:hidden;position:relative"><img src="' + imgSrc + '" alt="' + d.name + '" style="width:100%;height:100%;object-fit:cover"/><div style="position:absolute;bottom:10px;left:10px;background:rgba(27,36,50,0.85);color:#fff;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700">' + d.builder + '</div></div>' +
+        '<div style="padding:20px;flex:1;display:flex;flex-direction:column">' +
+        '<div style="font-size:18px;font-weight:900;color:var(--primary);margin-bottom:12px">' + d.name + '</div>' +
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px">' +
+        '<div style="background:var(--bg-alt);padding:12px 8px;text-align:center"><div style="font-size:20px;font-weight:900;color:var(--primary)">' + d.beds + '</div><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase">Beds</div></div>' +
+        '<div style="background:var(--bg-alt);padding:12px 8px;text-align:center"><div style="font-size:20px;font-weight:900;color:var(--primary)">' + d.baths + '</div><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase">Baths</div></div>' +
+        '<div style="background:var(--bg-alt);padding:12px 8px;text-align:center"><div style="font-size:20px;font-weight:900;color:var(--primary)">' + d.garage + '</div><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase">Cars</div></div>' +
         '</div>' +
-        '<div style="font-size:12px;color:var(--text-light)">\uD83D\uDCCF ' + d.sqm + 'm\u00B2 \u00B7 Frontage ' + d.frontage + '</div>' +
-        '<div style="font-size:15px;font-weight:800;color:var(--primary)">Build: ' + d.price + '</div>' +
-        landSection +
-        '<div style="margin-top:auto;padding-top:12px;display:flex;flex-direction:column;gap:8px">' +
-        '<button onclick="selectFromCompare(\'' + d.name.replace(/'/g, "\\'") + '\')" style="padding:10px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:Montserrat,sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:var(--transition);width:100%">Select this package \u2192</button>' +
-        '<button onclick="removeFromCompare(\'' + d.name.replace(/'/g, "\\'") + '\')" style="padding:8px 16px;background:transparent;color:var(--text-light);border:1.5px solid var(--border);border-radius:8px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:var(--transition);width:100%">Remove</button>' +
+        '<div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--bg-alt);border-radius:8px;margin-bottom:12px">' +
+        '<div><div style="font-size:22px;font-weight:900;color:var(--primary)">' + d.sqm + '<span style="font-size:12px">m\u00b2</span></div><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase">House Size</div></div>' +
+        '<div style="text-align:right"><div style="font-size:22px;font-weight:900;color:var(--primary)">' + d.frontage + '</div><div style="font-size:9px;font-weight:700;color:var(--text-light);text-transform:uppercase">Min Lot</div></div>' +
+        '</div>' +
+        (desc ? '<div style="font-size:12px;color:var(--text-light);line-height:1.6;margin-bottom:12px">' + desc.substring(0, 140) + (desc.length > 140 ? '...' : '') + '</div>' : '') +
+        '<div style="margin-bottom:12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-xlight);margin-bottom:4px">Build Price</div><div style="font-size:20px;font-weight:900;color:var(--primary)">' + d.price + '</div></div>' +
+        (totalPkg > 0 ? '<div style="padding:10px;background:rgba(59,125,221,0.06);border:1px solid rgba(59,125,221,0.15);border-radius:8px;margin-bottom:12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--accent);margin-bottom:2px">Package From</div><div style="font-size:20px;font-weight:900;color:var(--accent)">$' + Math.round(totalPkg).toLocaleString() + '</div></div>' : '') +
+        '<div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">' +
+        '<button onclick="selectFromCompare(\'' + d.name.replace(/'/g, "\\'") + '\')" style="padding:12px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-family:Montserrat,sans-serif;font-size:13px;font-weight:700;cursor:pointer;width:100%">Select \u2192</button>' +
+        '<button onclick="removeFromCompare(\'' + d.name.replace(/'/g, "\\'") + '\')" style="padding:10px;background:transparent;color:var(--text-light);border:1.5px solid var(--border);border-radius:10px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:600;cursor:pointer;width:100%">Remove</button>' +
         '</div></div></div>';
     }).join('');
 
     modal.innerHTML =
-      '<div style="max-width:1100px;margin:0 auto;padding:32px 24px">' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;position:sticky;top:0;background:#fff;padding:16px 0;z-index:1;border-bottom:1px solid var(--border)">' +
-      '<div>' +
-      '<h2 style="font-size:26px;font-weight:900;letter-spacing:-1px;color:var(--primary);margin-bottom:4px">Compare Packages</h2>' +
-      '<p style="font-size:13px;color:var(--text-light)">' + saved.length + ' design' + (saved.length !== 1 ? 's' : '') + ' saved for comparison</p>' +
+      '<div style="max-width:1200px;margin:0 auto;padding:24px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;position:sticky;top:0;background:#fff;padding:16px 0;z-index:1;border-bottom:1px solid var(--border)">' +
+      '<div><h2 style="font-size:22px;font-weight:900;color:var(--primary);margin-bottom:4px">Compare Designs</h2><p style="font-size:13px;color:var(--text-light)">' + saved.length + ' design' + (saved.length !== 1 ? 's' : '') + ' saved</p></div>' +
+      '<button onclick="closeCompareModal()" style="width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">\u2715</button>' +
       '</div>' +
-      '<button onclick="closeCompareModal()" style="width:40px;height:40px;border-radius:50%;background:var(--bg-alt);border:1.5px solid var(--border);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-light);font-family:inherit;flex-shrink:0">\u2715</button>' +
-      '</div>' +
-      '<div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center">' + cols + '</div>' +
+      '<div style="display:flex;gap:20px;overflow-x:auto;padding-bottom:16px">' + cols + '</div>' +
       '</div>';
-
     modal.style.display = 'block';
-    document.getElementById('wizard').scrollTop = 0;
   }
 
   function closeCompareModal() {
