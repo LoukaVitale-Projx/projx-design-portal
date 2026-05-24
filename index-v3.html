@@ -2520,16 +2520,6 @@
 
  html += '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">' +
  '</div>';
- var lots = SAMPLE_LOTS[p.id] || [];
- if (lots.length > 0) {
-   var fg = {};
-   lots.forEach(function(lot) { var k = lot.frontage + 'm'; if (!fg[k]) fg[k] = {f: lot.frontage, c: 0, mp: Infinity}; fg[k].c++; if (lot.price < fg[k].mp) fg[k].mp = lot.price; });
-   var gs = Object.values(fg).sort(function(a,b) { return a.f - b.f; });
-   html += '<div style="margin-bottom:20px"><div style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:12px">Available Lot Sizes</div>' +
-     '<div style="display:flex;gap:10px;flex-wrap:wrap">' +
-     gs.map(function(g) { return '<div style="background:var(--bg-alt);border-radius:8px;padding:10px 16px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--primary)">' + g.f + 'm</div><div style="font-size:10px;color:var(--text-light)">' + g.c + ' lots from ' + fmtPrice(g.mp) + '</div></div>'; }).join('') +
-     '</div></div>';
- }
  '<button class="wizard-submit-btn" onclick="wizardSelectProject(\'' + p.id + '\')" style="max-width:360px">Select ' + p.name + ' \u2192</button>' +
  '</div>';
 
