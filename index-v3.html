@@ -2804,8 +2804,38 @@
 
  var mapHTML = '<div id="wizardMap" style="height:450px;border-radius:var(--radius);border:1px solid var(--border);overflow:hidden"></div>';
 
+
+ // Apply wizard filters
+ var wStatus = wizardState._wStatus || 'all';
+ var wBudget = wizardState._wBudget || 'all';
+ var filteredCards = PROJECTS;
+ if (wStatus !== 'all') filteredCards = filteredCards.filter(function(p) { return getProjectStatus(p) === wStatus; });
+ if (wBudget !== 'all') {
+   var mxB = parseInt(wBudget) * 1000; var mnB = parseInt(wBudget) === 400 ? 0 : parseInt(wBudget) === 600 ? 400000 : parseInt(wBudget) === 800 ? 600000 : 800000;
+   filteredCards = filteredCards.filter(function(p) { if (p.minPrice === 0) return true; var pk = p.minPrice + 245000; return parseInt(wBudget) > 1000 ? pk >= 1000000 : (pk < mxB && (mnB === 0 || pk >= mnB)); });
+ }
+ cards = filteredCards.map(function(p, i) {
+   var st = getProjectStatus(p); var stL = st === 'available' ? 'Available Now' : 'Coming Soon'; var stC = st === 'available' ? '#059669' : '#D97706';
+   return '<div class="wizard-project-card" onclick="showProjectDetail(\'' + p.id + '\')">' +
+     '<div class="wizard-project-img"><img src="' + getProjectImage(p) + '" alt="' + p.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/>' +
+     '<div style="position:absolute;top:10px;right:10px;background:' + stC + ';color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.25)">' + stL + '</div></div>' +
+     '<div class="wizard-project-body"><div style="font-size:11px;font-weight:600;color:var(--text-light);margin-bottom:8px">' + p.region + '</div>' +
+     '<div class="wizard-project-name">' + p.name + '</div><div class="wizard-project-suburb">' + p.suburb + '</div>' +
+     '<div class="wizard-project-meta"><span class="wizard-project-lots">' + p.availLots + ' lots</span><span class="wizard-project-price">' + (p.minPrice > 0 ? 'Packages from ' + fmtPrice(p.minPrice + 245000) : 'Pricing TBA') + '</span></div></div></div>';
+ }).join('');
+ var statusF = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">' +
+   '<button class="filter-chip' + (wStatus==='all'?' active':'') + '" onclick="wizardState._wStatus=\'all\';renderWizardStep()">All Estates</button>' +
+   '<button class="filter-chip' + (wStatus==='available'?' active':'') + '" onclick="wizardState._wStatus=\'available\';renderWizardStep()">Available Now</button>' +
+   '<button class="filter-chip' + (wStatus==='coming-soon'?' active':'') + '" onclick="wizardState._wStatus=\'coming-soon\';renderWizardStep()">Coming Soon</button></div>';
+ var budgetF = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center">' +
+   '<span style="font-size:12px;font-weight:600;color:var(--text-light)">Package Budget:</span>' +
+   '<button class="filter-chip' + (wBudget==='400'?' active':'') + '" onclick="wizardState._wBudget=\'400\';renderWizardStep()">Under $645,000</button>' +
+   '<button class="filter-chip' + (wBudget==='600'?' active':'') + '" onclick="wizardState._wBudget=\'600\';renderWizardStep()">$645,000+</button>' +
+   '<button class="filter-chip' + (wBudget==='all'?' active':'') + '" onclick="wizardState._wBudget=\'all\';renderWizardStep()">All Budgets</button></div>';
+
  return '<button class="wizard-back-btn" onclick="wizardBack()">\u2190 Back</button>' +
  '<div class="wizard-step-heading"><h2>Where would you like to build your ' + designName + '?</h2><p>Choose the location that suits you</p></div>' +
+ statusF + budgetF +
  toggle +
  (viewMode === 'list' ? '<div class="wizard-card-grid-lg">' + cards + '</div>' : mapHTML);
  }
