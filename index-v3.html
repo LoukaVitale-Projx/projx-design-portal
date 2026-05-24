@@ -2059,7 +2059,7 @@
     const design = DESIGNS.find(function(d) { return d.name === designName; });
     if (!design) return;
     const builder = BUILDERS.find(function(b) { return b.name === design.builder; });
-    wizardState = { mode: 'builder', step: 4, region: null, project: null, builder: builder, design: design, buyerType: null, selectedLots: [], financeStatus: null, upgrades: [], _designFilter: 'All' };
+    wizardState = { mode: 'builder', step: 4, region: null, project: null, builder: builder, design: design, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2069,7 +2069,7 @@
   function openWizardForBuilder(builderId) {
     const builder = BUILDERS.find(function(b) { return b.id === builderId; });
     if (!builder) return;
-    wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: null, buyerType: null, selectedLots: [], financeStatus: null, upgrades: [], _designFilter: 'All' };
+    wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2079,7 +2079,7 @@
   function openWizardForProject(projectId) {
     const project = PROJECTS.find(function(p) { return p.id === projectId; });
     if (!project) return;
-    wizardState = { mode: 'land', step: 4, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedLots: [], financeStatus: null, upgrades: [], _designFilter: 'All' };
+    wizardState = { mode: 'land', step: 4, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2087,7 +2087,7 @@
   }
 
   function openWizard(mode) {
-    wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, buyerType: null, selectedLots: [], financeStatus: null, upgrades: [], _designFilter: 'All' };
+    wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2244,59 +2244,64 @@
   function renderLandStep3() {
     const p = wizardState.project;
     const lots = SAMPLE_LOTS[p.id] || [];
-    const selectedLots = wizardState.selectedLots || [];
+    const selectedFrontage = wizardState.selectedFrontage || null;
 
     if (lots.length === 0) {
-      // Coming Soon project — no lots to select
       return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
         '<div class="wizard-step-heading"><h2>' + p.name + '</h2><p>📍 ' + p.suburb + ', ' + p.region + ' — ' + p.totalLots + ' lots planned</p></div>' +
         '<div style="background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius);padding:40px;text-align:center;margin-bottom:24px">' +
         '<div style="font-size:32px;margin-bottom:12px">🛠️</div>' +
         '<div style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:8px">Coming Soon</div>' +
         '<div style="font-size:14px;color:var(--text-light);margin-bottom:20px">Lot details and pricing for ' + p.name + ' are being finalised.<br>Register your interest to be first notified when lots are released.</div>' +
-        '<button class="wizard-submit-btn" onclick="wizardState.selectedLots=[];wizardState.step=' + (wizardState.mode === 'land' ? 7 : 6) + ';renderWizardStep()" style="max-width:300px;margin:0 auto">Register Interest →</button>' +
+        '<button class="wizard-submit-btn" onclick="wizardState.selectedFrontage=null;wizardState.step=' + (wizardState.mode === 'land' ? 8 : 7) + ';renderWizardStep()" style="max-width:300px;margin:0 auto">Register Interest →</button>' +
         '</div>';
     }
 
-    const lotCards = lots.map(function(lot) {
-      const isSelected = selectedLots.indexOf(lot.id) !== -1;
-      const statusColor = lot.status === 'Available' ? '#059669' : '#D97706';
-      return '<div style="background:var(--bg);border:2px solid ' + (isSelected ? 'var(--accent)' : 'var(--border)') + ';border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.2s;position:relative" onclick="toggleLot(\'' + lot.id + '\')">' +
-        (isSelected ? '<div style="position:absolute;top:8px;right:8px;background:var(--accent);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">✓</div>' : '') +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
-        '<span style="font-size:15px;font-weight:800;color:var(--primary)">' + lot.name + '</span>' +
-        '<span style="font-size:10px;font-weight:700;color:' + statusColor + ';background:' + statusColor + '15;padding:3px 8px;border-radius:10px">' + lot.status + '</span>' +
+    // Group lots by frontage width
+    var frontageGroups = {};
+    lots.forEach(function(lot) {
+      var key = lot.frontage + 'm';
+      if (!frontageGroups[key]) frontageGroups[key] = {frontage: lot.frontage, label: key, lots: [], minPrice: Infinity};
+      frontageGroups[key].lots.push(lot);
+      if (lot.price < frontageGroups[key].minPrice) frontageGroups[key].minPrice = lot.price;
+    });
+    var groups = Object.values(frontageGroups).sort(function(a,b) { return a.frontage - b.frontage; });
+
+    var cards = groups.map(function(g) {
+      var isSelected = selectedFrontage === g.frontage;
+      var availCount = g.lots.filter(function(l) { return l.status === 'Available'; }).length;
+      return '<div style="background:var(--bg);border:2px solid ' + (isSelected ? 'var(--accent)' : 'var(--border)') + ';border-radius:var(--radius-lg);padding:28px;cursor:pointer;transition:all 0.2s;text-align:center;position:relative" onclick="selectFrontageGroup(' + g.frontage + ')">' +
+        (isSelected ? '<div style="position:absolute;top:12px;right:12px;background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800">✓</div>' : '') +
+        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-xlight);margin-bottom:12px">Lot Width</div>' +
+        '<div style="font-size:42px;font-weight:900;color:' + (isSelected ? 'var(--accent)' : 'var(--primary)') + ';letter-spacing:-2px;line-height:1;margin-bottom:8px">' + g.label + '</div>' +
+        '<div style="font-size:11px;color:var(--text-xlight);margin-bottom:16px">wide</div>' +
+        '<div style="background:' + (isSelected ? 'rgba(59,125,221,0.08)' : 'var(--bg-alt)') + ';border-radius:8px;padding:10px;margin-bottom:14px">' +
+        '<span style="font-size:12px;color:var(--text-light)">From </span>' +
+        '<span style="font-size:18px;font-weight:800;color:var(--primary)">$' + Math.round(g.minPrice/1000) + 'k</span>' +
         '</div>' +
-        '<div style="display:flex;gap:16px;font-size:12px;color:var(--text-light)">' +
-        '<span><strong style="color:var(--primary)">' + lot.size + '</strong> m²</span>' +
-        '<span><strong style="color:var(--primary)">' + lot.frontage + '</strong>m frontage</span>' +
-        '<span style="font-weight:700;color:var(--accent)">$' + lot.price.toLocaleString() + '</span>' +
-        '</div>' +
+        '<div style="font-size:12px;color:var(--success);font-weight:700">' + availCount + ' lot' + (availCount !== 1 ? 's' : '') + ' available</div>' +
         '</div>';
     }).join('');
 
     return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
-      '<div class="wizard-step-heading"><h2>Select your lot at ' + p.name + '</h2><p>📍 ' + p.suburb + ', ' + p.region + ' — Choose one or more lots to see compatible builds</p></div>' +
-      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px">' + lotCards + '</div>' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">' +
-      '<span style="font-size:13px;color:var(--text-light)">' + selectedLots.length + ' lot' + (selectedLots.length !== 1 ? 's' : '') + ' selected</span>' +
-      '<button class="wizard-submit-btn" onclick="wizardNext()" style="max-width:320px"' + (selectedLots.length === 0 ? ' disabled style="max-width:320px;opacity:0.5;cursor:not-allowed"' : '') + '>See Compatible Builds →</button>' +
-      '</div>';
+      '<div class="wizard-step-heading"><h2>Choose your lot size at ' + p.name + '</h2><p>📍 ' + p.suburb + ', ' + p.region + ' — Select a lot width to see compatible home designs</p></div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:28px">' + cards + '</div>' +
+      (selectedFrontage ? '<div style="text-align:center"><button class="wizard-submit-btn" onclick="wizardNext()" style="max-width:360px">See Compatible Builds for ' + selectedFrontage + 'm Lots →</button></div>' : '');
   }
 
-  function toggleLot(lotId) {
-    if (!wizardState.selectedLots) wizardState.selectedLots = [];
-    var idx = wizardState.selectedLots.indexOf(lotId);
-    if (idx === -1) { wizardState.selectedLots.push(lotId); } else { wizardState.selectedLots.splice(idx, 1); }
+  function selectFrontageGroup(frontage) {
+    wizardState.selectedFrontage = frontage;
     renderWizardStep();
   }
 
   function renderLandStep4() {
-    // Get max frontage from selected lots to filter compatible designs
-    const lots = SAMPLE_LOTS[wizardState.project.id] || [];
-    const selectedLots = (wizardState.selectedLots || []).map(function(id) { return lots.find(function(l) { return l.id === id; }); }).filter(Boolean);
-    const maxFrontage = selectedLots.length > 0 ? Math.min.apply(null, selectedLots.map(function(l) { return l.frontage; })) : 99;
+    // Filter designs by selected frontage width
+    const maxFrontage = wizardState.selectedFrontage || 99;
     const frontageLabel = maxFrontage < 99 ? maxFrontage + 'm' : '';
+    // Get "from" land price for this frontage
+    const lots = SAMPLE_LOTS[wizardState.project ? wizardState.project.id : ''] || [];
+    const matchingLots = lots.filter(function(l) { return l.frontage === maxFrontage; });
+    const landFromPrice = matchingLots.length > 0 ? Math.min.apply(null, matchingLots.map(function(l) { return l.price; })) : 0;
 
     // Filter designs compatible with the selected lot frontage
     function designFits(d) {
@@ -2322,14 +2327,15 @@
         '<div class="wizard-design-name">' + d.name + '</div>' +
         '<div class="wizard-design-builder-tag">' + d.builder + '</div>' +
         '<div class="wizard-design-specs"><span>🛏 ' + d.beds + '</span><span>🚿 ' + d.baths + '</span><span>🚗 ' + d.garage + '</span><span>📐 ' + d.frontage + '</span></div>' +
+        (landFromPrice > 0 ? '<div style="font-size:11px;color:var(--text-xlight);margin-bottom:6px">Land from $' + Math.round(landFromPrice/1000) + 'k + Build ' + d.price + '</div>' : '') +
         '<div class="wizard-design-price-row">' +
-        '<span class="wizard-design-price">' + d.price + '</span>' +
+        '<span class="wizard-design-price">' + (landFromPrice > 0 ? 'Pkg from $' + Math.round((landFromPrice + (parseInt(d.price.replace(/[^0-9]/g,''))||0))/1000) + 'k' : d.price) + '</span>' +
         '<button class="wizard-select-btn" onclick="wizardSelectDesign(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm² • Select →</button>' +
         '</div></div></div>';
     }).join('');
 
     return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
-      '<div class="wizard-step-heading"><h2>Compatible designs for ' + wizardState.project.name + '</h2><p>' + (maxFrontage < 99 ? 'Showing designs that fit your ' + frontageLabel + ' frontage lot' + (selectedLots.length > 1 ? 's' : '') : 'Select a design to continue') + '</p></div>' +
+      '<div class="wizard-step-heading"><h2>Compatible designs for ' + wizardState.project.name + '</h2><p>' + (maxFrontage < 99 ? 'Showing designs that fit your ' + frontageLabel + ' wide lot — ' + filtered.length + ' designs available' : 'Select a design to continue') + '</p></div>' +
       '<div class="wizard-filter-tabs">' + tabs + '</div>' +
       '<div class="wizard-design-grid">' + cards + '</div>';
   }
