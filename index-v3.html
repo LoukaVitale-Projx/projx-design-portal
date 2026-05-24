@@ -1685,26 +1685,32 @@
   };
 
   // Fallback pool for project cards (premium renders cycling)
-  const PROJECT_IMAGES = [
-    'https://www.metricon.com.au/home-designs/hampshire/exterior/Hampshire-Stamford.jpg',
-    'https://www.metricon.com.au/home-designs/glendale/facades/Isla-as-displayed-on-the-Glendale.jpg',
-    'https://www.metricon.com.au/home-designs/doulton/facades/Doulton-56-Classique-Facade-Burwood-vic-1.jpg',
-    'https://www.metricon.com.au/home-designs/amira/facades/Amira-28-facade-cut-for-web_2026-01-14-225151_gdtz.jpg',
-    'https://www.metricon.com.au/home-designs/kirra/facades/Kirra_Modern_Light-scheme_FINAL3840-x2160.jpg',
-    'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R2_12.5_Hamptons_Silverwood-45_LS_240321.jpg',
-    'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R2_12.5_Hamptons_Brookside-33_LS3_230428.jpg',
-    'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R1_10_Gable-Hampton_Fairview-20_230523-1.jpg',
-    'https://framerusercontent.com/images/MR5sh6ih0HrjUC2Gu5VL5LriU0.jpg?scale-down-to=1024',
-    'https://framerusercontent.com/images/8jJn3N4PRgDX1wwiJWy3Iy251vY.jpg?scale-down-to=1024',
-    'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Hamptons-home.jpg',
-    'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Contemporary-Greenbank.png',
-    'https://www.metricon.com.au/home-designs/hampshire/exterior/Hampshire-Stamford.jpg',
-    'https://qld.creationhomes.com.au/wp-content/uploads/2024/07/R1_12.5_Flat_Southcote-23_LS_230524-scaled.jpg',
-    'https://framerusercontent.com/images/4SYNhhT0LE7A7F9ibPpaMypqCVU.jpg?scale-down-to=1024',
-    'https://www.metricon.com.au/home-designs/kirra/facades/Kirra_Modern_Light-scheme_FINAL3840-x2160.jpg',
-    'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R1_10_Hip_Hillcrest-16_DS_230530-scaled.jpg',
-    'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Traditional-Greenbank.png'
-  ];
+  // Per-project images — real ProjX images where available, stock suburb imagery for the rest
+  const PROJECT_IMAGE_MAP = {
+    'peregian': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=400&fit=crop&q=80',
+    'bellmere': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop&q=80',
+    'woodchester': 'img/woodchester.jpg',
+    'lakeviewestate': 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600&h=400&fit=crop&q=80',
+    'hoya': 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&h=400&fit=crop&q=80',
+    'hellidon': 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&h=400&fit=crop&q=80',
+    'harvestestate': 'img/harvest.jpg',
+    'fernvale': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=400&fit=crop&q=80',
+    'oakey': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop&q=80',
+    'barrensroad': 'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=600&h=400&fit=crop&q=80',
+    'sorensenrise': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop&q=80',
+    'banorapoint': 'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600&h=400&fit=crop&q=80',
+    'oaklandestate': 'img/oakland.jpg',
+    'sevenhills': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop&q=80',
+    'cranley': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop&q=80',
+    'markwellroad': 'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=600&h=400&fit=crop&q=80',
+    'riverina': 'img/riverina.jpg',
+    'ormistonpoint': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=400&fit=crop&q=80'
+  };
+  function getProjectImage(p) {
+    return PROJECT_IMAGE_MAP[p.id] || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop&q=80';
+  }
+  // Keep PROJECT_IMAGES as fallback array for legacy references
+  const PROJECT_IMAGES = Object.values(PROJECT_IMAGE_MAP);
 
   // ─── DATA ─────────────────────────────────────────────────────────
   const PROJECTS = [
@@ -1927,7 +1933,7 @@
       return `
       <div class="project-card fade-in" data-status="${status}" style="transition-delay:${(i%3)*0.08}s">
         <div class="project-img">
-          <img src="${PROJECT_IMAGES[PROJECTS.indexOf(p) % PROJECT_IMAGES.length]}" alt="${p.name}" loading="lazy"
+          <img src="${getProjectImage(p)}" alt="${p.name}" loading="lazy"
             onerror="this.src='https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80'" />
           <div class="project-lots-badge">${p.availLots} Lots</div>
           <div style="position:absolute;top:12px;left:12px;background:${statusBg};color:${statusColor};font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:0.5px;border:1px solid ${statusColor}20">${statusLabel}</div>
@@ -2385,7 +2391,7 @@
       projects.map(function(p) {
         const idx = PROJECTS.indexOf(p);
         return '<div class="wizard-project-card" onclick="wizardSelectProject(\'' + p.id + '\')">' +
-          '<div class="wizard-project-img"><img src="' + PROJECT_IMAGES[idx % PROJECT_IMAGES.length] + '" alt="' + p.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/></div>' +
+          '<div class="wizard-project-img"><img src="' + getProjectImage(p) + '" alt="' + p.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/></div>' +
           '<div class="wizard-project-body">' +
           '<div class="wizard-project-name">' + p.name + '</div>' +
           '<div class="wizard-project-suburb">📍 ' + p.suburb + '</div>' +
@@ -2649,7 +2655,7 @@
       var statusLabel = status === 'available' ? 'Available Now' : 'Coming Soon';
       var statusColor = status === 'available' ? '#059669' : '#D97706';
       return '<div class="wizard-project-card" onclick="wizardSelectProject(\'' + p.id + '\')">' +
-        '<div class="wizard-project-img"><img src="' + PROJECT_IMAGES[i % PROJECT_IMAGES.length] + '" alt="' + p.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/>' +
+        '<div class="wizard-project-img"><img src="' + getProjectImage(p) + '" alt="' + p.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/>' +
         '<div style="position:absolute;top:8px;left:8px;background:' + statusColor + '18;color:' + statusColor + ';font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;border:1px solid ' + statusColor + '30">' + statusLabel + '</div></div>' +
         '<div class="wizard-project-body">' +
         '<div class="wizard-project-name">' + p.name + '</div>' +
