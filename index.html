@@ -3133,8 +3133,8 @@
     const selectedUpgrades = (wizardState.upgrades || []).map(function(uid) { var u = UPGRADE_OPTIONS.find(function(x){return x.id===uid}); return u ? u.name : ''; }).filter(Boolean);
 
     const financeLabel = wizardState.financeStatus === 'yes' ? '✅ Pre-approved' : wizardState.financeStatus === 'no' ? '🔄 Not yet' : wizardState.financeStatus === 'help' ? '🤝 Needs referral' : '—';
-    summaryRows.unshift({label: 'Buyer Type', value: buyerLabel, sub: ''});
-    summaryRows.push({label: 'Finance', value: financeLabel, sub: ''});
+    // buyer type shown in form only
+    // finance shown in form only
     if (selectedUpgrades.length > 0) {
       summaryRows.push({label: 'Upgrades (' + selectedUpgrades.length + ')', value: selectedUpgrades.join(', '), sub: ''});
     }
