@@ -2780,7 +2780,7 @@
  const designName = wizardState.design ? wizardState.design.name : 'home';
  const viewMode = wizardState._builderProjectView || 'list';
 
- const cards = PROJECTS.map(function(p, i) {
+ var cards = PROJECTS.map(function(p, i) {
  var status = getProjectStatus(p);
  var statusLabel = status === 'available' ? 'Available Now' : 'Coming Soon';
  var statusColor = status === 'available' ? '#059669' : '#D97706';
