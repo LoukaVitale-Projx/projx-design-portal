@@ -1539,14 +1539,17 @@
         </button>
       </div>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center">
-      <span style="font-size:12px;font-weight:600;color:var(--text-light);margin-right:4px">Package Budget:</span>
-      <button class="filter-chip estate-budget active" data-budget="all" onclick="filterByBudget('all')">All Budgets</button>
-      <button class="filter-chip estate-budget" data-budget="400" onclick="filterByBudget('400')">Under $400,000</button>
-      <button class="filter-chip estate-budget" data-budget="600" onclick="filterByBudget('600')">$400,000 – $600,000</button>
-      <button class="filter-chip estate-budget" data-budget="800" onclick="filterByBudget('800')">$600,000 – $800,000</button>
-      <button class="filter-chip estate-budget" data-budget="1000" onclick="filterByBudget('1000')">$800,000 – $1,000,000</button>
-      <button class="filter-chip estate-budget" data-budget="1001" onclick="filterByBudget('1001')">$1,000,000+</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+      <div style="display:flex;gap:4px;background:var(--bg-alt);border:1px solid var(--border);border-radius:10px;padding:4px;margin-right:8px">
+        <button id="budgetModePackage" style="padding:6px 14px;border:none;border-radius:8px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:600;cursor:pointer;background:var(--primary);color:#fff;transition:all 0.2s" onclick="switchBudgetMode('package')">Package Budget</button>
+        <button id="budgetModeLand" style="padding:6px 14px;border:none;border-radius:8px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:var(--text-light);transition:all 0.2s" onclick="switchBudgetMode('land')">Land Budget</button>
+      </div>
+      <button class="filter-chip estate-budget active" data-budget="all" onclick="filterByBudget('all')">All</button>
+      <button class="filter-chip estate-budget" data-budget="400" onclick="filterByBudget('400')">Under <span class="budget-val">$645,000</span></button>
+      <button class="filter-chip estate-budget" data-budget="600" onclick="filterByBudget('600')"><span class="budget-val">$645,000</span> – <span class="budget-val">$845,000</span></button>
+      <button class="filter-chip estate-budget" data-budget="800" onclick="filterByBudget('800')"><span class="budget-val">$845,000</span> – <span class="budget-val">$1,045,000</span></button>
+      <button class="filter-chip estate-budget" data-budget="1000" onclick="filterByBudget('1000')"><span class="budget-val">$1,045,000</span> – <span class="budget-val">$1,245,000</span></button>
+      <button class="filter-chip estate-budget" data-budget="1001" onclick="filterByBudget('1001')"><span class="budget-val">$1,245,000</span>+</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
       <button class="estate-filter filter-chip active" data-filter="all" onclick="renderProjects(null)">All Estates</button>
@@ -1895,6 +1898,27 @@
 
   var currentStatusFilter = 'all';
   var currentBudgetFilter = 'all';
+  var currentBudgetMode = 'package'; // 'package' or 'land'
+  var CHEAPEST_BUILD = 245000;
+
+  function switchBudgetMode(mode) {
+    currentBudgetMode = mode;
+    document.getElementById('budgetModePackage').style.background = mode === 'package' ? 'var(--primary)' : 'transparent';
+    document.getElementById('budgetModePackage').style.color = mode === 'package' ? '#fff' : 'var(--text-light)';
+    document.getElementById('budgetModeLand').style.background = mode === 'land' ? 'var(--primary)' : 'transparent';
+    document.getElementById('budgetModeLand').style.color = mode === 'land' ? '#fff' : 'var(--text-light)';
+    // Update the chip labels
+    var ranges = mode === 'package'
+      ? [['$645,000',''],['$645,000','$845,000'],['$845,000','$1,045,000'],['$1,045,000','$1,245,000'],['$1,245,000','']]
+      : [['$400,000',''],['$400,000','$600,000'],['$600,000','$800,000'],['$800,000','$1,000,000'],['$1,000,000','']];
+    var chips = document.querySelectorAll('.estate-budget[data-budget]:not([data-budget="all"])');
+    var labels = mode === 'package'
+      ? ['Under $645,000','$645,000 \u2013 $845,000','$845,000 \u2013 $1,045,000','$1,045,000 \u2013 $1,245,000','$1,245,000+']
+      : ['Under $400,000','$400,000 \u2013 $600,000','$600,000 \u2013 $800,000','$800,000 \u2013 $1,000,000','$1,000,000+'];
+    chips.forEach(function(chip, i) { chip.innerHTML = labels[i] || ''; });
+    // Re-filter with current selection
+    filterByBudget(currentBudgetFilter);
+  }
 
   function filterByBudget(budget) {
     currentBudgetFilter = budget;
@@ -1913,16 +1937,17 @@
     // Apply budget filter
     if (currentBudgetFilter !== 'all') {
       var maxBudget = parseInt(currentBudgetFilter);
+      var offset = currentBudgetMode === 'package' ? CHEAPEST_BUILD : 0;
       if (maxBudget <= 1000) {
         var minBudget = maxBudget === 400 ? 0 : maxBudget === 600 ? 400000 : maxBudget === 800 ? 600000 : 800000;
         var maxB = maxBudget * 1000;
         filtered = filtered.filter(function(p) {
           if (p.minPrice === 0) return true;
-          var pkgPrice = p.minPrice + 245000;
-          return pkgPrice < maxB && (minBudget === 0 || pkgPrice >= minBudget);
+          var comparePrice = p.minPrice + offset;
+          return comparePrice < maxB && (minBudget === 0 || comparePrice >= minBudget);
         });
       } else {
-        filtered = filtered.filter(function(p) { return (p.minPrice + 245000) >= 1000000 || p.minPrice === 0; });
+        filtered = filtered.filter(function(p) { return (p.minPrice + offset) >= 1000000 || p.minPrice === 0; });
       }
     }
     grid.innerHTML = filtered.map((p, i) => {
