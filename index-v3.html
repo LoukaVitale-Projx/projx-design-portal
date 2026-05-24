@@ -1608,7 +1608,7 @@
 <div id="wizard">
  <div class="wizard-progress-bar"><div class="wizard-progress-fill" id="wizardProgressFill"></div></div>
  <div class="wizard-header">
- <button onclick="wizardBack()" style="display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-family:Montserrat,sans-serif;font-size:13px;font-weight:600;color:var(--text-light);padding:8px 12px;border-radius:8px;transition:all 0.2s;flex-shrink:0" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-light)'">← Back</button>
+ <button onclick="headerBack()" style="display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-family:Montserrat,sans-serif;font-size:13px;font-weight:600;color:var(--text-light);padding:8px 12px;border-radius:8px;transition:all 0.2s;flex-shrink:0" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-light)'">← Back</button>
  <div class="wizard-step-info">
  <div class="wizard-step-label" id="wizardStepLabel">Step 1 of 3</div>
  <div class="wizard-step-dots" id="wizardStepDots"></div>
@@ -2357,7 +2357,16 @@
  document.body.style.overflow = '';
  }
 
- function wizardBack() {
+ function headerBack() {
+    if (wizardState._inDetail) {
+      wizardState._inDetail = false;
+      renderWizardStep();
+      return;
+    }
+    wizardBack();
+  }
+
+  function wizardBack() {
  wizardState.step--;
  if (wizardState.step < 1) {
  closeWizard();
@@ -2374,7 +2383,7 @@
  }
 
  function renderWizardStep() {
- const totalSteps = wizardState.mode === 'land' ? 3 : 3;
+ const totalSteps = wizardState.mode === 'land' ? 4 : 5;
  const pct = (wizardState.step / totalSteps) * 100;
  document.getElementById('wizardProgressFill').style.width = Math.min(pct, 100) + '%';
  document.getElementById('wizardStepLabel').textContent = 'Step ' + wizardState.step + ' of ' + totalSteps;
@@ -2451,6 +2460,16 @@
 
 
  function showProjectDetail(projectId) {
+    wizardState._inDetail = true;
+    var ts = wizardState.mode === 'land' ? 4 : 5;
+    var vs = wizardState.step + 1;
+    document.getElementById('wizardProgressFill').style.width = (vs / ts * 100) + '%';
+    document.getElementById('wizardStepLabel').textContent = 'Step ' + vs + ' of ' + ts;
+    var dotsEl = document.getElementById('wizardStepDots');
+    dotsEl.innerHTML = Array.from({length: ts}, function(_, i) {
+      var cls = (i + 1 < vs) ? 'done' : (i + 1 === vs) ? 'active' : '';
+      return '<div class="wizard-step-dot ' + cls + '"></div>';
+    }).join('');
  var p = PROJECTS.find(function(pp) { return pp.id === projectId; });
  if (!p) return;
  var imgSrc = getProjectImage(p);
@@ -2493,6 +2512,7 @@
  }
 
  function wizardSelectProject(id) {
+    wizardState._inDetail = false;
  wizardState.project = PROJECTS.find(function(p) { return p.id === id; });
  wizardNext();
  }
@@ -2688,6 +2708,7 @@
  }
 
  function wizardSelectDesign(name) {
+    wizardState._inDetail = false;
  wizardState.design = DESIGNS.find(function(d) { return d.name === name; });
  wizardState.savedDesigns = [];
  wizardNext();
@@ -2895,6 +2916,17 @@
 
 
  function showDesignDetail(designName, keepScroll) {
+    wizardState._inDetail = true;
+    // Update step display
+    var ts = wizardState.mode === 'land' ? 4 : 5;
+    var vs = wizardState.step + 1;
+    document.getElementById('wizardProgressFill').style.width = (vs / ts * 100) + '%';
+    document.getElementById('wizardStepLabel').textContent = 'Step ' + vs + ' of ' + ts;
+    var dotsEl = document.getElementById('wizardStepDots');
+    dotsEl.innerHTML = Array.from({length: ts}, function(_, i) {
+      var cls = (i + 1 < vs) ? 'done' : (i + 1 === vs) ? 'active' : '';
+      return '<div class="wizard-step-dot ' + cls + '"></div>';
+    }).join('');
  var d = DESIGNS.find(function(dd) { return dd.name === designName; });
  if (!d) return;
  var imgSrc = DESIGN_IMAGES[d.name] || Object.values(DESIGN_IMAGES)[0];
