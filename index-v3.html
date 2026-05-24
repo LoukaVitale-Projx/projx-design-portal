@@ -2403,7 +2403,7 @@
 
  function renderWizardStep() {
     wizardState._inDetail = false;
- const totalSteps = 4;
+ const totalSteps = 3;
  const pct = (wizardState.step / totalSteps) * 100;
  document.getElementById('wizardProgressFill').style.width = Math.min(pct, 100) + '%';
  document.getElementById('wizardStepLabel').textContent = 'Step ' + wizardState.step + ' of ' + totalSteps;
@@ -2419,17 +2419,15 @@
  switch (wizardState.step) {
  case 1: body.innerHTML = renderLandStep3(); break;
  case 2: body.innerHTML = renderLandStep4(); break;
- case 3: body.innerHTML = renderUpgradesStep(); break;
- case 4: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
- default: wizardState.step = 4; body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
+ case 3: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
+ default: wizardState.step = 3; body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
  }
  } else {
  switch (wizardState.step) {
  case 1: body.innerHTML = renderBuilderStep2(); break;
  case 2: body.innerHTML = renderBuilderStep3(); break;
- case 3: body.innerHTML = renderUpgradesStep(); break;
- case 4: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
- default: wizardState.step = 4; body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
+ case 3: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
+ default: wizardState.step = 3; body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
  }
  }
  // Keep compare pill in sync
