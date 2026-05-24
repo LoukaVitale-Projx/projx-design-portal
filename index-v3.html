@@ -2059,6 +2059,7 @@
       })
 
  const marker = L.marker([p.lat, p.lng], {icon}).addTo(window._portalMap);
+      marker.bindTooltip(label, {permanent: true, direction: 'bottom', offset: [0, 6], className: 'pin-tooltip'});
  window._mapMarkers[p.id] = marker;
  marker.bindPopup(
  '<div style="font-family:Montserrat,sans-serif">' +
@@ -2805,7 +2806,7 @@
  if (wStatus !== 'all') filteredCards = filteredCards.filter(function(p) { return getProjectStatus(p) === wStatus; });
  if (wBudget !== 'all') {
    var mxB = parseInt(wBudget) * 1000; var mnB = parseInt(wBudget) === 400 ? 0 : parseInt(wBudget) === 600 ? 400000 : parseInt(wBudget) === 800 ? 600000 : 800000;
-   filteredCards = filteredCards.filter(function(p) { if (p.minPrice === 0) return true; var pk = p.minPrice + 245000; return parseInt(wBudget) > 1000 ? pk >= 1000000 : (pk < mxB && (mnB === 0 || pk >= mnB)); });
+   filteredCards = filteredCards.filter(function(p) { if (p.minPrice === 0) return true; return parseInt(wBudget) > 1000 ? p.minPrice >= 1000000 : (p.minPrice < mxB && (mnB === 0 || p.minPrice >= mnB)); });
  }
  cards = filteredCards.map(function(p, i) {
    var st = getProjectStatus(p); var stL = st === 'available' ? 'Available Now' : 'Coming Soon'; var stC = st === 'available' ? '#059669' : '#D97706';
@@ -2821,9 +2822,9 @@
    '<button class="filter-chip' + (wStatus==='available'?' active':'') + '" onclick="wizardState._wStatus=\'available\';renderWizardStep()">Available Now</button>' +
    '<button class="filter-chip' + (wStatus==='coming-soon'?' active':'') + '" onclick="wizardState._wStatus=\'coming-soon\';renderWizardStep()">Coming Soon</button></div>';
  var budgetF = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center">' +
-   '<span style="font-size:12px;font-weight:600;color:var(--text-light)">Package Budget:</span>' +
-   '<button class="filter-chip' + (wBudget==='400'?' active':'') + '" onclick="wizardState._wBudget=\'400\';renderWizardStep()">Under $645,000</button>' +
-   '<button class="filter-chip' + (wBudget==='600'?' active':'') + '" onclick="wizardState._wBudget=\'600\';renderWizardStep()">$645,000+</button>' +
+   '<span style="font-size:12px;font-weight:600;color:var(--text-light)">Land Budget:</span>' +
+   '<button class="filter-chip' + (wBudget==='400'?' active':'') + '" onclick="wizardState._wBudget=\'400\';renderWizardStep()">Under $400,000</button>' +
+   '<button class="filter-chip' + (wBudget==='600'?' active':'') + '" onclick="wizardState._wBudget=\'600\';renderWizardStep()">$400,000 - $600,000</button>' +
    '<button class="filter-chip' + (wBudget==='all'?' active':'') + '" onclick="wizardState._wBudget=\'all\';renderWizardStep()">All Budgets</button></div>';
 
  return '<button class="wizard-back-btn" onclick="wizardBack()">\u2190 Back</button>' +
