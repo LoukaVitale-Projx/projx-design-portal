@@ -1965,18 +1965,18 @@
 
       const marker = L.marker([p.lat, p.lng], {icon}).addTo(window._portalMap);
       marker.bindPopup(
-        '<div style="font-family:Montserrat,sans-serif;margin:-14px -16px;overflow:hidden">' +
-        '<div style="height:120px;overflow:hidden"><img src="' + getProjectImage(p) + '" style="width:100%;height:100%;object-fit:cover" onerror="this.onerror=null"/></div>' +
-        '<div style="padding:14px 16px">' +
-        '<div style="font-size:14px;font-weight:800;color:#1B2432;margin-bottom:2px">' + p.name + '</div>' +
-        '<div style="font-size:11px;color:#6B7280;margin-bottom:10px">' + p.suburb + ', ' + p.region + '</div>' +
-        '<div style="display:flex;justify-content:space-between;margin-bottom:12px">' +
-        '<span style="font-size:12px;font-weight:700;color:#059669">' + p.availLots + ' lots</span>' +
-        '<span style="font-size:12px;font-weight:600;color:#6B7280">' + (p.minPrice > 0 ? fmtPrice(p.minPrice) + ' \u2013 ' + fmtPrice(p.maxPrice) : 'Pricing TBA') + '</span>' +
+        '<div style="font-family:Montserrat,sans-serif">' +
+        '<div style="height:140px;overflow:hidden"><img src="' + getProjectImage(p) + '" style="width:100%;height:100%;object-fit:cover" onerror="this.onerror=null"/></div>' +
+        '<div style="padding:16px 18px 18px">' +
+        '<div style="font-size:16px;font-weight:800;color:#1B2432;letter-spacing:-0.3px;margin-bottom:3px">' + p.name + '</div>' +
+        '<div style="font-size:12px;color:#9CA3AF;margin-bottom:14px">' + p.suburb + ' \u00b7 ' + p.region + '</div>' +
+        '<div style="display:flex;gap:8px;margin-bottom:16px">' +
+        '<div style="flex:1;background:#F8F9FA;border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800;color:#059669">' + p.availLots + '</div><div style="font-size:9px;font-weight:600;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.5px">Lots</div></div>' +
+        '<div style="flex:1;background:#F8F9FA;border-radius:8px;padding:8px 10px;text-align:center"><div style="font-size:16px;font-weight:800;color:#1B2432">' + (p.minPrice > 0 ? '$' + Math.round(p.minPrice/1000) + 'k+' : 'TBA') + '</div><div style="font-size:9px;font-weight:600;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.5px">From</div></div>' +
         '</div>' +
-        '<a href="#" onclick="event.preventDefault();openWizardForProject(\'' + p.id + '\')" style="display:block;text-align:center;background:#1B2432;color:#fff;padding:10px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:700">Explore \u2192</a>' +
+        '<a href="#" onclick="event.preventDefault();openWizardForProject(\'' + p.id + '\')" style="display:block;text-align:center;background:#1B2432;color:#fff;padding:12px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:700;letter-spacing:0.3px;transition:opacity 0.2s">Explore ' + p.name + ' \u2192</a>' +
         '</div></div>'
-      , {maxWidth: 260, minWidth: 220, className: 'projx-popup'});
+      , {maxWidth: 300, minWidth: 280, className: 'projx-popup'});
     });
   }
 
