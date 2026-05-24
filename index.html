@@ -2018,12 +2018,11 @@
       const initials = b.name.split(' ').map(w=>w[0]).join('').slice(0,2);
       return `
       <div class="builder-card fade-in fade-in-delay-${i%4+1}">
-        <div class="builder-img">
-          <img src="${builderHeaderImages[i]}" alt="${b.name}" loading="lazy"
-            onerror="this.src='https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80'" />
+        <div style="padding:32px 20px 16px;text-align:center;background:var(--bg-alt)">
+          <div style="width:72px;height:72px;border-radius:50%;background:${b.color};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;margin:0 auto 0;box-shadow:0 4px 12px rgba(0,0,0,0.1)">${initials}</div>
         </div>
         <div class="builder-body">
-          <div class="builder-logo-circle" style="background:${b.color}">${initials}</div>
+          <div style="display:none">x</div>
           <div class="builder-tier">${b.tier}</div>
           <div class="builder-name">${b.name}</div>
           <div class="builder-tagline">${b.tagline}</div>
@@ -2287,7 +2286,7 @@
   function openWizardForProject(projectId) {
     const project = PROJECTS.find(function(p) { return p.id === projectId; });
     if (!project) return;
-    wizardState = { mode: 'land', step: 4, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
+    wizardState = { mode: 'land', step: 1, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2714,7 +2713,13 @@
 
   function selectBuyerType(type) {
     wizardState.buyerType = type;
-    wizardNext();
+    // If project already selected (from landing page click), skip region+project steps
+    if (wizardState.project && wizardState.mode === 'land') {
+      wizardState.step = 4;
+      renderWizardStep();
+    } else {
+      wizardNext();
+    }
   }
 
   // ─── UPGRADES STEP ──────────────────────────────────────────────
