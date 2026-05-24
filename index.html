@@ -2399,17 +2399,14 @@
  const body = document.getElementById('wizardBody');
  if (wizardState.mode === 'land') {
  switch (wizardState.step) {
- case 1: body.innerHTML = renderLandStep1(); break;
- case 2: body.innerHTML = renderLandStep2(); break;
- case 3: body.innerHTML = renderLandStep3(); break;
- case 4: body.innerHTML = renderLandStep4(); break;
+ case 1: body.innerHTML = renderLandStep3(); break;
+ case 2: body.innerHTML = renderLandStep4(); break;
  default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
  }
  } else {
  switch (wizardState.step) {
- case 1: body.innerHTML = renderBuilderStep1(); break;
- case 2: body.innerHTML = renderBuilderStep2(); break;
- case 3: body.innerHTML = renderBuilderStep3(); break;
+ case 1: body.innerHTML = renderBuilderStep2(); break;
+ case 2: body.innerHTML = renderBuilderStep3(); break;
  default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
  }
  }
@@ -2603,7 +2600,7 @@
  '<div style="font-size:28px;margin-bottom:10px"></div>' +
  '<div style="font-size:16px;font-weight:800;color:var(--primary);margin-bottom:6px">Lots Coming Soon</div>' +
  '<div style="font-size:13px;color:var(--text-light);margin-bottom:20px">Lot details and pricing for ' + p.name + ' are being finalised. Register your interest to be first notified.</div>' +
- '<button class="wizard-submit-btn" onclick="wizardState.selectedFrontage=null;wizardState.step=' + (wizardState.mode === 'land' ? 3 : 3) + ';renderWizardStep()" style="max-width:300px;margin:0 auto">Register Interest \u2192</button>' +
+ '<button class="wizard-submit-btn" onclick="wizardState.selectedFrontage=null;wizardState.step=3;renderWizardStep()" style="max-width:300px;margin:0 auto">Register Interest \u2192</button>' +
  '</div>';
  }
 
