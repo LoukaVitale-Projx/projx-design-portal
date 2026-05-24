@@ -1988,7 +1988,13 @@
     // Builder cards show logos only (no facade images)
     grid.innerHTML = BUILDERS.map((b, i) => {
       // Per-builder logo styling for consistency
-      // Logo rendering handled per-builder in template
+      const logoStyles = {
+        'frd': 'max-height:70px;max-width:140px;',
+        'creation': 'max-height:50px;max-width:50px;',
+        'avia': 'max-height:60px;max-width:160px;filter:invert(1);mix-blend-mode:multiply;',
+        'metricon': 'max-height:70px;max-width:70px;filter:invert(1);mix-blend-mode:multiply;'
+      };
+      const logoStyle = logoStyles[b.id] || 'max-height:60px;max-width:160px;';
       const needsLabel = (b.id === 'creation'); // Creation icon has no text
 
       return `
