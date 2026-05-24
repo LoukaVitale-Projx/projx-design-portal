@@ -2555,7 +2555,7 @@
         (landFromPrice > 0 ? '<div style="font-size:11px;color:var(--text-xlight);margin-bottom:6px">Land from $' + Math.round(landFromPrice/1000) + 'k + Build ' + d.price + '</div>' : '') +
         '<div class="wizard-design-price-row">' +
         '<span class="wizard-design-price">' + (landFromPrice > 0 ? 'Pkg from $' + Math.round((landFromPrice + (parseInt(d.price.replace(/[^0-9]/g,''))||0))/1000) + 'k' : d.price) + '</span>' +
-        '<div style="display:flex;gap:5px;align-items:center">' + saveBtn + '<button class="wizard-select-btn" onclick="wizardSelectDesign(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm\u00B2 \u2022 Select \u2192</button></div>' +
+        '<div style="display:flex;gap:5px;align-items:center">' + saveBtn + '<button class="wizard-select-btn" onclick="showDesignDetail(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm\u00B2 \u2022 View Details</button></div>' +
         '</div>' +
         tourLink +
         '</div></div>';
@@ -2628,7 +2628,7 @@
         '<div class="wizard-design-specs"><span>🛏 ' + d.beds + '</span><span>🚿 ' + d.baths + '</span><span>🚗 ' + d.garage + '</span><span>📐 ' + d.frontage + '</span></div>' +
         '<div class="wizard-design-price-row">' +
         '<span class="wizard-design-price">' + d.price + '</span>' +
-        '<div style="display:flex;gap:5px;align-items:center">' + saveBtn + '<button class="wizard-select-btn" onclick="wizardSelectDesign(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm\u00B2 \u2022 Select \u2192</button></div>' +
+        '<div style="display:flex;gap:5px;align-items:center">' + saveBtn + '<button class="wizard-select-btn" onclick="showDesignDetail(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm\u00B2 \u2022 View Details</button></div>' +
         '</div>' +
         tourLink +
         '</div></div>';
