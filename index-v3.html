@@ -2370,6 +2370,10 @@
 
   function wizardBack() {
     wizardState.step--;
+    if (wizardState.step < 1) {
+      closeWizard();
+      return;
+    }
     document.getElementById('wizard').scrollTop = 0;
     renderWizardStep();
   }
