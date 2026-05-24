@@ -1863,6 +1863,31 @@
     if (e.key === 'Enter' && document.getElementById('gate').style.display !== 'none') checkPassword();
   });
 
+
+  // Design descriptions for detail view (AVIA-style)
+  const DESIGN_DESCRIPTIONS = {
+    'FRD Single 170': 'A compact yet cleverly designed single-storey home that maximises every square metre. Open-plan living flows to the alfresco, with four bedrooms grouped for family convenience. The perfect entry point for first home buyers.',
+    'FRD Single 195': 'A generous single-storey layout with spacious open-plan living, a well-appointed kitchen, and four comfortable bedrooms. The master suite sits at the front for privacy, while the remaining bedrooms share a central bathroom.',
+    'FRD Double 230': 'A smart double-storey design that delivers space without the land premium. Living areas downstairs open to the alfresco, while four bedrooms upstairs provide a quiet retreat. Perfect for growing families on standard lots.',
+    'FRD Dual Key 260': 'Two homes under one roof — ideal for investors or multi-generational families. Each dwelling has its own entrance, kitchen, and living areas. Rental yields are maximised with dual income streams from a single build.',
+    'FRD Duplex 200': 'A purpose-built duplex design delivering two quality residences side by side. Each unit features three bedrooms, open-plan living, and a private outdoor area. Built for investors who want scale.',
+    'Hillcrest 18': 'A thoughtful single-storey home designed for 10m lots. Four bedrooms, two bathrooms, and a seamless flow from kitchen to living to alfresco. The Hillcrest proves you don\u2019t need a wide lot to live well.',
+    'Fairview 20': 'Light-filled and considered, the Fairview features open-plan living at the rear with kitchen, dining and lounge flowing to the outdoor entertaining area. Four bedrooms plus a separate study nook for flexible family living.',
+    'Southcote 23': 'Generous proportions and a smart floorplan define the Southcote. The open-plan hub connects kitchen, dining and living, while four bedrooms are zoned for privacy. A dedicated laundry and separate toilet add everyday practicality.',
+    'Fernbrook 28': 'A striking double-storey home with five bedrooms and three bathrooms across two levels. Downstairs is designed for entertaining — open kitchen, living and dining flowing to the alfresco. Upstairs is a private family retreat.',
+    'Silverwood 45': 'A statement home for those who want it all. Five bedrooms, three bathrooms, and expansive living across two storeys. The ground floor features a grand open-plan kitchen, butler\u2019s pantry, and seamless indoor-outdoor flow.',
+    'Marseille': 'Everyday moments feel elevated in the Marseille. Soft light, stylish finishes and a thoughtful layout create a warm, welcoming home with open-plan spaces alongside restful corners. Designed for comfortable family living.',
+    'Dublin': 'The Dublin delivers generous living with a practical footprint. An expansive open-plan zone anchors the home, with the master suite privately positioned and three additional bedrooms grouped near the main bathroom.',
+    'Geneva': 'A home designed for the way modern families actually live. The Geneva features a chef\u2019s kitchen at the heart, flowing to living, dining and alfresco. Four bedrooms, two bathrooms, and a dedicated multi-purpose room.',
+    'Almada 210': 'Centred around a light-filled open-plan kitchen, dining and living space that flows effortlessly to the rear alfresco. The master suite is thoughtfully positioned for privacy, while the remaining bedrooms support easy family living.',
+    'Catalina': 'Architecturally considered with a focus on natural light and connection. The Catalina\u2019s open-plan living is complemented by distinct zones for rest and retreat. Four bedrooms, two bathrooms, and a design that feels larger than its footprint.',
+    'Kirra': 'Purpose-built for Queensland\u2019s climate and lifestyle. The Kirra features open-plan living with seamless indoor-outdoor flow, three bedrooms, and a compact yet functional kitchen. Ideal for first home buyers and downsizers.',
+    'Amira': 'Designed for narrow lots without compromise, the Amira delivers four bedrooms, open-plan living, and a clever layout that maximises natural light. The master suite includes a walk-in robe and ensuite.',
+    'Glendale': 'A family favourite with multiple living zones, four bedrooms, and a gourmet kitchen. The Glendale\u2019s flexible floorplan adapts to your lifestyle — from home office to kids\u2019 rumpus to guest retreat.',
+    'Doulton': 'A premium double-storey design with five bedrooms, three bathrooms, and statement living spaces. The ground floor features a grand open-plan area with butler\u2019s pantry, while upstairs provides a private family wing.',
+    'Hampshire': 'The flagship. Five bedrooms, four bathrooms, and architectural detailing throughout. The Hampshire features a master wing with luxury ensuite, a chef\u2019s kitchen with stone benchtops, and indoor-outdoor living designed for entertaining.'
+  };
+
   // Auto-init (gate disabled during development)
   document.addEventListener('DOMContentLoaded', function() { initPortal(); });
 
@@ -2727,6 +2752,77 @@
     if (!wizardState.upgrades) wizardState.upgrades = [];
     const idx = wizardState.upgrades.indexOf(id);
     if (idx === -1) { wizardState.upgrades.push(id); } else { wizardState.upgrades.splice(idx, 1); }
+    renderWizardStep();
+  }
+
+
+  function showDesignDetail(designName) {
+    var d = DESIGNS.find(function(dd) { return dd.name === designName; });
+    if (!d) return;
+    var imgSrc = DESIGN_IMAGES[d.name] || Object.values(DESIGN_IMAGES)[0];
+    var desc = DESIGN_DESCRIPTIONS[d.name] || 'A quality home design built to the highest standards.';
+    var builderLink = BUILDER_TOUR_LINKS[d.builder] || '#';
+    
+    // Calculate package price if available
+    var frontage = wizardState.selectedFrontage;
+    var projLots = SAMPLE_LOTS[wizardState.project ? wizardState.project.id : ''] || [];
+    var matchLots = frontage ? projLots.filter(function(l) { return l.frontage === frontage; }) : [];
+    var landFrom = matchLots.length > 0 ? Math.min.apply(null, matchLots.map(function(l) { return l.price; })) : 0;
+    var buildPrice = parseInt(d.price.replace(/[^0-9]/g, '')) || 0;
+    var totalPkg = landFrom > 0 && buildPrice > 0 ? landFrom + buildPrice : 0;
+    
+    var html = '<div style="max-width:800px;margin:0 auto">' +
+      '<button class="wizard-back-btn" onclick="closeDesignDetail()" style="margin-bottom:16px">\u2190 Back to designs</button>' +
+      
+      // Hero image
+      '<div style="width:100%;height:360px;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:28px;position:relative">' +
+      '<img src="' + imgSrc + '" alt="' + d.name + '" style="width:100%;height:100%;object-fit:cover" onerror="this.src='https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=400&fit=crop&q=80'"/>' +
+      '<div style="position:absolute;bottom:16px;left:16px;background:rgba(27,36,50,0.85);color:#fff;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700">' + d.builder + '</div>' +
+      '</div>' +
+      
+      // Design name + specs header
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:24px">' +
+      '<div>' +
+      '<h2 style="font-size:28px;font-weight:900;color:var(--primary);letter-spacing:-1px;margin-bottom:4px">' + d.name + '</h2>' +
+      '<div style="font-size:13px;color:var(--text-light)">' + d.builder + ' \u2022 ' + d.sqm + 'm\u00b2 \u2022 Min Lot Width ' + d.frontage + '</div>' +
+      '</div>' +
+      '<div style="text-align:right">' +
+      '<div style="font-size:11px;color:var(--text-xlight);text-transform:uppercase;letter-spacing:1px">Build from</div>' +
+      '<div style="font-size:24px;font-weight:900;color:var(--primary)">' + d.price + '</div>' +
+      (totalPkg > 0 ? '<div style="font-size:12px;color:var(--accent);font-weight:600">Package from $' + Math.round(totalPkg).toLocaleString() + '</div>' : '') +
+      '</div>' +
+      '</div>' +
+      
+      // Specs grid
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:28px">' +
+      '<div style="background:var(--bg-alt);border-radius:10px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:900;color:var(--primary)">' + d.beds + '</div><div style="font-size:11px;color:var(--text-light);font-weight:600">Bedrooms</div></div>' +
+      '<div style="background:var(--bg-alt);border-radius:10px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:900;color:var(--primary)">' + d.baths + '</div><div style="font-size:11px;color:var(--text-light);font-weight:600">Bathrooms</div></div>' +
+      '<div style="background:var(--bg-alt);border-radius:10px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:900;color:var(--primary)">' + d.garage + '</div><div style="font-size:11px;color:var(--text-light);font-weight:600">Garage</div></div>' +
+      '<div style="background:var(--bg-alt);border-radius:10px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:900;color:var(--primary)">' + d.sqm + '</div><div style="font-size:11px;color:var(--text-light);font-weight:600">m\u00b2</div></div>' +
+      '<div style="background:var(--bg-alt);border-radius:10px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:900;color:var(--primary)">' + d.frontage.replace('+','') + '</div><div style="font-size:11px;color:var(--text-light);font-weight:600">Min Width</div></div>' +
+      '</div>' +
+      
+      // Description
+      '<div style="margin-bottom:28px">' +
+      '<h3 style="font-size:16px;font-weight:800;color:var(--primary);margin-bottom:10px">About This Design</h3>' +
+      '<p style="font-size:14px;color:var(--text);line-height:1.8">' + desc + '</p>' +
+      '</div>' +
+      
+      // Builder link
+      '<a href="' + builderLink + '" target="_blank" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--accent);font-weight:600;text-decoration:none;margin-bottom:32px">\ud83c\udfe0 View full details on ' + d.builder + ' website \u2192</a>' +
+      
+      // CTA buttons
+      '<div style="display:flex;gap:12px;flex-wrap:wrap">' +
+      '<button class="wizard-submit-btn" onclick="wizardSelectDesign(\'' + d.name.replace(/'/g, "\\'") + '\')" style="flex:1;min-width:200px">Select ' + d.name + ' \u2192</button>' +
+      '<button onclick="toggleSaveDesign(\'' + d.name.replace(/'/g, "\\'") + '\')" style="flex:0 0 auto;padding:14px 24px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);font-family:Montserrat,sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s">' + ((wizardState.savedDesigns||[]).indexOf(d.name) !== -1 ? '\u2764\ufe0f Saved' : '\u2661 Save to Compare') + '</button>' +
+      '</div>' +
+      '</div>';
+    
+    document.getElementById('wizardBody').innerHTML = html;
+    document.getElementById('wizard').scrollTop = 0;
+  }
+  
+  function closeDesignDetail() {
     renderWizardStep();
   }
 
