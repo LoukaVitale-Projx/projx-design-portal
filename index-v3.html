@@ -1512,12 +1512,7 @@
     <h1 class="hero-title" style="font-size:clamp(30px,4.5vw,48px);margin-bottom:16px;letter-spacing:-2px">Your Dream Home,<br><span style="color:var(--accent)">One Click Away</span></h1>
     <p style="font-size:clamp(14px,1.5vw,16px);color:var(--text-light);margin-bottom:32px;line-height:1.75;max-width:520px;margin-left:auto;margin-right:auto">Browse 4,500+ house &amp; land lots across 18 projects. Match with Australia&rsquo;s best builders. Get your keys faster.</p>
     
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);background:var(--primary);border-radius:12px;overflow:hidden;max-width:500px;margin:0 auto">
-      <div style="padding:16px 10px;text-align:center;border-right:1px solid rgba(255,255,255,0.08)"><div style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:#fff">4,500+</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase">Lots</div></div>
-      <div style="padding:16px 10px;text-align:center;border-right:1px solid rgba(255,255,255,0.08)"><div style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:#fff">18</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase">Projects</div></div>
-      <div style="padding:16px 10px;text-align:center;border-right:1px solid rgba(255,255,255,0.08)"><div style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:#fff">12</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase">Regions</div></div>
-      <div style="padding:16px 10px;text-align:center"><div style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:#fff">4</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase">Builders</div></div>
-    </div>
+
   </div>
 </section>
 
@@ -1530,17 +1525,17 @@
         <p class="section-subtitle">18 active projects — 4,500+ lots available</p>
       </div>
       <div class="view-toggle">
-        <button class="toggle-btn" onclick="switchView('list')" id="toggleList">
+        <button class="toggle-btn active" onclick="switchView('list')" id="toggleList">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="1" width="16" height="2.5" rx="1"/><rect x="0" y="6.75" width="16" height="2.5" rx="1"/><rect x="0" y="12.5" width="16" height="2.5" rx="1"/></svg>
           List
         </button>
-        <button class="toggle-btn active" onclick="switchView('map')" id="toggleMap">
+        <button class="toggle-btn" onclick="switchView('map')" id="toggleMap">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M5 1L0 3v12l5-2 6 2 5-2V1l-5 2-6-2zm0 1.5v10l-3.5 1.4V3.5L5 2.5zm1 10V2.5L11 4.3v10.2l-5-1.7zm6 .1V2.6l3.5-1.4v10.4L12 12.6z"/></svg>
           Map
         </button>
       </div>
     </div>
-    <div id="listView" style="display:none">
+    <div id="listView">
       <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">
         <button class="estate-filter filter-chip active" data-filter="all" onclick="renderProjects('all')">All Estates</button>
         <button class="estate-filter filter-chip" data-filter="available" onclick="renderProjects('available')" style="border-color:#059669;color:#059669">🟢 Available Now</button>
@@ -1548,7 +1543,7 @@
       </div>
       <div id="projectsGrid" class="projects-grid"></div>
     </div>
-    <div id="mapView">
+    <div id="mapView" style="display:none">
       <div id="map" style="height:600px"></div>
     </div>
   </div>
@@ -1587,6 +1582,7 @@
       <p class="footer-disclaimer">Prices are indicative only. Images are for illustration purposes. All information is subject to change without notice. Consult a licensed professional before making any financial decision.</p>
     </div>
   </div>
+  <div style="text-align:center;padding:16px 0;font-size:11px;color:rgba(255,255,255,0.3)">Powered by ProjX Australia</div>
 </footer>
 
 <!-- ─── BUYER WIZARD ─── -->
@@ -1877,7 +1873,6 @@
   function initPortal() {
     renderProjects();
     renderBuilders();
-    initMap();
     initObserver();
   }
 
