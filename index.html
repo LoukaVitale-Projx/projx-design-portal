@@ -2025,8 +2025,9 @@
       const initials = b.name.split(' ').map(w=>w[0]).join('').slice(0,2);
       return `
       <div class="builder-card fade-in fade-in-delay-${i%4+1}">
-        <div style="padding:28px 20px 16px;text-align:center;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;min-height:100px">
-          <img src="${BUILDER_LOGOS[b.id]}" alt="${b.name}" style="max-height:80px;max-width:200px;object-fit:contain" onerror="this.onerror=null;this.style.display='none'"/>
+        <div style="padding:28px 20px 16px;text-align:center;background:var(--bg-alt);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100px;gap:8px">
+          <img src="${BUILDER_LOGOS[b.id]}" alt="${b.name}" style="max-height:80px;max-width:200px;object-fit:contain;${b.id === 'metricon' ? 'filter:invert(1);' : ''}" onerror="this.onerror=null;this.style.display='none'"/>
+          ${b.id === 'creation' ? '<div style="font-size:13px;font-weight:800;color:var(--primary);letter-spacing:1px;text-transform:uppercase">Creation Homes</div>' : ''}
         </div>
         <div class="builder-body">
           <div style="display:none">x</div>
