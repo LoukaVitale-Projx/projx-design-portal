@@ -1542,11 +1542,11 @@
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center">
       <span style="font-size:12px;font-weight:600;color:var(--text-light);margin-right:4px">Budget:</span>
       <button class="filter-chip estate-budget active" data-budget="all" onclick="filterByBudget('all')">All</button>
-      <button class="filter-chip estate-budget" data-budget="400" onclick="filterByBudget('400')">Under $400k</button>
-      <button class="filter-chip estate-budget" data-budget="600" onclick="filterByBudget('600')">$400k – $600k</button>
-      <button class="filter-chip estate-budget" data-budget="800" onclick="filterByBudget('800')">$600k – $800k</button>
-      <button class="filter-chip estate-budget" data-budget="1000" onclick="filterByBudget('1000')">$800k – $1M</button>
-      <button class="filter-chip estate-budget" data-budget="1001" onclick="filterByBudget('1001')">$1M+</button>
+      <button class="filter-chip estate-budget" data-budget="400" onclick="filterByBudget('400')">Under $400k pkg</button>
+      <button class="filter-chip estate-budget" data-budget="600" onclick="filterByBudget('600')">$400k – $600k pkg</button>
+      <button class="filter-chip estate-budget" data-budget="800" onclick="filterByBudget('800')">$600k – $800k pkg</button>
+      <button class="filter-chip estate-budget" data-budget="1000" onclick="filterByBudget('1000')">$800k – $1M pkg</button>
+      <button class="filter-chip estate-budget" data-budget="1001" onclick="filterByBudget('1001')">$1M+ pkg</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
       <button class="estate-filter filter-chip active" data-filter="all" onclick="renderProjects(null)">All Estates</button>
@@ -1554,11 +1554,6 @@
       <button class="estate-filter filter-chip" data-filter="coming-soon" onclick="renderProjects('coming-soon')" style="color:#D97706">● Coming Soon</button>
     </div>
     <div id="listView">
-      <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">
-        <button class="estate-filter filter-chip active" data-filter="all" onclick="renderProjects('all')">All Estates</button>
-        <button class="estate-filter filter-chip" data-filter="available" onclick="renderProjects('available')" style="border-color:#059669;color:#059669">🟢 Available Now</button>
-        <button class="estate-filter filter-chip" data-filter="coming-soon" onclick="renderProjects('coming-soon')" style="border-color:#D97706;color:#D97706">🟡 Coming Soon</button>
-      </div>
       <div id="projectsGrid" class="projects-grid"></div>
     </div>
     <div id="mapView" style="display:none">
@@ -2272,7 +2267,7 @@
     const design = DESIGNS.find(function(d) { return d.name === designName; });
     if (!design) return;
     const builder = BUILDERS.find(function(b) { return b.name === design.builder; });
-    wizardState = { mode: 'builder', step: 4, region: null, project: null, builder: builder, design: design, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
+    wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: design, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2282,7 +2277,7 @@
   function openWizardForBuilder(builderId) {
     const builder = BUILDERS.find(function(b) { return b.id === builderId; });
     if (!builder) return;
-    wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
+    wizardState = { mode: 'builder', step: 2, region: null, project: null, builder: builder, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2292,7 +2287,7 @@
   function openWizardForProject(projectId) {
     const project = PROJECTS.find(function(p) { return p.id === projectId; });
     if (!project) return;
-    wizardState = { mode: 'land', step: 1, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
+    wizardState = { mode: 'land', step: 3, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2339,21 +2334,21 @@
     const body = document.getElementById('wizardBody');
     if (wizardState.mode === 'land') {
       switch (wizardState.step) {
-        case 1: body.innerHTML = renderBuyerProfile(); break;
-        case 2: body.innerHTML = renderLandStep1(); break;
-        case 3: body.innerHTML = renderLandStep2(); break;
-        case 4: body.innerHTML = renderLandStep3(); break;
-        case 5: body.innerHTML = renderLandStep4(); break;
-        case 6: body.innerHTML = renderFinanceStep(); break;
+        case 1: body.innerHTML = renderLandStep1(); break;
+        case 2: body.innerHTML = renderLandStep2(); break;
+        case 3: body.innerHTML = renderLandStep3(); break;
+        case 4: body.innerHTML = renderLandStep4(); break;
+        case 5: body.innerHTML = renderFinanceStep(); break;
+        case 6: body.innerHTML = renderBuyerProfile(); break;
         default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
       }
     } else {
       switch (wizardState.step) {
-        case 1: body.innerHTML = renderBuyerProfile(); break;
-        case 2: body.innerHTML = renderBuilderStep1(); break;
-        case 3: body.innerHTML = renderBuilderStep2(); break;
-        case 4: body.innerHTML = renderBuilderStep3(); break;
-        case 5: body.innerHTML = renderFinanceStep(); break;
+        case 1: body.innerHTML = renderBuilderStep1(); break;
+        case 2: body.innerHTML = renderBuilderStep2(); break;
+        case 3: body.innerHTML = renderBuilderStep3(); break;
+        case 4: body.innerHTML = renderFinanceStep(); break;
+        case 5: body.innerHTML = renderBuyerProfile(); break;
         default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
       }
     }
@@ -2740,13 +2735,7 @@
 
   function selectBuyerType(type) {
     wizardState.buyerType = type;
-    // If project already selected (from landing page click), skip region+project steps
-    if (wizardState.project && wizardState.mode === 'land') {
-      wizardState.step = 4;
-      renderWizardStep();
-    } else {
-      wizardNext();
-    }
+    wizardNext();
   }
 
   // ─── UPGRADES STEP ──────────────────────────────────────────────
