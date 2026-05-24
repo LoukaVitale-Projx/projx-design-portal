@@ -2588,7 +2588,7 @@
         '<span class="wizard-design-price">' + (landFromPrice > 0 ? 'Pkg from $' + Math.round((landFromPrice + (parseInt(d.price.replace(/[^0-9]/g,''))||0))/1000) + 'k' : d.price) + '</span>' +
         '<div style="display:flex;gap:5px;align-items:center">' + saveBtn + '<button class="wizard-select-btn" onclick="showDesignDetail(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm\u00B2 \u2022 View Details</button></div>' +
         '</div>' +
-        tourLink +
+
         '</div></div>';
     }).join('');
 
@@ -2661,7 +2661,7 @@
         '<span class="wizard-design-price">' + d.price + '</span>' +
         '<div style="display:flex;gap:5px;align-items:center">' + saveBtn + '<button class="wizard-select-btn" onclick="showDesignDetail(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm\u00B2 \u2022 View Details</button></div>' +
         '</div>' +
-        tourLink +
+
         '</div></div>';
     }).join('');
 
