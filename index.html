@@ -1540,13 +1540,13 @@
       </div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center">
-      <span style="font-size:12px;font-weight:600;color:var(--text-light);margin-right:4px">Budget:</span>
-      <button class="filter-chip estate-budget active" data-budget="all" onclick="filterByBudget('all')">All</button>
-      <button class="filter-chip estate-budget" data-budget="400" onclick="filterByBudget('400')">Under $400k pkg</button>
-      <button class="filter-chip estate-budget" data-budget="600" onclick="filterByBudget('600')">$400k – $600k pkg</button>
-      <button class="filter-chip estate-budget" data-budget="800" onclick="filterByBudget('800')">$600k – $800k pkg</button>
-      <button class="filter-chip estate-budget" data-budget="1000" onclick="filterByBudget('1000')">$800k – $1M pkg</button>
-      <button class="filter-chip estate-budget" data-budget="1001" onclick="filterByBudget('1001')">$1M+ pkg</button>
+      <span style="font-size:12px;font-weight:600;color:var(--text-light);margin-right:4px">Package Budget:</span>
+      <button class="filter-chip estate-budget active" data-budget="all" onclick="filterByBudget('all')">All Budgets</button>
+      <button class="filter-chip estate-budget" data-budget="400" onclick="filterByBudget('400')">Under $400,000</button>
+      <button class="filter-chip estate-budget" data-budget="600" onclick="filterByBudget('600')">$400,000 – $600,000</button>
+      <button class="filter-chip estate-budget" data-budget="800" onclick="filterByBudget('800')">$600,000 – $800,000</button>
+      <button class="filter-chip estate-budget" data-budget="1000" onclick="filterByBudget('1000')">$800,000 – $1,000,000</button>
+      <button class="filter-chip estate-budget" data-budget="1001" onclick="filterByBudget('1001')">$1,000,000+</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
       <button class="estate-filter filter-chip active" data-filter="all" onclick="renderProjects(null)">All Estates</button>
@@ -1884,8 +1884,8 @@
 
   // ─── FORMAT CURRENCY ──────────────────────────────────────────────
   function fmtPrice(n) {
-    if (n >= 1000000) return '$' + (n/1000000).toFixed(2).replace(/\.?0+$/, '') + 'M';
-    return '$' + Math.round(n/1000) + 'k';
+    if (n >= 1000000) return '$' + n.toLocaleString();
+    return '$' + n.toLocaleString();
   }
 
   // ─── PROJECTS ─────────────────────────────────────────────────────
@@ -1918,10 +1918,11 @@
         var maxB = maxBudget * 1000;
         filtered = filtered.filter(function(p) {
           if (p.minPrice === 0) return true;
-          return p.minPrice < maxB && (minBudget === 0 || p.minPrice >= minBudget);
+          var pkgPrice = p.minPrice + 245000;
+          return pkgPrice < maxB && (minBudget === 0 || pkgPrice >= minBudget);
         });
       } else {
-        filtered = filtered.filter(function(p) { return p.minPrice >= 1000000 || p.minPrice === 0; });
+        filtered = filtered.filter(function(p) { return (p.minPrice + 245000) >= 1000000 || p.minPrice === 0; });
       }
     }
     grid.innerHTML = filtered.map((p, i) => {
@@ -2679,7 +2680,7 @@
         '<div class="wizard-project-body">' +
         '<div class="wizard-project-name">' + p.name + '</div>' +
         '<div class="wizard-project-suburb">\ud83d\udccd ' + p.suburb + ' \u00b7 ' + p.region + '</div>' +
-        '<div class="wizard-project-meta"><span class="wizard-project-lots">\u2705 ' + p.availLots + ' lots</span><span class="wizard-project-price">' + (p.minPrice > 0 ? fmtPrice(p.minPrice) + ' \u2013 ' + fmtPrice(p.maxPrice) : 'Pricing TBA') + '</span></div>' +
+        '<div class="wizard-project-meta"><span class="wizard-project-lots">\u2705 ' + p.availLots + ' lots</span><span class="wizard-project-price">' + (p.minPrice > 0 ? 'From ' + fmtPrice(p.minPrice + 245000) : 'Pricing TBA') + '</span></div>' +
         '</div></div>';
     }).join('');
 
