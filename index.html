@@ -3191,8 +3191,15 @@
  var landFrom = matchLots.length > 0 ? Math.min.apply(null, matchLots.map(function(l) { return l.price; })) : 0;
     if (landFrom === 0 && p && p.minPrice > 0) landFrom = p.minPrice;
  const totalPkg = landFrom > 0 && buildPrice > 0 ? landFrom + buildPrice : 0;
- const priceVal = totalPkg > 0 ? 'From $' + Math.round(totalPkg).toLocaleString() : (d ? d.price : 'Contact for pricing');
- const priceBreakdown = totalPkg > 0 ? 'Land from $' + Math.round(landFrom).toLocaleString() + ' + Build ' + d.price : '';
+    // Add upgrade costs
+    var upgEstimate = 0;
+    (wizardState.upgrades || []).forEach(function(uid) {
+      var u = UPGRADE_OPTIONS.find(function(x){return x.id===uid});
+      if (u) { var ps = u.price.match(/[\d,]+/g); if (ps) upgEstimate += parseInt(ps[0].replace(/,/g, '')); }
+    });
+    const totalWithUpgrades = totalPkg > 0 ? totalPkg + upgEstimate : 0;
+ const priceVal = totalWithUpgrades > 0 ? 'From $' + Math.round(totalWithUpgrades).toLocaleString() : (totalPkg > 0 ? 'From $' + Math.round(totalPkg).toLocaleString() : (d ? d.price : 'Contact for pricing'));
+ const priceBreakdown = totalPkg > 0 ? 'Land from $' + Math.round(landFrom).toLocaleString() + ' + Build ' + d.price + (upgEstimate > 0 ? ' + Upgrades from $' + upgEstimate.toLocaleString() : '') : '';
  const buyerLabel = wizardState.buyerType === 'owner' ? ' Owner Occupier' : wizardState.buyerType === 'investor' ? ' Investor' : '—';
  const selectedUpgrades = (wizardState.upgrades || []).map(function(uid) { var u = UPGRADE_OPTIONS.find(function(x){return x.id===uid}); return u ? u.name : ''; }).filter(Boolean);
 
@@ -3200,7 +3207,20 @@
  // buyer type shown in form only
  // finance shown in form only
  if (selectedUpgrades.length > 0) {
- summaryRows.push({label: 'Upgrades (' + selectedUpgrades.length + ')', value: selectedUpgrades.join(', '), sub: ''});
+ // Calculate upgrade cost estimate (use midpoint of each upgrade's price range)
+    var upgradeCost = 0;
+    (wizardState.upgrades || []).forEach(function(uid) {
+      var u = UPGRADE_OPTIONS.find(function(x){return x.id===uid});
+      if (u) {
+        // Parse min price from "X,XXX – Y,YYY" format
+        var prices = u.price.match(/[\d,]+/g);
+        if (prices && prices.length >= 1) {
+          var minP = parseInt(prices[0].replace(/,/g, ''));
+          upgradeCost += minP;
+        }
+      }
+    });
+    summaryRows.push({label: 'Upgrades (' + selectedUpgrades.length + ')', value: selectedUpgrades.join(', '), sub: upgradeCost > 0 ? 'Estimated from $' + upgradeCost.toLocaleString() : ''});
  }
 
  const summaryHTML = summaryRows.map(function(row) {
