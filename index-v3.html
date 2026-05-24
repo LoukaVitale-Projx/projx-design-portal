@@ -2058,7 +2058,7 @@
  '<div style="font-size:12px;color:#9CA3AF;margin-bottom:14px">' + p.suburb + ' \u00b7 ' + p.region + '</div>' +
  '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:13px">' +
  '<span style="font-weight:700;color:#059669">' + p.availLots + ' lots available</span>' +
- '<span style="color:#6B7280">' + (p.minPrice > 0 ? 'From $' + Math.round(p.minPrice/1000) + 'k' : 'Pricing TBA') + '</span>' +
+ '<span style="color:#6B7280">' + (p.minPrice > 0 ? 'From $' + (p.minPrice + 245000).toLocaleString() : 'Pricing TBA') + '</span>' +
  '</div>' +
  '<a href="#" onclick="event.preventDefault();openWizardForProject(\'' + p.id + '\')" style="display:block;text-align:center;background:#1B2432;color:#fff;padding:12px;border-radius:10px;text-decoration:none;font-size:13px;font-weight:700;letter-spacing:0.3px;transition:opacity 0.2s">Explore ' + p.name + ' \u2192</a>' +
  '</div></div>'
@@ -2575,7 +2575,7 @@
  '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">' +
  '<div style="background:var(--bg-alt);border-radius:10px;padding:14px 18px;flex:1;min-width:120px"><div style="font-size:22px;font-weight:900;color:var(--primary)">' + p.totalLots + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">Total Lots</div></div>' +
  '<div style="background:var(--bg-alt);border-radius:10px;padding:14px 18px;flex:1;min-width:120px"><div style="font-size:22px;font-weight:900;color:var(--success)">' + p.availLots + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">Available</div></div>' +
- '<div style="background:var(--bg-alt);border-radius:10px;padding:14px 18px;flex:1;min-width:120px"><div style="font-size:22px;font-weight:900;color:var(--primary)">' + (p.minPrice > 0 ? 'From $' + Math.round(p.minPrice/1000) + 'k' : 'TBA') + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">Land Price</div></div>' +
+ '<div style="background:var(--bg-alt);border-radius:10px;padding:14px 18px;flex:1;min-width:120px"><div style="font-size:22px;font-weight:900;color:var(--primary)">' + (p.minPrice > 0 ? 'From $' + (p.minPrice + 245000).toLocaleString() : 'TBA') + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">Land Price</div></div>' +
  '</div>';
 
  // Suburb info (if available)
@@ -2681,7 +2681,7 @@
  '<div class="wizard-design-specs"><span>\uD83D\uDECF ' + d.beds + '</span><span>\uD83D\uDEBF ' + d.baths + '</span><span>\uD83D\uDE97 ' + d.garage + '</span><span>\uD83D\uDCCF ' + d.frontage + '</span></div>' +
  (landFromPrice > 0 ? '<div style="font-size:11px;color:var(--text-xlight);margin-bottom:6px">Land from $' + Math.round(landFromPrice/1000) + 'k + Build ' + d.price + '</div>' : '') +
  '<div class="wizard-design-price-row">' +
- '<span class="wizard-design-price">' + (landFromPrice > 0 ? 'Pkg from $' + Math.round((landFromPrice + (parseInt(d.price.replace(/[^0-9]/g,''))||0))/1000) + 'k' : d.price) + '</span>' +
+ '<span class="wizard-design-price">' + (landFromPrice > 0 ? 'Package from $' + (landFromPrice + (parseInt(d.price.replace(/[^0-9]/g,''))||0)).toLocaleString() : d.price) + '</span>' +
  '<div style="display:flex;gap:5px;align-items:center">' + saveBtn + '<button class="wizard-select-btn" onclick="showDesignDetail(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm\u00B2 \u2022 View Details</button></div>' +
  '</div>' +
 
