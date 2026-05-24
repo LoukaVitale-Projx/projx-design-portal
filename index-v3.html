@@ -2399,13 +2399,23 @@
  switch (wizardState.step) {
  case 1: body.innerHTML = renderLandStep3(); break;
  case 2: body.innerHTML = renderLandStep4(); break;
- default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
+ default:
+      wizardState.step = totalSteps;
+      document.getElementById('wizardProgressFill').style.width = '100%';
+      document.getElementById('wizardStepLabel').textContent = 'Step ' + totalSteps + ' of ' + totalSteps;
+      dotsEl.innerHTML = Array.from({length: totalSteps}, function(_, i) { return '<div class="wizard-step-dot ' + (i + 1 < totalSteps ? 'done' : 'active') + '"></div>'; }).join('');
+      body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
  }
  } else {
  switch (wizardState.step) {
  case 1: body.innerHTML = renderBuilderStep2(); break;
  case 2: body.innerHTML = renderBuilderStep3(); break;
- default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
+ default:
+      wizardState.step = totalSteps;
+      document.getElementById('wizardProgressFill').style.width = '100%';
+      document.getElementById('wizardStepLabel').textContent = 'Step ' + totalSteps + ' of ' + totalSteps;
+      dotsEl.innerHTML = Array.from({length: totalSteps}, function(_, i) { return '<div class="wizard-step-dot ' + (i + 1 < totalSteps ? 'done' : 'active') + '"></div>'; }).join('');
+      body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
  }
  }
  // Keep compare pill in sync
@@ -3166,7 +3176,8 @@
  const frontage = wizardState.selectedFrontage;
  const projLots = SAMPLE_LOTS[p ? p.id : ''] || [];
  const matchLots = frontage ? projLots.filter(function(l) { return l.frontage === frontage; }) : [];
- const landFrom = matchLots.length > 0 ? Math.min.apply(null, matchLots.map(function(l) { return l.price; })) : 0;
+ var landFrom = matchLots.length > 0 ? Math.min.apply(null, matchLots.map(function(l) { return l.price; })) : 0;
+    if (landFrom === 0 && p && p.minPrice > 0) landFrom = p.minPrice;
  const totalPkg = landFrom > 0 && buildPrice > 0 ? landFrom + buildPrice : 0;
  const priceVal = totalPkg > 0 ? 'From $' + Math.round(totalPkg).toLocaleString() : (d ? d.price : 'Contact for pricing');
  const priceBreakdown = totalPkg > 0 ? 'Land from $' + Math.round(landFrom).toLocaleString() + ' + Build ' + d.price : '';
