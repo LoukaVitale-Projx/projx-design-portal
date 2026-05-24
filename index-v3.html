@@ -1410,6 +1410,61 @@
     @media (max-width: 400px) {
       .wizard-design-grid { grid-template-columns: 1fr; }
     }
+
+    /* ─── COMPARE PACKAGES ──────────────────────────────────────── */
+    .compare-pill {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 2100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .compare-pill:hover { transform: translateX(-50%) translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.25); }
+
+    /* ─── TESTIMONIALS ──────────────────────────────────────────── */
+    .testimonial-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--card-shadow-hover);
+      border-color: rgba(59,125,221,0.2);
+    }
+    .testimonial-quote {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.8;
+      font-style: italic;
+      flex: 1;
+    }
+    .testimonial-stars { font-size: 15px; letter-spacing: 2px; }
+    .testimonial-author { font-size: 13px; font-weight: 700; color: var(--primary); }
+    .testimonial-estate { font-size: 12px; color: var(--text-light); font-weight: 500; }
+
+    @media (max-width: 640px) {
+      #testimonials { padding: 48px 16px !important; }
+    }
   </style>
 </head>
 <body>
@@ -1506,7 +1561,42 @@
   </div>
 </section>
 
-
+<!-- ─── TESTIMONIALS ─── -->
+<section id="testimonials" style="background:var(--bg);padding:64px 32px;border-top:1px solid var(--border)">
+  <div class="section-inner">
+    <div class="section-header" style="text-align:center;margin-bottom:40px">
+      <div class="section-badge" style="margin:0 auto 14px">⭐ Buyer Stories</div>
+      <h2 class="section-title">What Our Buyers Say</h2>
+      <p class="section-subtitle" style="margin:0 auto">Real experiences from families who found their home through ProjX.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px">
+      <div class="testimonial-card fade-in">
+        <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-quote">&ldquo;The whole process was so easy. We found our land at Woodchester, picked a Creation Homes design, and our consultant had the package ready within 48 hours. We&rsquo;re moving in next month!&rdquo;</p>
+        <div>
+          <div class="testimonial-author">Sarah &amp; James</div>
+          <div class="testimonial-estate">📍 Woodchester Estate</div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-in fade-in-delay-1">
+        <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-quote">&ldquo;As first home buyers we were overwhelmed until we found ProjX. The design portal made it simple to compare builders and see exactly what we could afford.&rdquo;</p>
+        <div>
+          <div class="testimonial-author">Michael T.</div>
+          <div class="testimonial-estate">📍 Lakeview Estate</div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-in fade-in-delay-2">
+        <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-quote">&ldquo;We&rsquo;re investors and needed to understand the numbers quickly. The package pricing and calculator meant we could make a decision in one sitting.&rdquo;</p>
+        <div>
+          <div class="testimonial-author">David &amp; Lin</div>
+          <div class="testimonial-estate">📍 Oakland Estate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ─── FOOTER ─── -->
 <footer>
@@ -1544,6 +1634,12 @@
     <button class="wizard-close-btn" onclick="closeWizard()" aria-label="Close wizard">✕</button>
   </div>
   <div class="wizard-body" id="wizardBody"></div>
+  <!-- Compare floating pill -->
+  <div class="compare-pill" id="comparePill" onclick="openCompareModal()" style="display:none">
+    <span style="font-size:16px">♥</span> Compare (<span id="compareCount">0</span>)
+  </div>
+  <!-- Compare modal -->
+  <div id="compareModal" style="display:none;position:fixed;inset:0;z-index:2200;background:#fff;overflow-y:auto;"></div>
 </div>
 
 </div><!-- /main-content -->
@@ -1665,6 +1761,81 @@
     {name:'Doulton', builder:'Metricon', beds:5, baths:3, garage:2, sqm:290, price:'$560,000', frontage:'14m+', tier:'premium'},
     {name:'Hampshire', builder:'Metricon', beds:5, baths:4, garage:3, sqm:350, price:'$650,000', frontage:'16m+', tier:'premium'}
   ];
+
+  // ─── SUBURB LIFESTYLE DATA ───────────────────────────────────────────────
+  const SUBURB_DATA = {
+    'oaklandestate': {
+      schools: ['Beaudesert State School (1.2km)', 'St Mary\'s Catholic Primary (2km)', 'Beaudesert SHS (1.5km)'],
+      commute: '65 min to Brisbane CBD',
+      amenities: ['Beaudesert Town Centre (1km)', 'Beaudesert Hospital (2km)', 'Scenic Rim Regional Library'],
+      medianPrice: '$485,000',
+      growth: '+8.2% annual'
+    },
+    'woodchester': {
+      schools: ['Gatton State School (3km)', 'Faith Lutheran College (5km)', 'Lockyer District SHS (4km)'],
+      commute: '70 min to Brisbane CBD',
+      amenities: ['Gatton Town Centre (3km)', 'Lake Apex (2km)', 'University of Qld Gatton Campus (5km)'],
+      medianPrice: '$420,000',
+      growth: '+12.5% annual'
+    },
+    'lakeviewestate': {
+      schools: ['Gatton State School (2km)', 'Faith Lutheran College (4km)'],
+      commute: '70 min to Brisbane CBD',
+      amenities: ['Gatton Town Centre (2km)', 'Lake Apex Park', 'Lockyer Valley Cultural Centre'],
+      medianPrice: '$420,000',
+      growth: '+12.5% annual'
+    },
+    'sorensenrise': {
+      schools: ['Southside State School (2km)', 'Victory College (5km)', 'Gympie SHS (5km)'],
+      commute: '90 min to Sunshine Coast',
+      amenities: ['Gympie Town Centre (4km)', 'Mary Valley Rail Trail', 'Gympie Aquatic Centre'],
+      medianPrice: '$385,000',
+      growth: '+9.8% annual'
+    },
+    'riverina': {
+      schools: ['Emmanuel College (3km)', 'All Saints Anglican (2km)', 'Nerang SHS (4km)'],
+      commute: '15 min to Surfers Paradise',
+      amenities: ['Metricon Stadium (2km)', 'Pacific Fair (10km)', 'Carrara Markets'],
+      medianPrice: '$820,000',
+      growth: '+6.1% annual'
+    },
+    'peregian': {
+      schools: ['Coolum State School (5km)', 'St Andrew\'s Anglican (8km)'],
+      commute: '90 min to Brisbane CBD, 20 min to Noosa',
+      amenities: ['Peregian Beach (3km)', 'Noosa National Park (15km)', 'Peregian Village'],
+      medianPrice: '$950,000',
+      growth: '+7.3% annual'
+    },
+    'bellmere': {
+      schools: ['Caboolture East State School (3km)', 'Grace Lutheran College (5km)'],
+      commute: '50 min to Brisbane CBD',
+      amenities: ['Morayfield Shopping Centre (5km)', 'Caboolture Hospital (6km)', 'Abbey Museum'],
+      medianPrice: '$580,000',
+      growth: '+11.2% annual'
+    },
+    'hoya': {
+      schools: ['Boonah State School (5km)', 'Boonah SHS (5km)'],
+      commute: '75 min to Brisbane CBD',
+      amenities: ['Boonah Town Centre (5km)', 'Lake Moogerah (15km)', 'Mt French Lookout'],
+      medianPrice: '$520,000',
+      growth: '+10.5% annual'
+    },
+    'barrensroad': {
+      schools: ['Ripley Valley State School (2km)', 'Faith Lutheran College Plainland (15km)'],
+      commute: '45 min to Brisbane CBD',
+      amenities: ['Orion Springfield Central (10km)', 'Ripley Town Centre (planned)', 'Flinders-Goolman Conservation'],
+      medianPrice: '$620,000',
+      growth: '+14.1% annual'
+    }
+  };
+
+  // ─── BUILDER TOUR LINKS ───────────────────────────────────────────────────
+  const BUILDER_TOUR_LINKS = {
+    'FRD Homes': 'https://frdhomes.com.au/',
+    'Creation Homes': 'https://qld.creationhomes.com.au/designs/',
+    'AVIA Homes': 'https://www.aviahomes.com.au/homes',
+    'Metricon': 'https://www.metricon.com.au/house-designs/queensland'
+  };
 
   // ─── PASSWORD GATE ────────────────────────────────────────────────
   function checkPassword() {
@@ -2063,7 +2234,7 @@
     const design = DESIGNS.find(function(d) { return d.name === designName; });
     if (!design) return;
     const builder = BUILDERS.find(function(b) { return b.name === design.builder; });
-    wizardState = { mode: 'builder', step: 4, region: null, project: null, builder: builder, design: design, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], _designFilter: 'All' };
+    wizardState = { mode: 'builder', step: 4, region: null, project: null, builder: builder, design: design, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2073,7 +2244,7 @@
   function openWizardForBuilder(builderId) {
     const builder = BUILDERS.find(function(b) { return b.id === builderId; });
     if (!builder) return;
-    wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], _designFilter: 'All' };
+    wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2083,7 +2254,7 @@
   function openWizardForProject(projectId) {
     const project = PROJECTS.find(function(p) { return p.id === projectId; });
     if (!project) return;
-    wizardState = { mode: 'land', step: 4, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], _designFilter: 'All' };
+    wizardState = { mode: 'land', step: 4, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2091,7 +2262,7 @@
   }
 
   function openWizard(mode) {
-    wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], _designFilter: 'All' };
+    wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2150,6 +2321,8 @@
         default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
       }
     }
+    // Keep compare pill in sync
+    setTimeout(renderComparePill, 0);
   }
 
   // — LAND PATH —
@@ -2287,10 +2460,32 @@
         '</div>';
     }).join('');
 
+    // Build suburb lifestyle info section
+    var suburbInfo = SUBURB_DATA[p.id];
+    var suburbSection = '';
+    if (suburbInfo) {
+      var schoolsList = suburbInfo.schools.map(function(s) { return '<li style="font-size:13px;color:var(--text);margin-bottom:5px;line-height:1.4">\uD83C\uDFEB ' + s + '</li>'; }).join('');
+      var amenitiesList = suburbInfo.amenities.map(function(a) { return '<li style="font-size:13px;color:var(--text);margin-bottom:5px;line-height:1.4">\uD83D\uDCCD ' + a + '</li>'; }).join('');
+      suburbSection = '<details style="margin-top:24px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">' +
+        '<summary style="padding:14px 18px;font-size:14px;font-weight:700;color:var(--primary);cursor:pointer;background:var(--bg-alt);list-style:none;display:flex;align-items:center;gap:8px">\uD83D\uDCCD About ' + p.suburb + ' Area <span style="font-size:11px;color:var(--text-light);font-weight:500;margin-left:4px">(tap to expand)</span></summary>' +
+        '<div style="padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px">' +
+        '<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-xlight);margin-bottom:8px">Schools Nearby</div><ul style="list-style:none;padding:0">' + schoolsList + '</ul></div>' +
+        '<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-xlight);margin-bottom:8px">Amenities</div><ul style="list-style:none;padding:0">' + amenitiesList + '</ul></div>' +
+        '<div>' +
+        '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-xlight);margin-bottom:8px">Commute</div>' +
+        '<div style="font-size:13px;color:var(--text);margin-bottom:16px">\uD83D\uDE97 ' + suburbInfo.commute + '</div>' +
+        '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-xlight);margin-bottom:6px">Suburb Median</div>' +
+        '<div style="font-size:22px;font-weight:900;color:var(--primary);letter-spacing:-0.5px">' + suburbInfo.medianPrice + '</div>' +
+        '<div style="font-size:12px;color:var(--success);font-weight:700;margin-top:4px">' + suburbInfo.growth + ' growth</div>' +
+        '</div>' +
+        '</div></details>';
+    }
+
     return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
-      '<div class="wizard-step-heading"><h2>Choose your lot size at ' + p.name + '</h2><p>📍 ' + p.suburb + ', ' + p.region + ' — Select a lot width to see compatible home designs</p></div>' +
+      '<div class="wizard-step-heading"><h2>Choose your lot size at ' + p.name + '</h2><p>\uD83D\uDCCD ' + p.suburb + ', ' + p.region + ' — Select a lot width to see compatible home designs</p></div>' +
       '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:28px">' + cards + '</div>' +
-      (selectedFrontage ? '<div style="text-align:center"><button class="wizard-submit-btn" onclick="wizardNext()" style="max-width:360px">See Compatible Builds for ' + selectedFrontage + 'm Lots →</button></div>' : '');
+      suburbSection +
+      (selectedFrontage ? '<div style="text-align:center;margin-top:24px"><button class="wizard-submit-btn" onclick="wizardNext()" style="max-width:360px">See Compatible Builds for ' + selectedFrontage + 'm Lots \u2192</button></div>' : '');
   }
 
   function selectFrontageGroup(frontage) {
@@ -2325,17 +2520,22 @@
 
     const cards = filtered.map(function(d) {
       const imgSrc = DESIGN_IMAGES[d.name] || Object.values(DESIGN_IMAGES)[0];
+      const isSaved = wizardState.savedDesigns && wizardState.savedDesigns.some(function(s) { return s.designName === d.name; });
+      const saveBtn = '<button onclick="toggleSaveDesign(\'' + d.name.replace(/'/g, "\\'") + '\',\'' + d.builder.replace(/'/g, "\\'") + '\')" title="' + (isSaved ? 'Remove from compare' : 'Save to compare') + '" style="font-family:Montserrat,sans-serif;font-size:14px;background:' + (isSaved ? 'rgba(59,125,221,0.08)' : 'transparent') + ';color:' + (isSaved ? 'var(--accent)' : 'var(--text-xlight)') + ';border:1.5px solid ' + (isSaved ? 'var(--accent)' : 'var(--border)') + ';padding:5px 10px;border-radius:6px;cursor:pointer;transition:all 0.2s;min-height:32px">' + (isSaved ? '\u2665' : '\u2661') + '</button>';
+      const tourLink = BUILDER_TOUR_LINKS[d.builder] ? '<a href="' + BUILDER_TOUR_LINKS[d.builder] + '" target="_blank" rel="noopener" style="display:block;text-align:center;font-size:11px;color:var(--accent);font-weight:600;margin-top:6px;text-decoration:none;padding:2px 0;opacity:0.85">\uD83C\uDFE0 View on builder site \u2192</a>' : '';
       return '<div class="wizard-design-card">' +
         '<div class="wizard-design-img"><img src="' + imgSrc + '" alt="' + d.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/></div>' +
         '<div class="wizard-design-body">' +
         '<div class="wizard-design-name">' + d.name + '</div>' +
         '<div class="wizard-design-builder-tag">' + d.builder + '</div>' +
-        '<div class="wizard-design-specs"><span>🛏 ' + d.beds + '</span><span>🚿 ' + d.baths + '</span><span>🚗 ' + d.garage + '</span><span>📐 ' + d.frontage + '</span></div>' +
+        '<div class="wizard-design-specs"><span>\uD83D\uDECF ' + d.beds + '</span><span>\uD83D\uDEBF ' + d.baths + '</span><span>\uD83D\uDE97 ' + d.garage + '</span><span>\uD83D\uDCCF ' + d.frontage + '</span></div>' +
         (landFromPrice > 0 ? '<div style="font-size:11px;color:var(--text-xlight);margin-bottom:6px">Land from $' + Math.round(landFromPrice/1000) + 'k + Build ' + d.price + '</div>' : '') +
         '<div class="wizard-design-price-row">' +
         '<span class="wizard-design-price">' + (landFromPrice > 0 ? 'Pkg from $' + Math.round((landFromPrice + (parseInt(d.price.replace(/[^0-9]/g,''))||0))/1000) + 'k' : d.price) + '</span>' +
-        '<button class="wizard-select-btn" onclick="wizardSelectDesign(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm² • Select →</button>' +
-        '</div></div></div>';
+        '<div style="display:flex;gap:5px;align-items:center">' + saveBtn + '<button class="wizard-select-btn" onclick="wizardSelectDesign(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm\u00B2 \u2022 Select \u2192</button></div>' +
+        '</div>' +
+        tourLink +
+        '</div></div>';
     }).join('');
 
     return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
@@ -2394,6 +2594,9 @@
     const builderDesigns = DESIGNS.filter(function(d) { return d.builder === wizardState.builder.name; });
     const cards = builderDesigns.map(function(d) {
       const imgSrc = DESIGN_IMAGES[d.name] || Object.values(DESIGN_IMAGES)[0];
+      const isSaved = wizardState.savedDesigns && wizardState.savedDesigns.some(function(s) { return s.designName === d.name; });
+      const saveBtn = '<button onclick="toggleSaveDesign(\'' + d.name.replace(/'/g, "\\'") + '\',\'' + d.builder.replace(/'/g, "\\'") + '\')" title="' + (isSaved ? 'Remove from compare' : 'Save to compare') + '" style="font-family:Montserrat,sans-serif;font-size:14px;background:' + (isSaved ? 'rgba(59,125,221,0.08)' : 'transparent') + ';color:' + (isSaved ? 'var(--accent)' : 'var(--text-xlight)') + ';border:1.5px solid ' + (isSaved ? 'var(--accent)' : 'var(--border)') + ';padding:5px 10px;border-radius:6px;cursor:pointer;transition:all 0.2s;min-height:32px">' + (isSaved ? '\u2665' : '\u2661') + '</button>';
+      const tourLink = BUILDER_TOUR_LINKS[d.builder] ? '<a href="' + BUILDER_TOUR_LINKS[d.builder] + '" target="_blank" rel="noopener" style="display:block;text-align:center;font-size:11px;color:var(--accent);font-weight:600;margin-top:6px;text-decoration:none;padding:2px 0;opacity:0.85">\uD83C\uDFE0 View on builder site \u2192</a>' : '';
       return '<div class="wizard-design-card">' +
         '<div class="wizard-design-img"><img src="' + imgSrc + '" alt="' + d.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/></div>' +
         '<div class="wizard-design-body">' +
@@ -2402,8 +2605,10 @@
         '<div class="wizard-design-specs"><span>🛏 ' + d.beds + '</span><span>🚿 ' + d.baths + '</span><span>🚗 ' + d.garage + '</span><span>📐 ' + d.frontage + '</span></div>' +
         '<div class="wizard-design-price-row">' +
         '<span class="wizard-design-price">' + d.price + '</span>' +
-        '<button class="wizard-select-btn" onclick="wizardSelectDesign(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm² • Select →</button>' +
-        '</div></div></div>';
+        '<div style="display:flex;gap:5px;align-items:center">' + saveBtn + '<button class="wizard-select-btn" onclick="wizardSelectDesign(\'' + d.name.replace(/'/g, "\\'") + '\')">' + d.sqm + 'm\u00B2 \u2022 Select \u2192</button></div>' +
+        '</div>' +
+        tourLink +
+        '</div></div>';
     }).join('');
 
     return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
@@ -2751,9 +2956,135 @@
   // Close wizard on Escape key
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && document.getElementById('wizard').classList.contains('open')) {
+      // If compare modal open, close it first
+      var cm = document.getElementById('compareModal');
+      if (cm && cm.style.display !== 'none') { closeCompareModal(); return; }
       closeWizard();
     }
   });
+
+  // ─── COMPARE PACKAGES ───────────────────────────────────────────────────
+
+  function toggleSaveDesign(designName, builderName) {
+    if (!wizardState.savedDesigns) wizardState.savedDesigns = [];
+    var idx = wizardState.savedDesigns.findIndex(function(s) { return s.designName === designName; });
+    if (idx === -1) {
+      if (wizardState.savedDesigns.length >= 3) {
+        // Flash a quick notice inside wizard
+        var notice = document.createElement('div');
+        notice.textContent = '\u26A0\uFE0F Max 3 designs to compare. Remove one first.';
+        notice.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#1B2432;color:#fff;padding:12px 24px;border-radius:10px;font-family:Montserrat,sans-serif;font-size:13px;font-weight:700;z-index:3000;box-shadow:0 4px 20px rgba(0,0,0,0.2);pointer-events:none';
+        document.body.appendChild(notice);
+        setTimeout(function() { if (notice.parentNode) notice.parentNode.removeChild(notice); }, 2500);
+        return;
+      }
+      wizardState.savedDesigns.push({designName: designName, builderName: builderName});
+    } else {
+      wizardState.savedDesigns.splice(idx, 1);
+    }
+    renderWizardStep();
+    renderComparePill();
+  }
+
+  function renderComparePill() {
+    var pill = document.getElementById('comparePill');
+    if (!pill) return;
+    var count = (wizardState.savedDesigns || []).length;
+    if (count > 0) {
+      pill.style.display = 'flex';
+      var el = document.getElementById('compareCount');
+      if (el) el.textContent = count;
+    } else {
+      pill.style.display = 'none';
+    }
+  }
+
+  function openCompareModal() {
+    var modal = document.getElementById('compareModal');
+    if (!modal) return;
+    var saved = wizardState.savedDesigns || [];
+    if (saved.length === 0) return;
+
+    var cols = saved.map(function(s) {
+      var d = DESIGNS.find(function(x) { return x.name === s.designName; });
+      if (!d) return '';
+      var imgSrc = DESIGN_IMAGES[d.name] || Object.values(DESIGN_IMAGES)[0];
+
+      // Land + total price if project + frontage selected
+      var landSection = '';
+      var p = wizardState.project;
+      var frontage = wizardState.selectedFrontage;
+      if (p && frontage) {
+        var projLots = SAMPLE_LOTS[p.id] || [];
+        var matchLots = projLots.filter(function(l) { return l.frontage === frontage; });
+        var landFrom = matchLots.length > 0 ? Math.min.apply(null, matchLots.map(function(l) { return l.price; })) : 0;
+        var buildPrice = parseInt(d.price.replace(/[^0-9]/g, '')) || 0;
+        if (landFrom > 0) {
+          landSection =
+            '<div style="background:var(--bg-alt);border-radius:8px;padding:10px 12px;margin-top:8px">' +
+            '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-xlight);margin-bottom:4px">Land from</div>' +
+            '<div style="font-size:14px;font-weight:800;color:var(--primary)">$' + Math.round(landFrom/1000) + 'k</div>' +
+            '</div>' +
+            '<div style="background:rgba(59,125,221,0.06);border:1px solid rgba(59,125,221,0.15);border-radius:8px;padding:10px 12px;margin-top:6px">' +
+            '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--accent);margin-bottom:4px">Total package</div>' +
+            '<div style="font-size:18px;font-weight:900;color:var(--accent)">From $' + Math.round((landFrom + buildPrice) / 1000) + 'k</div>' +
+            '</div>';
+        }
+      }
+
+      return '<div style="flex:1;min-width:220px;max-width:300px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--card-shadow)">' +
+        '<div style="height:160px;overflow:hidden"><img src="' + imgSrc + '" alt="' + d.name + '" style="width:100%;height:100%;object-fit:cover" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/></div>' +
+        '<div style="padding:18px;flex:1;display:flex;flex-direction:column;gap:8px">' +
+        '<div style="font-size:16px;font-weight:900;color:var(--primary);letter-spacing:-0.3px">' + d.name + '</div>' +
+        '<div style="font-size:12px;color:var(--accent);font-weight:600">' + d.builder + '</div>' +
+        '<div style="display:flex;gap:10px;font-size:12px;color:var(--text-light);flex-wrap:wrap;margin-bottom:2px">' +
+        '<span>\uD83D\uDECF ' + d.beds + '</span><span>\uD83D\uDEBF ' + d.baths + '</span><span>\uD83D\uDE97 ' + d.garage + '</span>' +
+        '</div>' +
+        '<div style="font-size:12px;color:var(--text-light)">\uD83D\uDCCF ' + d.sqm + 'm\u00B2 \u00B7 Frontage ' + d.frontage + '</div>' +
+        '<div style="font-size:15px;font-weight:800;color:var(--primary)">Build: ' + d.price + '</div>' +
+        landSection +
+        '<div style="margin-top:auto;padding-top:12px;display:flex;flex-direction:column;gap:8px">' +
+        '<button onclick="selectFromCompare(\'' + d.name.replace(/'/g, "\\'") + '\')" style="padding:10px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:Montserrat,sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:var(--transition);width:100%">Select this package \u2192</button>' +
+        '<button onclick="removeFromCompare(\'' + d.name.replace(/'/g, "\\'") + '\')" style="padding:8px 16px;background:transparent;color:var(--text-light);border:1.5px solid var(--border);border-radius:8px;font-family:Montserrat,sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:var(--transition);width:100%">Remove</button>' +
+        '</div></div></div>';
+    }).join('');
+
+    modal.innerHTML =
+      '<div style="max-width:1100px;margin:0 auto;padding:32px 24px">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;position:sticky;top:0;background:#fff;padding:16px 0;z-index:1;border-bottom:1px solid var(--border)">' +
+      '<div>' +
+      '<h2 style="font-size:26px;font-weight:900;letter-spacing:-1px;color:var(--primary);margin-bottom:4px">Compare Packages</h2>' +
+      '<p style="font-size:13px;color:var(--text-light)">' + saved.length + ' design' + (saved.length !== 1 ? 's' : '') + ' saved for comparison</p>' +
+      '</div>' +
+      '<button onclick="closeCompareModal()" style="width:40px;height:40px;border-radius:50%;background:var(--bg-alt);border:1.5px solid var(--border);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-light);font-family:inherit;flex-shrink:0">\u2715</button>' +
+      '</div>' +
+      '<div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center">' + cols + '</div>' +
+      '</div>';
+
+    modal.style.display = 'block';
+    document.getElementById('wizard').scrollTop = 0;
+  }
+
+  function closeCompareModal() {
+    var modal = document.getElementById('compareModal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function removeFromCompare(designName) {
+    if (!wizardState.savedDesigns) return;
+    wizardState.savedDesigns = wizardState.savedDesigns.filter(function(s) { return s.designName !== designName; });
+    renderComparePill();
+    if (wizardState.savedDesigns.length === 0) {
+      closeCompareModal();
+    } else {
+      openCompareModal();
+    }
+  }
+
+  function selectFromCompare(designName) {
+    closeCompareModal();
+    wizardSelectDesign(designName);
+  }
 </script>
 </body>
 </html>
