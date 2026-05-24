@@ -1809,7 +1809,7 @@
     'frd': 'img/builders/frd-dark.png',
     'creation': 'img/builders/creation.png',
     'avia': 'img/builders/avia-logo.png',
-    'metricon': 'img/builders/metricon.jpg'
+    'metricon': 'img/builders/metricon.png'
   };
 
   const BUILDER_TOUR_LINKS = {
@@ -1991,8 +1991,8 @@
       const logoStyles = {
         'frd': 'max-height:70px;max-width:140px;',
         'creation': 'max-height:50px;max-width:50px;',
-        'avia': 'max-height:60px;max-width:160px;filter:invert(1);mix-blend-mode:multiply;',
-        'metricon': 'max-height:70px;max-width:70px;filter:invert(1);mix-blend-mode:multiply;'
+        'avia': 'max-height:60px;max-width:160px;',
+        'metricon': 'max-height:70px;max-width:70px;'
       };
       const logoStyle = logoStyles[b.id] || 'max-height:60px;max-width:160px;';
       const needsLabel = (b.id === 'creation'); // Creation icon has no text
