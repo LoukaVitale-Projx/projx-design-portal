@@ -2389,6 +2389,7 @@
  }
 
  function renderWizardStep() {
+    wizardState._inDetail = false;
  const totalSteps = wizardState.mode === 'land' ? 4 : 5;
  const pct = (wizardState.step / totalSteps) * 100;
  document.getElementById('wizardProgressFill').style.width = Math.min(pct, 100) + '%';
