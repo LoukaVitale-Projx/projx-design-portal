@@ -1962,6 +1962,12 @@
  filter = filter || 'all';
  const grid = document.getElementById('projectsGrid');
  var filtered = filter === 'all' ? PROJECTS : PROJECTS.filter(function(p) { return getProjectStatus(p) === filter; });
+    // Sort: available first, then coming soon
+    filtered = filtered.slice().sort(function(a, b) {
+      var aStatus = getProjectStatus(a) === 'available' ? 0 : 1;
+      var bStatus = getProjectStatus(b) === 'available' ? 0 : 1;
+      return aStatus - bStatus;
+    });
  // Apply budget filter
  if (currentBudgetFilter !== 'all') {
  var maxBudget = parseInt(currentBudgetFilter);
