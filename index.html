@@ -1535,6 +1535,20 @@
         </button>
       </div>
     </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center">
+      <span style="font-size:12px;font-weight:600;color:var(--text-light);margin-right:4px">Budget:</span>
+      <button class="filter-chip estate-budget active" data-budget="all" onclick="filterByBudget('all')">All</button>
+      <button class="filter-chip estate-budget" data-budget="400" onclick="filterByBudget('400')">Under $400k</button>
+      <button class="filter-chip estate-budget" data-budget="600" onclick="filterByBudget('600')">$400k – $600k</button>
+      <button class="filter-chip estate-budget" data-budget="800" onclick="filterByBudget('800')">$600k – $800k</button>
+      <button class="filter-chip estate-budget" data-budget="1000" onclick="filterByBudget('1000')">$800k – $1M</button>
+      <button class="filter-chip estate-budget" data-budget="1001" onclick="filterByBudget('1001')">$1M+</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
+      <button class="estate-filter filter-chip active" data-filter="all" onclick="renderProjects(null)">All Estates</button>
+      <button class="estate-filter filter-chip" data-filter="available" onclick="renderProjects('available')" style="color:#059669">● Available Now</button>
+      <button class="estate-filter filter-chip" data-filter="coming-soon" onclick="renderProjects('coming-soon')" style="color:#D97706">● Coming Soon</button>
+    </div>
     <div id="listView">
       <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">
         <button class="estate-filter filter-chip active" data-filter="all" onclick="renderProjects('all')">All Estates</button>
@@ -1892,10 +1906,37 @@
     return p.minPrice > 0 ? 'available' : 'coming-soon';
   }
 
+  var currentStatusFilter = 'all';
+  var currentBudgetFilter = 'all';
+
+  function filterByBudget(budget) {
+    currentBudgetFilter = budget;
+    document.querySelectorAll('.estate-budget').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.budget === budget);
+    });
+    renderProjects(null);
+  }
+
   function renderProjects(filter) {
+    if (filter !== null && filter !== undefined) currentStatusFilter = filter;
+    filter = currentStatusFilter;
     filter = filter || 'all';
     const grid = document.getElementById('projectsGrid');
-    const filtered = filter === 'all' ? PROJECTS : PROJECTS.filter(p => getProjectStatus(p) === filter);
+    var filtered = filter === 'all' ? PROJECTS : PROJECTS.filter(function(p) { return getProjectStatus(p) === filter; });
+    // Apply budget filter
+    if (currentBudgetFilter !== 'all') {
+      var maxBudget = parseInt(currentBudgetFilter);
+      if (maxBudget <= 1000) {
+        var minBudget = maxBudget === 400 ? 0 : maxBudget === 600 ? 400000 : maxBudget === 800 ? 600000 : 800000;
+        var maxB = maxBudget * 1000;
+        filtered = filtered.filter(function(p) {
+          if (p.minPrice === 0) return true;
+          return p.minPrice < maxB && (minBudget === 0 || p.minPrice >= minBudget);
+        });
+      } else {
+        filtered = filtered.filter(function(p) { return p.minPrice >= 1000000 || p.minPrice === 0; });
+      }
+    }
     grid.innerHTML = filtered.map((p, i) => {
       const status = getProjectStatus(p);
       const statusLabel = status === 'available' ? 'Available Now' : 'Coming Soon';
@@ -1922,7 +1963,7 @@
       </div>`;
     }).join('');
     // Update filter chip active states
-    document.querySelectorAll('.estate-filter').forEach(btn => {
+    document.querySelectorAll('.estate-filter').forEach(function(btn) {
       btn.classList.toggle('active', btn.dataset.filter === filter);
     });
     // Re-trigger fade-in for newly rendered cards
