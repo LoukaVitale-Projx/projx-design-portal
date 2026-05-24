@@ -1504,10 +1504,21 @@
 </nav>
 
 <!-- ─── HERO ─── -->
-<section id="hero" style="min-height:auto;padding:100px 32px 32px">
+<section id="hero" style="min-height:auto;padding:100px 32px 48px;background:linear-gradient(160deg, var(--bg-alt) 0%, var(--bg) 60%);border-bottom:1px solid var(--border)">
   <div style="max-width:700px;margin:0 auto;text-align:center">
-    <h1 class="hero-title" style="font-size:clamp(24px,3.5vw,36px);margin-bottom:10px">House & Land Packages</h1>
-    <p style="font-size:15px;color:var(--text-light);margin:0">4,500+ lots across 18 projects. Select an estate below to get started.</p>
+    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(59,125,221,0.08);border:1px solid rgba(59,125,221,0.2);color:var(--accent);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:8px 16px;border-radius:50px;margin-bottom:24px"><div style="width:6px;height:6px;background:var(--success);border-radius:50%;animation:pulse 2s infinite"></div> Live Platform</div>
+    <h1 class="hero-title" style="font-size:clamp(30px,4.5vw,48px);margin-bottom:16px;letter-spacing:-2px">Your Dream Home,<br><span style="color:var(--accent)">One Click Away</span></h1>
+    <p style="font-size:clamp(14px,1.5vw,16px);color:var(--text-light);margin-bottom:32px;line-height:1.75;max-width:520px;margin-left:auto;margin-right:auto">Browse 4,500+ house &amp; land lots across 18 projects. Match with Australia&rsquo;s best builders. Get your keys faster.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:40px">
+      <button onclick="openWizard('land')" style="display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:#fff;padding:15px 30px;border-radius:10px;font-family:Montserrat,sans-serif;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:all 0.2s">&#x1f5fa;&#xfe0f; Find Land First</button>
+      <button onclick="openWizard('builder')" style="display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--primary);padding:14px 28px;border-radius:10px;border:1.5px solid var(--border);font-family:Montserrat,sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s">&#x1f3d7;&#xfe0f; Choose a Builder</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);background:var(--primary);border-radius:12px;overflow:hidden;max-width:500px;margin:0 auto">
+      <div style="padding:16px 10px;text-align:center;border-right:1px solid rgba(255,255,255,0.08)"><div style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:#fff">4,500+</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase">Lots</div></div>
+      <div style="padding:16px 10px;text-align:center;border-right:1px solid rgba(255,255,255,0.08)"><div style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:#fff">18</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase">Projects</div></div>
+      <div style="padding:16px 10px;text-align:center;border-right:1px solid rgba(255,255,255,0.08)"><div style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:#fff">12</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase">Regions</div></div>
+      <div style="padding:16px 10px;text-align:center"><div style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:#fff">4</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase">Builders</div></div>
+    </div>
   </div>
 </section>
 
