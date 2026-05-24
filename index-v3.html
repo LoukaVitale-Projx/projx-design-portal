@@ -2574,6 +2574,7 @@
 
   function wizardSelectDesign(name) {
     wizardState.design = DESIGNS.find(function(d) { return d.name === name; });
+    wizardState.savedDesigns = [];
     wizardNext();
   }
 
@@ -2754,7 +2755,7 @@
   }
 
 
-  function showDesignDetail(designName) {
+  function showDesignDetail(designName, keepScroll) {
     var d = DESIGNS.find(function(dd) { return dd.name === designName; });
     if (!d) return;
     var imgSrc = DESIGN_IMAGES[d.name] || Object.values(DESIGN_IMAGES)[0];
@@ -2863,14 +2864,16 @@
       '</div>';
     
     document.getElementById('wizardBody').innerHTML = html;
-    document.getElementById('wizard').scrollTop = 0;
+    if (!keepScroll) document.getElementById('wizard').scrollTop = 0;
   }
   
   function toggleUpgradeInDetail(upgradeId, designName) {
     if (!wizardState.upgrades) wizardState.upgrades = [];
     var idx = wizardState.upgrades.indexOf(upgradeId);
     if (idx === -1) { wizardState.upgrades.push(upgradeId); } else { wizardState.upgrades.splice(idx, 1); }
-    showDesignDetail(designName);
+    var scrollPos = document.getElementById('wizard').scrollTop;
+    showDesignDetail(designName, true);
+    document.getElementById('wizard').scrollTop = scrollPos;
   }
   
   function closeDesignDetail() {
