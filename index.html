@@ -2329,7 +2329,8 @@
  if (!design) return;
  const builder = BUILDERS.find(function(b) { return b.name === design.builder; });
  wizardState = { mode: 'builder', step: 2, region: null, project: null, builder: builder, design: design, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All', _inDetail: false };
- document.getElementById('wizard').classList.add('open');
+ wizardHistory = [];
+    document.getElementById('wizard').classList.add('open');
  document.body.style.overflow = 'hidden';
  document.getElementById('wizard').scrollTop = 0;
  renderWizardStep();
@@ -2339,7 +2340,8 @@
  const builder = BUILDERS.find(function(b) { return b.id === builderId; });
  if (!builder) return;
  wizardState = { mode: 'builder', step: 1, region: null, project: null, builder: builder, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All', _inDetail: false };
- document.getElementById('wizard').classList.add('open');
+ wizardHistory = [];
+    document.getElementById('wizard').classList.add('open');
  document.body.style.overflow = 'hidden';
  document.getElementById('wizard').scrollTop = 0;
  renderWizardStep();
@@ -2349,7 +2351,8 @@
  const project = PROJECTS.find(function(p) { return p.id === projectId; });
  if (!project) return;
  wizardState = { mode: 'land', step: 1, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All', _inDetail: false };
- document.getElementById('wizard').classList.add('open');
+ wizardHistory = [];
+    document.getElementById('wizard').classList.add('open');
  document.body.style.overflow = 'hidden';
  document.getElementById('wizard').scrollTop = 0;
  renderWizardStep();
@@ -2357,7 +2360,8 @@
 
  function openWizard(mode) {
  wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All', _inDetail: false };
- document.getElementById('wizard').classList.add('open');
+ wizardHistory = [];
+    document.getElementById('wizard').classList.add('open');
  document.body.style.overflow = 'hidden';
  document.getElementById('wizard').scrollTop = 0;
  renderWizardStep();
@@ -2398,7 +2402,7 @@
  const totalSteps = wizardState.mode === 'land' ? 4 : 5;
  const pct = (wizardState.step / totalSteps) * 100;
  document.getElementById('wizardProgressFill').style.width = Math.min(pct, 100) + '%';
- document.getElementById('wizardStepLabel').textContent = 'Step ' + wizardState.step + ' of ' + totalSteps;
+ document.getElementById('wizardStepLabel').textContent = 'Step ' + (wizardHistory.length + 1);
 
  const dotsEl = document.getElementById('wizardStepDots');
  dotsEl.innerHTML = Array.from({length: totalSteps}, (_, i) => {
@@ -2482,6 +2486,7 @@
 
 
  function showProjectDetail(projectId) {
+    wizardPushState('projects');
     wizardState._inDetail = true;
     var ts = wizardState.mode === 'land' ? 4 : 5;
     var vs = wizardState.step + 1;
@@ -2536,6 +2541,7 @@
  }
 
  function wizardSelectProject(id) {
+    wizardPushState('project-detail');
     wizardState._inDetail = false;
  wizardState.project = PROJECTS.find(function(p) { return p.id === id; });
  wizardNext();
@@ -2676,6 +2682,7 @@
  }
 
  function selectFrontageGroup(frontage) {
+    wizardPushState('frontage');
  wizardState.selectedFrontage = frontage;
  renderWizardStep();
  }
@@ -2735,6 +2742,7 @@
  }
 
  function wizardSelectDesign(name) {
+    wizardPushState('design-detail');
     wizardState._inDetail = false;
  wizardState.design = DESIGNS.find(function(d) { return d.name === name; });
  wizardState.savedDesigns = [];
@@ -2942,6 +2950,7 @@
 
 
  function showDesignDetail(designName, keepScroll) {
+    wizardPushState('designs');
     wizardState._inDetail = true;
     // Update step display
     var ts = wizardState.mode === 'land' ? 4 : 5;
