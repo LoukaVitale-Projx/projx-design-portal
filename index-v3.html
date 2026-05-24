@@ -1091,8 +1091,10 @@
  }
 
  .wizard-header {
- position: sticky;
- top: 0;
+ position: fixed;
+ top: 3px;
+ left: 0;
+ right: 0;
  z-index: 2050;
  background: var(--bg);
  border-bottom: 1px solid var(--border);
@@ -1130,7 +1132,8 @@
  }
  .wizard-close-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
 
- .wizard-body { max-width: 1200px; margin: 0 auto; padding: 52px 32px; }
+ .wizard-body {
+    padding-top: 72px; max-width: 1200px; margin: 0 auto; padding: 52px 32px; }
 
  .wizard-step-heading { text-align: center; margin-bottom: 48px; }
  .wizard-step-heading h2 {
@@ -1393,7 +1396,8 @@
  /* Wizard responsive */
  @media (max-width: 900px) {
  .wizard-package-layout { grid-template-columns: 1fr; gap: 24px; }
- .wizard-body { padding: 32px 20px; }
+ .wizard-body {
+    padding-top: 72px; padding: 32px 20px; }
  .wizard-header { padding: 0 16px; }
  }
  @media (max-width: 640px) {
@@ -1401,7 +1405,8 @@
  .wizard-card-grid-lg { grid-template-columns: 1fr; }
  .wizard-design-grid { grid-template-columns: 1fr 1fr; }
  .wizard-builder-grid { grid-template-columns: 1fr; max-width: 100%; }
- .wizard-body { padding: 24px 14px; }
+ .wizard-body {
+    padding-top: 72px; padding: 24px 14px; }
  .wizard-step-heading h2 { font-size: 22px; letter-spacing: -0.5px; }
  .wizard-lot-summary { padding: 24px 16px; }
  .wizard-lot-summary-details { gap: 16px; }
