@@ -2317,7 +2317,7 @@
  const design = DESIGNS.find(function(d) { return d.name === designName; });
  if (!design) return;
  const builder = BUILDERS.find(function(b) { return b.name === design.builder; });
- wizardState = { mode: 'builder', step: 2, region: null, project: null, builder: builder, design: design, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
+ wizardState = { mode: 'builder', step: 2, region: null, project: null, builder: builder, design: design, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All', _inDetail: false };
  document.getElementById('wizard').classList.add('open');
  document.body.style.overflow = 'hidden';
  document.getElementById('wizard').scrollTop = 0;
@@ -2327,7 +2327,7 @@
  function openWizardForBuilder(builderId) {
  const builder = BUILDERS.find(function(b) { return b.id === builderId; });
  if (!builder) return;
- wizardState = { mode: 'builder', step: 1, region: null, project: null, builder: builder, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
+ wizardState = { mode: 'builder', step: 1, region: null, project: null, builder: builder, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All', _inDetail: false };
  document.getElementById('wizard').classList.add('open');
  document.body.style.overflow = 'hidden';
  document.getElementById('wizard').scrollTop = 0;
@@ -2337,7 +2337,7 @@
  function openWizardForProject(projectId) {
  const project = PROJECTS.find(function(p) { return p.id === projectId; });
  if (!project) return;
- wizardState = { mode: 'land', step: 1, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
+ wizardState = { mode: 'land', step: 1, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All', _inDetail: false };
  document.getElementById('wizard').classList.add('open');
  document.body.style.overflow = 'hidden';
  document.getElementById('wizard').scrollTop = 0;
@@ -2345,7 +2345,7 @@
  }
 
  function openWizard(mode) {
- wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All' };
+ wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, buyerType: null, selectedFrontage: null, financeStatus: null, upgrades: [], savedDesigns: [], _designFilter: 'All', _inDetail: false };
  document.getElementById('wizard').classList.add('open');
  document.body.style.overflow = 'hidden';
  document.getElementById('wizard').scrollTop = 0;
@@ -2560,6 +2560,7 @@
 
  function renderLandStep3() {
  var p = wizardState.project;
+ if (!p) return "<div>Loading...</div>";
  var lots = SAMPLE_LOTS[p.id] || [];
  var selectedFrontage = wizardState.selectedFrontage || null;
  var suburbInfo = (typeof SUBURB_DATA !== 'undefined') ? SUBURB_DATA[p.id] : null;
