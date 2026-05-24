@@ -2312,7 +2312,7 @@
   }
 
   function renderWizardStep() {
-    const totalSteps = wizardState.mode === 'land' ? 8 : 7;
+    const totalSteps = wizardState.mode === 'land' ? 7 : 6;
     const pct = (wizardState.step / totalSteps) * 100;
     document.getElementById('wizardProgressFill').style.width = Math.min(pct, 100) + '%';
     document.getElementById('wizardStepLabel').textContent = 'Step ' + wizardState.step + ' of ' + totalSteps;
@@ -2331,8 +2331,7 @@
         case 3: body.innerHTML = renderLandStep2(); break;
         case 4: body.innerHTML = renderLandStep3(); break;
         case 5: body.innerHTML = renderLandStep4(); break;
-        case 6: body.innerHTML = renderUpgradesStep(); break;
-        case 7: body.innerHTML = renderFinanceStep(); break;
+        case 6: body.innerHTML = renderFinanceStep(); break;
         default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
       }
     } else {
@@ -2341,8 +2340,7 @@
         case 2: body.innerHTML = renderBuilderStep1(); break;
         case 3: body.innerHTML = renderBuilderStep2(); break;
         case 4: body.innerHTML = renderBuilderStep3(); break;
-        case 5: body.innerHTML = renderUpgradesStep(); break;
-        case 6: body.innerHTML = renderFinanceStep(); break;
+        case 5: body.innerHTML = renderFinanceStep(); break;
         default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
       }
     }
@@ -2763,63 +2761,116 @@
     var desc = DESIGN_DESCRIPTIONS[d.name] || 'A quality home design built to the highest standards.';
     var builderLink = BUILDER_TOUR_LINKS[d.builder] || '#';
     
-    // Calculate package price if available
     var frontage = wizardState.selectedFrontage;
     var projLots = SAMPLE_LOTS[wizardState.project ? wizardState.project.id : ''] || [];
     var matchLots = frontage ? projLots.filter(function(l) { return l.frontage === frontage; }) : [];
     var landFrom = matchLots.length > 0 ? Math.min.apply(null, matchLots.map(function(l) { return l.price; })) : 0;
     var buildPrice = parseInt(d.price.replace(/[^0-9]/g, '')) || 0;
     var totalPkg = landFrom > 0 && buildPrice > 0 ? landFrom + buildPrice : 0;
+    var selected = wizardState.upgrades || [];
     
-    var html = '<div style="max-width:800px;margin:0 auto">' +
-      '<button class="wizard-back-btn" onclick="closeDesignDetail()" style="margin-bottom:16px">\u2190 Back to designs</button>' +
+    // Build upgrade cards
+    var upgradeCards = UPGRADE_OPTIONS.map(function(u) {
+      var isSel = selected.indexOf(u.id) !== -1;
+      return '<div style="background:var(--bg);border:2px solid ' + (isSel ? 'var(--accent)' : 'var(--border)') + ';border-radius:12px;padding:16px;cursor:pointer;transition:all 0.2s;position:relative" onclick="toggleUpgradeInDetail(\x27' + u.id + '\x27,\x27' + d.name.replace(/'/g, "\\'") + '\x27)">' +
+        (isSel ? '<div style="position:absolute;top:8px;right:8px;background:var(--accent);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">\u2713</div>' : '') +
+        '<div style="font-size:24px;margin-bottom:8px">' + u.icon + '</div>' +
+        '<div style="font-size:13px;font-weight:800;color:var(--primary);margin-bottom:3px">' + u.name + '</div>' +
+        '<div style="font-size:11px;color:var(--text-light);margin-bottom:6px;line-height:1.5">' + u.desc + '</div>' +
+        '<div style="font-size:12px;font-weight:700;color:var(--accent)">' + u.price + '</div>' +
+        '</div>';
+    }).join('');
+    
+    var html = '<div style="max-width:900px;margin:0 auto;padding-bottom:40px">' +
       
-      // Hero image
-      '<div style="width:100%;height:360px;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:28px;position:relative">' +
-      '<img src="' + imgSrc + '" alt="' + d.name + '" style="width:100%;height:100%;object-fit:cover" onerror="this.onerror=null"' +
-      '<div style="position:absolute;bottom:16px;left:16px;background:rgba(27,36,50,0.85);color:#fff;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700">' + d.builder + '</div>' +
+      // Back button
+      '<button class="wizard-back-btn" onclick="closeDesignDetail()" style="margin-bottom:20px">\u2190 Back to designs</button>' +
+      
+      // === HERO IMAGE (full width, large like AVIA) ===
+      '<div style="width:100%;height:420px;border-radius:16px;overflow:hidden;margin-bottom:32px;position:relative">' +
+      '<img src="' + imgSrc + '" alt="' + d.name + '" style="width:100%;height:100%;object-fit:cover" onerror="this.onerror=null"/>' +
+      '<div style="position:absolute;bottom:16px;left:16px;display:flex;gap:8px">' +
+      '<span style="background:rgba(27,36,50,0.85);color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700">' + d.builder + '</span>' +
+      '<span style="background:rgba(5,150,105,0.9);color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700">' + d.sqm + 'm\u00b2</span>' +
+      '</div></div>' +
+      
+      // === DESIGN NAME + KEY SPECS (AVIA style) ===
+      '<div style="margin-bottom:32px">' +
+      '<h1 style="font-size:clamp(28px,4vw,38px);font-weight:900;color:var(--primary);letter-spacing:-1.5px;margin-bottom:8px">' + d.name.toUpperCase() + '</h1>' +
+      '<div style="display:flex;gap:24px;flex-wrap:wrap;font-size:13px;color:var(--text-light)">' +
+      '<span>House Area: <strong style="color:var(--primary)">' + d.sqm + 'm\u00b2</strong></span>' +
+      '<span>Min Lot Width: <strong style="color:var(--primary)">' + d.frontage + '</strong></span>' +
+      '<span>Builder: <strong style="color:var(--primary)">' + d.builder + '</strong></span>' +
+      '</div></div>' +
+      
+      // === DESCRIPTION ===
+      '<div style="margin-bottom:40px;max-width:700px">' +
+      '<p style="font-size:16px;color:var(--text);line-height:1.85">' + desc + '</p>' +
       '</div>' +
       
-      // Design name + specs header
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:24px">' +
+      // === SPECS GRID (AVIA style - big numbers) ===
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:1px;background:var(--border);border-radius:14px;overflow:hidden;margin-bottom:40px">' +
+      '<div style="background:var(--bg-alt);padding:24px 16px;text-align:center"><div style="font-size:28px;font-weight:900;color:var(--primary)">' + d.beds + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Bedrooms</div></div>' +
+      '<div style="background:var(--bg-alt);padding:24px 16px;text-align:center"><div style="font-size:28px;font-weight:900;color:var(--primary)">' + d.baths + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Bathrooms</div></div>' +
+      '<div style="background:var(--bg-alt);padding:24px 16px;text-align:center"><div style="font-size:28px;font-weight:900;color:var(--primary)">' + d.garage + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Garage</div></div>' +
+      '<div style="background:var(--bg-alt);padding:24px 16px;text-align:center"><div style="font-size:28px;font-weight:900;color:var(--primary)">' + d.sqm + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-top:4px">House m\u00b2</div></div>' +
+      '<div style="background:var(--bg-alt);padding:24px 16px;text-align:center"><div style="font-size:28px;font-weight:900;color:var(--primary)">' + d.frontage.replace('+','') + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Min Width</div></div>' +
+      '</div>' +
+      
+      // === BUILDER LINK + BROCHURE ===
+      '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px">' +
+      '<a href="' + builderLink + '" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--bg-alt);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:700;color:var(--primary);text-decoration:none;transition:all 0.2s">\ud83c\udfe0 View on ' + d.builder + ' website</a>' +
+      '<button onclick="void(0)" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--bg-alt);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:700;color:var(--primary);cursor:pointer;font-family:Montserrat,sans-serif">\ud83d\udcc4 Request Floorplan</button>' +
+      '</div>' +
+      
+      // === FLOOR PLAN SECTION ===
+      '<div style="margin-bottom:48px">' +
+      '<h2 style="font-size:22px;font-weight:900;color:var(--primary);letter-spacing:-0.5px;margin-bottom:16px">Floor Plan</h2>' +
+      '<div style="background:var(--bg-alt);border:1px solid var(--border);border-radius:14px;padding:48px;text-align:center">' +
+      '<div style="font-size:48px;margin-bottom:12px;opacity:0.3">\ud83d\udcd0</div>' +
+      '<div style="font-size:15px;font-weight:700;color:var(--primary);margin-bottom:6px">Floorplan Available on Request</div>' +
+      '<div style="font-size:13px;color:var(--text-light);margin-bottom:16px">Our consultant will send you the detailed floorplan for the ' + d.name + ' as part of your package.</div>' +
+      '<a href="' + builderLink + '" target="_blank" style="font-size:13px;color:var(--accent);font-weight:600;text-decoration:none">Or view on ' + d.builder + ' website \u2192</a>' +
+      '</div></div>' +
+      
+      // === PRICING SECTION ===
+      '<div style="background:var(--primary);border-radius:14px;padding:32px;margin-bottom:48px;color:#fff">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">' +
       '<div>' +
-      '<h2 style="font-size:28px;font-weight:900;color:var(--primary);letter-spacing:-1px;margin-bottom:4px">' + d.name + '</h2>' +
-      '<div style="font-size:13px;color:var(--text-light)">' + d.builder + ' \u2022 ' + d.sqm + 'm\u00b2 \u2022 Min Lot Width ' + d.frontage + '</div>' +
+      '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.5);margin-bottom:6px">Build Price</div>' +
+      '<div style="font-size:32px;font-weight:900;letter-spacing:-1px">' + d.price + '</div>' +
       '</div>' +
-      '<div style="text-align:right">' +
-      '<div style="font-size:11px;color:var(--text-xlight);text-transform:uppercase;letter-spacing:1px">Build from</div>' +
-      '<div style="font-size:24px;font-weight:900;color:var(--primary)">' + d.price + '</div>' +
-      (totalPkg > 0 ? '<div style="font-size:12px;color:var(--accent);font-weight:600">Package from $' + Math.round(totalPkg).toLocaleString() + '</div>' : '') +
-      '</div>' +
+      (totalPkg > 0 ? '<div style="text-align:right"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.5);margin-bottom:6px">Total Package From</div><div style="font-size:32px;font-weight:900;letter-spacing:-1px">$' + Math.round(totalPkg).toLocaleString() + '</div><div style="font-size:12px;color:rgba(255,255,255,0.6)">Land from $' + Math.round(landFrom).toLocaleString() + ' + Build</div></div>' : '') +
+      '</div></div>' +
+      
+      // === UPGRADES SECTION (integrated, not separate step) ===
+      '<div style="margin-bottom:48px">' +
+      '<h2 style="font-size:22px;font-weight:900;color:var(--primary);letter-spacing:-0.5px;margin-bottom:6px">Customise Your Home</h2>' +
+      '<p style="font-size:14px;color:var(--text-light);margin-bottom:24px">Select any upgrades you\u2019re interested in \u2014 these will be included in your consultation.</p>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">' + upgradeCards + '</div>' +
+      '<div style="margin-top:16px;font-size:13px;color:var(--text-light)">' + selected.length + ' upgrade' + (selected.length !== 1 ? 's' : '') + ' selected</div>' +
       '</div>' +
       
-      // Specs grid
-      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:28px">' +
-      '<div style="background:var(--bg-alt);border-radius:10px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:900;color:var(--primary)">' + d.beds + '</div><div style="font-size:11px;color:var(--text-light);font-weight:600">Bedrooms</div></div>' +
-      '<div style="background:var(--bg-alt);border-radius:10px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:900;color:var(--primary)">' + d.baths + '</div><div style="font-size:11px;color:var(--text-light);font-weight:600">Bathrooms</div></div>' +
-      '<div style="background:var(--bg-alt);border-radius:10px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:900;color:var(--primary)">' + d.garage + '</div><div style="font-size:11px;color:var(--text-light);font-weight:600">Garage</div></div>' +
-      '<div style="background:var(--bg-alt);border-radius:10px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:900;color:var(--primary)">' + d.sqm + '</div><div style="font-size:11px;color:var(--text-light);font-weight:600">m\u00b2</div></div>' +
-      '<div style="background:var(--bg-alt);border-radius:10px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:900;color:var(--primary)">' + d.frontage.replace('+','') + '</div><div style="font-size:11px;color:var(--text-light);font-weight:600">Min Width</div></div>' +
-      '</div>' +
+      // === CTA SECTION ===
+      '<div style="background:var(--bg-alt);border-radius:14px;padding:32px;text-align:center">' +
+      '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:8px">Ready to proceed with the ' + d.name + '?</h3>' +
+      '<p style="font-size:13px;color:var(--text-light);margin-bottom:20px">Select this design to continue to finance and contact details.</p>' +
+      '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">' +
+      '<button class="wizard-submit-btn" onclick="wizardSelectDesign(\x27' + d.name.replace("'", "\\'") + '\x27)" style="max-width:320px">Select ' + d.name + ' \u2192</button>' +
+      '<button onclick="toggleSaveDesign(\x27' + d.name.replace("'", "\\'") + '\x27)" style="padding:14px 24px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);font-family:Montserrat,sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s">' + ((wizardState.savedDesigns||[]).indexOf(d.name) !== -1 ? '\u2764\ufe0f Saved' : '\u2661 Save to Compare') + '</button>' +
+      '</div></div>' +
       
-      // Description
-      '<div style="margin-bottom:28px">' +
-      '<h3 style="font-size:16px;font-weight:800;color:var(--primary);margin-bottom:10px">About This Design</h3>' +
-      '<p style="font-size:14px;color:var(--text);line-height:1.8">' + desc + '</p>' +
-      '</div>' +
-      
-      // Builder link
-      '<a href="' + builderLink + '" target="_blank" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--accent);font-weight:600;text-decoration:none;margin-bottom:32px">\ud83c\udfe0 View full details on ' + d.builder + ' website \u2192</a>' +
-      
-      // CTA buttons
-      '<div style="display:flex;gap:12px;flex-wrap:wrap">' +
-      '<button class="wizard-submit-btn" onclick="wizardSelectDesign(\'' + d.name.replace(/'/g, "\\'") + '\')" style="flex:1;min-width:200px">Select ' + d.name + ' \u2192</button>' +
-      '<button onclick="toggleSaveDesign(\'' + d.name.replace(/'/g, "\\'") + '\')" style="flex:0 0 auto;padding:14px 24px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);font-family:Montserrat,sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s">' + ((wizardState.savedDesigns||[]).indexOf(d.name) !== -1 ? '\u2764\ufe0f Saved' : '\u2661 Save to Compare') + '</button>' +
-      '</div>' +
       '</div>';
     
     document.getElementById('wizardBody').innerHTML = html;
     document.getElementById('wizard').scrollTop = 0;
+  }
+  
+  function toggleUpgradeInDetail(upgradeId, designName) {
+    if (!wizardState.upgrades) wizardState.upgrades = [];
+    var idx = wizardState.upgrades.indexOf(upgradeId);
+    if (idx === -1) { wizardState.upgrades.push(upgradeId); } else { wizardState.upgrades.splice(idx, 1); }
+    showDesignDetail(designName);
   }
   
   function closeDesignDetail() {
