@@ -1752,6 +1752,10 @@
     document.querySelectorAll('.estate-filter').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.filter === filter);
     });
+    // Re-trigger fade-in for newly rendered cards
+    requestAnimationFrame(function() {
+      grid.querySelectorAll('.fade-in').forEach(function(el) { el.classList.add('visible'); });
+    });
   }
 
   // ─── MAP ──────────────────────────────────────────────────────────
