@@ -2498,7 +2498,6 @@
  }
 
  html += '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">' +
- '<a href="#" onclick="event.preventDefault()" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;font-family:Montserrat,sans-serif">Download Brochure</a>' +
  '</div>' +
  '<button class="wizard-submit-btn" onclick="wizardSelectProject(\'' + p.id + '\')" style="max-width:360px">Select ' + p.name + ' \u2192</button>' +
  '</div>';
@@ -2604,7 +2603,6 @@
  '<div style="font-size:28px;margin-bottom:10px"></div>' +
  '<div style="font-size:16px;font-weight:800;color:var(--primary);margin-bottom:6px">Lots Coming Soon</div>' +
  '<div style="font-size:13px;color:var(--text-light);margin-bottom:20px">Lot details and pricing for ' + p.name + ' are being finalised. Register your interest to be first notified.</div>' +
- '<a href="#" onclick="event.preventDefault()" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;font-family:Montserrat,sans-serif;margin:0 auto 16px;transition:all 0.2s">Download Brochure</a>' +
  '<button class="wizard-submit-btn" onclick="wizardState.selectedFrontage=null;wizardState.step=' + (wizardState.mode === 'land' ? 3 : 3) + ';renderWizardStep()" style="max-width:300px;margin:0 auto">Register Interest \u2192</button>' +
  '</div>';
  }
@@ -2637,8 +2635,6 @@
  return '<button class="wizard-back-btn" onclick="wizardBack()">\u2190 Back</button>' +
  projectDetails +
  '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px">' +
- '<a href="#" onclick="event.preventDefault()" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;font-family:Montserrat,sans-serif;transition:all 0.2s">Download Brochure</a>' +
- '<a href="#" onclick="event.preventDefault()" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;font-family:Montserrat,sans-serif;transition:all 0.2s">View Masterplan</a>' +
  '</div>' +
  '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:6px">Select Your Lot Size</h3>' +
  '<p style="font-size:13px;color:var(--text-light);margin-bottom:20px">Choose a lot width to see compatible home designs</p>' +
