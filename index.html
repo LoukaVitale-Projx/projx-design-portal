@@ -485,11 +485,7 @@
       border-color: rgba(59,125,221,0.25);
     }
 
-    .builder-img {
-      width: 100%; height: 150px; overflow: hidden;
-    }
-    .builder-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
-    .builder-card:hover .builder-img img { transform: scale(1.05); }
+    /* builder-img removed - using logo only */
 
     .builder-body { padding: 18px; }
 
@@ -1005,7 +1001,6 @@
       .builders-grid { grid-template-columns: 1fr 1fr; }
       .designs-grid { grid-template-columns: 1fr 1fr; }
       .design-img { height: 140px; }
-      .builder-img { height: 130px; }
       .services-grid { grid-template-columns: 1fr; }
       .builders-stats { grid-template-columns: 1fr 1fr; }
       .form-grid { grid-template-columns: 1fr; }
@@ -2007,13 +2002,7 @@
   // ─── BUILDERS ─────────────────────────────────────────────────────
   function renderBuilders() {
     const grid = document.getElementById('buildersGrid');
-    // Use specific renders for each builder header image
-    const builderHeaderImages = [
-      DESIGN_IMAGES['FRD Double 230'],
-      DESIGN_IMAGES['Silverwood 45'],
-      DESIGN_IMAGES['Geneva'],
-      DESIGN_IMAGES['Hampshire']
-    ];
+    // Builder cards show logos only (no facade images)
     grid.innerHTML = BUILDERS.map((b, i) => {
       const initials = b.name.split(' ').map(w=>w[0]).join('').slice(0,2);
       return `
@@ -2449,22 +2438,61 @@
   };
 
   function renderLandStep3() {
-    const p = wizardState.project;
-    const lots = SAMPLE_LOTS[p.id] || [];
-    const selectedFrontage = wizardState.selectedFrontage || null;
+    var p = wizardState.project;
+    var lots = SAMPLE_LOTS[p.id] || [];
+    var selectedFrontage = wizardState.selectedFrontage || null;
+    var suburbInfo = (typeof SUBURB_DATA !== 'undefined') ? SUBURB_DATA[p.id] : null;
+    var imgSrc = getProjectImage(p);
+    var status = getProjectStatus(p);
 
+    // Project details section (always shown)
+    var projectDetails = '<div style="margin-bottom:32px">' +
+      // Hero image
+      '<div style="width:100%;height:240px;border-radius:14px;overflow:hidden;margin-bottom:20px;position:relative">' +
+      '<img src="' + imgSrc + '" alt="' + p.name + '" style="width:100%;height:100%;object-fit:cover"/>' +
+      '<div style="position:absolute;bottom:12px;left:12px;display:flex;gap:8px">' +
+      '<span style="background:rgba(27,36,50,0.85);color:#fff;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700">' + p.region + '</span>' +
+      '<span style="background:' + (status === 'available' ? 'rgba(5,150,105,0.9)' : 'rgba(217,119,6,0.9)') + ';color:#fff;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700">' + (status === 'available' ? 'Available Now' : 'Coming Soon') + '</span>' +
+      '</div></div>' +
+
+      // Project name + key info
+      '<h2 style="font-size:clamp(22px,3vw,28px);font-weight:900;color:var(--primary);letter-spacing:-1px;margin-bottom:6px">' + p.name + '</h2>' +
+      '<div style="font-size:14px;color:var(--text-light);margin-bottom:16px">' + p.suburb + ', ' + p.region + '</div>' +
+
+      // Stats row
+      '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">' +
+      '<div style="background:var(--bg-alt);border-radius:10px;padding:14px 18px;flex:1;min-width:120px"><div style="font-size:22px;font-weight:900;color:var(--primary)">' + p.totalLots + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">Total Lots</div></div>' +
+      '<div style="background:var(--bg-alt);border-radius:10px;padding:14px 18px;flex:1;min-width:120px"><div style="font-size:22px;font-weight:900;color:var(--success)">' + p.availLots + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">Available</div></div>' +
+      '<div style="background:var(--bg-alt);border-radius:10px;padding:14px 18px;flex:1;min-width:120px"><div style="font-size:22px;font-weight:900;color:var(--primary)">' + (p.minPrice > 0 ? 'From $' + Math.round(p.minPrice/1000) + 'k' : 'TBA') + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px">Land Price</div></div>' +
+      '</div>';
+
+    // Suburb info (if available)
+    if (suburbInfo) {
+      projectDetails += '<div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px">' +
+        '<div style="padding:14px 18px;background:var(--bg-alt);font-size:14px;font-weight:700;color:var(--primary);border-bottom:1px solid var(--border)">About ' + p.suburb + '</div>' +
+        '<div style="padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13px">' +
+        '<div><div style="font-weight:700;color:var(--primary);margin-bottom:4px">Commute</div><div style="color:var(--text-light)">' + suburbInfo.commute + '</div></div>' +
+        '<div><div style="font-weight:700;color:var(--primary);margin-bottom:4px">Median Price</div><div style="color:var(--text-light)">' + suburbInfo.medianPrice + ' (' + suburbInfo.growth + ')</div></div>' +
+        '<div><div style="font-weight:700;color:var(--primary);margin-bottom:4px">Schools</div><div style="color:var(--text-light)">' + suburbInfo.schools.slice(0,2).join(', ') + '</div></div>' +
+        '<div><div style="font-weight:700;color:var(--primary);margin-bottom:4px">Amenities</div><div style="color:var(--text-light)">' + suburbInfo.amenities.slice(0,2).join(', ') + '</div></div>' +
+        '</div></div>';
+    }
+
+    projectDetails += '</div>';
+
+    // Coming soon projects - show details + register interest
     if (lots.length === 0) {
-      return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
-        '<div class="wizard-step-heading"><h2>' + p.name + '</h2><p>📍 ' + p.suburb + ', ' + p.region + ' — ' + p.totalLots + ' lots planned</p></div>' +
-        '<div style="background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius);padding:40px;text-align:center;margin-bottom:24px">' +
-        '<div style="font-size:32px;margin-bottom:12px">🛠️</div>' +
-        '<div style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:8px">Coming Soon</div>' +
-        '<div style="font-size:14px;color:var(--text-light);margin-bottom:20px">Lot details and pricing for ' + p.name + ' are being finalised.<br>Register your interest to be first notified when lots are released.</div>' +
-        '<button class="wizard-submit-btn" onclick="wizardState.selectedFrontage=null;wizardState.step=' + (wizardState.mode === 'land' ? 8 : 7) + ';renderWizardStep()" style="max-width:300px;margin:0 auto">Register Interest →</button>' +
+      return '<button class="wizard-back-btn" onclick="wizardBack()">\u2190 Back</button>' +
+        projectDetails +
+        '<div style="background:rgba(217,119,6,0.06);border:1px solid rgba(217,119,6,0.2);border-radius:12px;padding:32px;text-align:center">' +
+        '<div style="font-size:28px;margin-bottom:10px">\ud83d\udee0\ufe0f</div>' +
+        '<div style="font-size:16px;font-weight:800;color:var(--primary);margin-bottom:6px">Lots Coming Soon</div>' +
+        '<div style="font-size:13px;color:var(--text-light);margin-bottom:20px">Lot details and pricing for ' + p.name + ' are being finalised. Register your interest to be first notified.</div>' +
+        '<button class="wizard-submit-btn" onclick="wizardState.selectedFrontage=null;wizardState.step=' + (wizardState.mode === 'land' ? 7 : 6) + ';renderWizardStep()" style="max-width:300px;margin:0 auto">Register Interest \u2192</button>' +
         '</div>';
     }
 
-    // Group lots by frontage width
+    // Available projects - show details + frontage selection
     var frontageGroups = {};
     lots.forEach(function(lot) {
       var key = lot.frontage + 'm';
@@ -2475,47 +2503,26 @@
     var groups = Object.values(frontageGroups).sort(function(a,b) { return a.frontage - b.frontage; });
 
     var cards = groups.map(function(g) {
-      var isSelected = selectedFrontage === g.frontage;
+      var isSel = selectedFrontage === g.frontage;
       var availCount = g.lots.filter(function(l) { return l.status === 'Available'; }).length;
-      return '<div style="background:var(--bg);border:2px solid ' + (isSelected ? 'var(--accent)' : 'var(--border)') + ';border-radius:var(--radius-lg);padding:28px;cursor:pointer;transition:all 0.2s;text-align:center;position:relative" onclick="selectFrontageGroup(' + g.frontage + ')">' +
-        (isSelected ? '<div style="position:absolute;top:12px;right:12px;background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800">✓</div>' : '') +
-        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-xlight);margin-bottom:12px">Lot Width</div>' +
-        '<div style="font-size:42px;font-weight:900;color:' + (isSelected ? 'var(--accent)' : 'var(--primary)') + ';letter-spacing:-2px;line-height:1;margin-bottom:8px">' + g.label + '</div>' +
-        '<div style="font-size:11px;color:var(--text-xlight);margin-bottom:16px">wide</div>' +
-        '<div style="background:' + (isSelected ? 'rgba(59,125,221,0.08)' : 'var(--bg-alt)') + ';border-radius:8px;padding:10px;margin-bottom:14px">' +
-        '<span style="font-size:12px;color:var(--text-light)">From </span>' +
-        '<span style="font-size:18px;font-weight:800;color:var(--primary)">$' + Math.round(g.minPrice/1000) + 'k</span>' +
+      return '<div style="background:var(--bg);border:2px solid ' + (isSel ? 'var(--accent)' : 'var(--border)') + ';border-radius:14px;padding:24px;cursor:pointer;transition:all 0.2s;text-align:center;position:relative" onclick="selectFrontageGroup(' + g.frontage + ')">' +
+        (isSel ? '<div style="position:absolute;top:10px;right:10px;background:var(--accent);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800">\u2713</div>' : '') +
+        '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-xlight);margin-bottom:10px">Lot Width</div>' +
+        '<div style="font-size:38px;font-weight:900;color:' + (isSel ? 'var(--accent)' : 'var(--primary)') + ';letter-spacing:-2px;line-height:1;margin-bottom:6px">' + g.label + '</div>' +
+        '<div style="font-size:11px;color:var(--text-xlight);margin-bottom:14px">wide</div>' +
+        '<div style="background:' + (isSel ? 'rgba(59,125,221,0.08)' : 'var(--bg-alt)') + ';border-radius:8px;padding:8px;margin-bottom:12px">' +
+        '<span style="font-size:11px;color:var(--text-light)">From </span><span style="font-size:16px;font-weight:800;color:var(--primary)">$' + Math.round(g.minPrice/1000) + 'k</span>' +
         '</div>' +
-        '<div style="font-size:12px;color:var(--success);font-weight:700">' + availCount + ' lot' + (availCount !== 1 ? 's' : '') + ' available</div>' +
+        '<div style="font-size:11px;color:var(--success);font-weight:700">' + availCount + ' lot' + (availCount !== 1 ? 's' : '') + ' available</div>' +
         '</div>';
     }).join('');
 
-    // Build suburb lifestyle info section
-    var suburbInfo = SUBURB_DATA[p.id];
-    var suburbSection = '';
-    if (suburbInfo) {
-      var schoolsList = suburbInfo.schools.map(function(s) { return '<li style="font-size:13px;color:var(--text);margin-bottom:5px;line-height:1.4">\uD83C\uDFEB ' + s + '</li>'; }).join('');
-      var amenitiesList = suburbInfo.amenities.map(function(a) { return '<li style="font-size:13px;color:var(--text);margin-bottom:5px;line-height:1.4">\uD83D\uDCCD ' + a + '</li>'; }).join('');
-      suburbSection = '<details style="margin-top:24px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">' +
-        '<summary style="padding:14px 18px;font-size:14px;font-weight:700;color:var(--primary);cursor:pointer;background:var(--bg-alt);list-style:none;display:flex;align-items:center;gap:8px">\uD83D\uDCCD About ' + p.suburb + ' Area <span style="font-size:11px;color:var(--text-light);font-weight:500;margin-left:4px">(tap to expand)</span></summary>' +
-        '<div style="padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px">' +
-        '<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-xlight);margin-bottom:8px">Schools Nearby</div><ul style="list-style:none;padding:0">' + schoolsList + '</ul></div>' +
-        '<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-xlight);margin-bottom:8px">Amenities</div><ul style="list-style:none;padding:0">' + amenitiesList + '</ul></div>' +
-        '<div>' +
-        '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-xlight);margin-bottom:8px">Commute</div>' +
-        '<div style="font-size:13px;color:var(--text);margin-bottom:16px">\uD83D\uDE97 ' + suburbInfo.commute + '</div>' +
-        '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-xlight);margin-bottom:6px">Suburb Median</div>' +
-        '<div style="font-size:22px;font-weight:900;color:var(--primary);letter-spacing:-0.5px">' + suburbInfo.medianPrice + '</div>' +
-        '<div style="font-size:12px;color:var(--success);font-weight:700;margin-top:4px">' + suburbInfo.growth + ' growth</div>' +
-        '</div>' +
-        '</div></details>';
-    }
-
-    return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
-      '<div class="wizard-step-heading"><h2>Choose your lot size at ' + p.name + '</h2><p>\uD83D\uDCCD ' + p.suburb + ', ' + p.region + ' — Select a lot width to see compatible home designs</p></div>' +
-      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:28px">' + cards + '</div>' +
-      suburbSection +
-      (selectedFrontage ? '<div style="text-align:center;margin-top:24px"><button class="wizard-submit-btn" onclick="wizardNext()" style="max-width:360px">See Compatible Builds for ' + selectedFrontage + 'm Lots \u2192</button></div>' : '');
+    return '<button class="wizard-back-btn" onclick="wizardBack()">\u2190 Back</button>' +
+      projectDetails +
+      '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:6px">Select Your Lot Size</h3>' +
+      '<p style="font-size:13px;color:var(--text-light);margin-bottom:20px">Choose a lot width to see compatible home designs</p>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:24px">' + cards + '</div>' +
+      (selectedFrontage ? '<div style="text-align:center"><button class="wizard-submit-btn" onclick="wizardNext()" style="max-width:360px">See Compatible Builds for ' + selectedFrontage + 'm Lots \u2192</button></div>' : '');
   }
 
   function selectFrontageGroup(frontage) {
