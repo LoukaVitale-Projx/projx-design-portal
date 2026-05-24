@@ -2577,7 +2577,6 @@
       const imgSrc = DESIGN_IMAGES[d.name] || Object.values(DESIGN_IMAGES)[0];
       const isSaved = wizardState.savedDesigns && wizardState.savedDesigns.some(function(s) { return s.designName === d.name; });
       const saveBtn = '<button onclick="toggleSaveDesign(\'' + d.name.replace(/'/g, "\\'") + '\',\'' + d.builder.replace(/'/g, "\\'") + '\')" title="' + (isSaved ? 'Remove from compare' : 'Save to compare') + '" style="font-family:Montserrat,sans-serif;font-size:14px;background:' + (isSaved ? 'rgba(59,125,221,0.08)' : 'transparent') + ';color:' + (isSaved ? 'var(--accent)' : 'var(--text-xlight)') + ';border:1.5px solid ' + (isSaved ? 'var(--accent)' : 'var(--border)') + ';padding:5px 10px;border-radius:6px;cursor:pointer;transition:all 0.2s;min-height:32px">' + (isSaved ? '\u2665' : '\u2661') + '</button>';
-      const tourLink = BUILDER_TOUR_LINKS[d.builder] ? '<a href="' + BUILDER_TOUR_LINKS[d.builder] + '" target="_blank" rel="noopener" style="display:block;text-align:center;font-size:11px;color:var(--accent);font-weight:600;margin-top:6px;text-decoration:none;padding:2px 0;opacity:0.85">\uD83C\uDFE0 View on builder site \u2192</a>' : '';
       return '<div class="wizard-design-card">' +
         '<div class="wizard-design-img"><img src="' + imgSrc + '" alt="' + d.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/></div>' +
         '<div class="wizard-design-body">' +
@@ -2652,7 +2651,6 @@
       const imgSrc = DESIGN_IMAGES[d.name] || Object.values(DESIGN_IMAGES)[0];
       const isSaved = wizardState.savedDesigns && wizardState.savedDesigns.some(function(s) { return s.designName === d.name; });
       const saveBtn = '<button onclick="toggleSaveDesign(\'' + d.name.replace(/'/g, "\\'") + '\',\'' + d.builder.replace(/'/g, "\\'") + '\')" title="' + (isSaved ? 'Remove from compare' : 'Save to compare') + '" style="font-family:Montserrat,sans-serif;font-size:14px;background:' + (isSaved ? 'rgba(59,125,221,0.08)' : 'transparent') + ';color:' + (isSaved ? 'var(--accent)' : 'var(--text-xlight)') + ';border:1.5px solid ' + (isSaved ? 'var(--accent)' : 'var(--border)') + ';padding:5px 10px;border-radius:6px;cursor:pointer;transition:all 0.2s;min-height:32px">' + (isSaved ? '\u2665' : '\u2661') + '</button>';
-      const tourLink = BUILDER_TOUR_LINKS[d.builder] ? '<a href="' + BUILDER_TOUR_LINKS[d.builder] + '" target="_blank" rel="noopener" style="display:block;text-align:center;font-size:11px;color:var(--accent);font-weight:600;margin-top:6px;text-decoration:none;padding:2px 0;opacity:0.85">\uD83C\uDFE0 View on builder site \u2192</a>' : '';
       return '<div class="wizard-design-card">' +
         '<div class="wizard-design-img"><img src="' + imgSrc + '" alt="' + d.name + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80\'"/></div>' +
         '<div class="wizard-design-body">' +
@@ -2858,7 +2856,6 @@
       
       // === BUILDER LINK + BROCHURE ===
       '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px">' +
-      '<a href="' + builderLink + '" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--bg-alt);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:700;color:var(--primary);text-decoration:none;transition:all 0.2s">\ud83c\udfe0 View on ' + d.builder + ' website</a>' +
       '<button onclick="void(0)" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--bg-alt);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:700;color:var(--primary);cursor:pointer;font-family:Montserrat,sans-serif">\ud83d\udcc4 Request Floorplan</button>' +
       '</div>' +
       
@@ -2869,7 +2866,6 @@
       '<div style="font-size:48px;margin-bottom:12px;opacity:0.3">\ud83d\udcd0</div>' +
       '<div style="font-size:15px;font-weight:700;color:var(--primary);margin-bottom:6px">Floorplan Available on Request</div>' +
       '<div style="font-size:13px;color:var(--text-light);margin-bottom:16px">Our consultant will send you the detailed floorplan for the ' + d.name + ' as part of your package.</div>' +
-      '<a href="' + builderLink + '" target="_blank" style="font-size:13px;color:var(--accent);font-weight:600;text-decoration:none">Or view on ' + d.builder + ' website \u2192</a>' +
       '</div></div>' +
       
       // === PRICING SECTION ===
