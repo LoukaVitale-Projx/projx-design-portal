@@ -2059,7 +2059,7 @@
     const design = DESIGNS.find(function(d) { return d.name === designName; });
     if (!design) return;
     const builder = BUILDERS.find(function(b) { return b.name === design.builder; });
-    wizardState = { mode: 'builder', step: 4, region: null, project: null, builder: builder, design: design, buyerType: null, upgrades: [], _designFilter: 'All' };
+    wizardState = { mode: 'builder', step: 4, region: null, project: null, builder: builder, design: design, buyerType: null, selectedLots: [], upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2069,7 +2069,7 @@
   function openWizardForBuilder(builderId) {
     const builder = BUILDERS.find(function(b) { return b.id === builderId; });
     if (!builder) return;
-    wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: null, buyerType: null, upgrades: [], _designFilter: 'All' };
+    wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: null, buyerType: null, selectedLots: [], upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2079,7 +2079,7 @@
   function openWizardForProject(projectId) {
     const project = PROJECTS.find(function(p) { return p.id === projectId; });
     if (!project) return;
-    wizardState = { mode: 'land', step: 4, region: project.region, project: project, builder: null, design: null, buyerType: null, upgrades: [], _designFilter: 'All' };
+    wizardState = { mode: 'land', step: 4, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedLots: [], upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2087,7 +2087,7 @@
   }
 
   function openWizard(mode) {
-    wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, buyerType: null, upgrades: [], _designFilter: 'All' };
+    wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, buyerType: null, selectedLots: [], upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2198,27 +2198,115 @@
     wizardNext();
   }
 
+  // Sample lot data for available projects (demo — will be replaced with Monday.com live data)
+  const SAMPLE_LOTS = {
+    'oaklandestate': [
+      {id:'OAK-101',name:'Lot 101',size:450,frontage:14,price:425000,status:'Available'},
+      {id:'OAK-102',name:'Lot 102',size:375,frontage:12.5,price:395000,status:'Available'},
+      {id:'OAK-103',name:'Lot 103',size:520,frontage:16,price:475000,status:'Available'},
+      {id:'OAK-104',name:'Lot 104',size:400,frontage:14,price:440000,status:'Available'},
+      {id:'OAK-105',name:'Lot 105',size:350,frontage:12.5,price:410000,status:'Available'},
+      {id:'OAK-106',name:'Lot 106',size:600,frontage:18,price:520000,status:'Available'},
+    ],
+    'woodchester': [
+      {id:'WOOD-030',name:'Lot 30',size:350,frontage:12.5,price:347500,status:'Available'},
+      {id:'WOOD-031',name:'Lot 31',size:400,frontage:14,price:365000,status:'Available'},
+      {id:'WOOD-032',name:'Lot 32',size:375,frontage:12.5,price:355000,status:'Available'},
+      {id:'WOOD-096',name:'Lot 96',size:420,frontage:14,price:357500,status:'Unreleased'},
+      {id:'WOOD-097',name:'Lot 97',size:380,frontage:12.5,price:357500,status:'Unreleased'},
+      {id:'WOOD-098',name:'Lot 98',size:450,frontage:16,price:397500,status:'Available'},
+    ],
+    'lakeviewestate': [
+      {id:'LAKE-201',name:'Lot 201',size:400,frontage:14,price:345000,status:'Available'},
+      {id:'LAKE-202',name:'Lot 202',size:350,frontage:12.5,price:330000,status:'Available'},
+      {id:'LAKE-203',name:'Lot 203',size:500,frontage:16,price:420000,status:'Available'},
+      {id:'LAKE-204',name:'Lot 204',size:375,frontage:12.5,price:355000,status:'Available'},
+      {id:'LAKE-205',name:'Lot 205',size:450,frontage:14,price:385000,status:'Available'},
+    ],
+    'sorensenrise': [
+      {id:'SOR-010',name:'Lot 10',size:600,frontage:18,price:375000,status:'Available'},
+      {id:'SOR-011',name:'Lot 11',size:500,frontage:16,price:350000,status:'Available'},
+      {id:'SOR-012',name:'Lot 12',size:450,frontage:14,price:395000,status:'Available'},
+      {id:'SOR-013',name:'Lot 13',size:400,frontage:12.5,price:415000,status:'Available'},
+      {id:'SOR-014',name:'Lot 14',size:700,frontage:20,price:475000,status:'Available'},
+    ],
+    'riverina': [
+      {id:'RIV-122',name:'Lot 122',size:350,frontage:12.5,price:540000,status:'Available'},
+      {id:'RIV-123',name:'Lot 123',size:400,frontage:14,price:580000,status:'Available'},
+      {id:'RIV-124',name:'Lot 124',size:450,frontage:14,price:620000,status:'Available'},
+      {id:'RIV-125',name:'Lot 125',size:500,frontage:16,price:710000,status:'Available'},
+      {id:'RIV-126',name:'Lot 126',size:375,frontage:12.5,price:560000,status:'Available'},
+    ]
+  };
+
   function renderLandStep3() {
     const p = wizardState.project;
+    const lots = SAMPLE_LOTS[p.id] || [];
+    const selectedLots = wizardState.selectedLots || [];
+
+    if (lots.length === 0) {
+      // Coming Soon project — no lots to select
+      return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
+        '<div class="wizard-step-heading"><h2>' + p.name + '</h2><p>📍 ' + p.suburb + ', ' + p.region + ' — ' + p.totalLots + ' lots planned</p></div>' +
+        '<div style="background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius);padding:40px;text-align:center;margin-bottom:24px">' +
+        '<div style="font-size:32px;margin-bottom:12px">🛠️</div>' +
+        '<div style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:8px">Coming Soon</div>' +
+        '<div style="font-size:14px;color:var(--text-light);margin-bottom:20px">Lot details and pricing for ' + p.name + ' are being finalised.<br>Register your interest to be first notified when lots are released.</div>' +
+        '<button class="wizard-submit-btn" onclick="wizardState.selectedLots=[];wizardState.step=' + (wizardState.mode === 'land' ? 7 : 6) + ';renderWizardStep()" style="max-width:300px;margin:0 auto">Register Interest →</button>' +
+        '</div>';
+    }
+
+    const lotCards = lots.map(function(lot) {
+      const isSelected = selectedLots.indexOf(lot.id) !== -1;
+      const statusColor = lot.status === 'Available' ? '#059669' : '#D97706';
+      return '<div style="background:var(--bg);border:2px solid ' + (isSelected ? 'var(--accent)' : 'var(--border)') + ';border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.2s;position:relative" onclick="toggleLot(\'' + lot.id + '\')">' +
+        (isSelected ? '<div style="position:absolute;top:8px;right:8px;background:var(--accent);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">✓</div>' : '') +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+        '<span style="font-size:15px;font-weight:800;color:var(--primary)">' + lot.name + '</span>' +
+        '<span style="font-size:10px;font-weight:700;color:' + statusColor + ';background:' + statusColor + '15;padding:3px 8px;border-radius:10px">' + lot.status + '</span>' +
+        '</div>' +
+        '<div style="display:flex;gap:16px;font-size:12px;color:var(--text-light)">' +
+        '<span><strong style="color:var(--primary)">' + lot.size + '</strong> m²</span>' +
+        '<span><strong style="color:var(--primary)">' + lot.frontage + '</strong>m frontage</span>' +
+        '<span style="font-weight:700;color:var(--accent)">$' + lot.price.toLocaleString() + '</span>' +
+        '</div>' +
+        '</div>';
+    }).join('');
+
     return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
-      '<div class="wizard-step-heading"><h2>' + p.name + ' — ' + p.availLots + ' Lots Available</h2><p>Review project details before choosing your home design</p></div>' +
-      '<div class="wizard-lot-summary">' +
-      '<h3>' + p.name + '</h3>' +
-      '<div class="wizard-lot-location">📍 ' + p.suburb + ', ' + p.region + '</div>' +
-      '<div class="wizard-lot-summary-details">' +
-      '<div class="wizard-lot-detail"><span class="wizard-lot-detail-label">Lots Available</span><span class="wizard-lot-detail-value">' + p.availLots + '</span></div>' +
-      '<div class="wizard-lot-detail"><span class="wizard-lot-detail-label">Total Lots</span><span class="wizard-lot-detail-value">' + p.totalLots + '</span></div>' +
-      '<div class="wizard-lot-detail"><span class="wizard-lot-detail-label">Price Range</span><span class="wizard-lot-detail-value" style="font-size:14px">' + (p.minPrice > 0 ? fmtPrice(p.minPrice) + ' – ' + fmtPrice(p.maxPrice) : 'TBA') + '</span></div>' +
-      '</div>' +
-      '<button class="wizard-proceed-btn" onclick="wizardNext()">Continue to Choose Your Home Design →</button>' +
+      '<div class="wizard-step-heading"><h2>Select your lot at ' + p.name + '</h2><p>📍 ' + p.suburb + ', ' + p.region + ' — Choose one or more lots to see compatible builds</p></div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px">' + lotCards + '</div>' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">' +
+      '<span style="font-size:13px;color:var(--text-light)">' + selectedLots.length + ' lot' + (selectedLots.length !== 1 ? 's' : '') + ' selected</span>' +
+      '<button class="wizard-submit-btn" onclick="wizardNext()" style="max-width:320px"' + (selectedLots.length === 0 ? ' disabled style="max-width:320px;opacity:0.5;cursor:not-allowed"' : '') + '>See Compatible Builds →</button>' +
       '</div>';
   }
 
+  function toggleLot(lotId) {
+    if (!wizardState.selectedLots) wizardState.selectedLots = [];
+    var idx = wizardState.selectedLots.indexOf(lotId);
+    if (idx === -1) { wizardState.selectedLots.push(lotId); } else { wizardState.selectedLots.splice(idx, 1); }
+    renderWizardStep();
+  }
+
   function renderLandStep4() {
+    // Get max frontage from selected lots to filter compatible designs
+    const lots = SAMPLE_LOTS[wizardState.project.id] || [];
+    const selectedLots = (wizardState.selectedLots || []).map(function(id) { return lots.find(function(l) { return l.id === id; }); }).filter(Boolean);
+    const maxFrontage = selectedLots.length > 0 ? Math.min.apply(null, selectedLots.map(function(l) { return l.frontage; })) : 99;
+    const frontageLabel = maxFrontage < 99 ? maxFrontage + 'm' : '';
+
+    // Filter designs compatible with the selected lot frontage
+    function designFits(d) {
+      var req = parseFloat(d.frontage);
+      return isNaN(req) || req <= maxFrontage;
+    }
+
     const allBuilders = [];
     DESIGNS.forEach(function(d) { if (allBuilders.indexOf(d.builder) === -1) allBuilders.push(d.builder); });
     const activeFilter = wizardState._designFilter || 'All';
-    const filtered = (activeFilter === 'All') ? DESIGNS : DESIGNS.filter(function(d) { return d.builder === activeFilter; });
+    var filtered = (activeFilter === 'All') ? DESIGNS : DESIGNS.filter(function(d) { return d.builder === activeFilter; });
+    if (maxFrontage < 99) filtered = filtered.filter(designFits);
 
     const tabs = ['All'].concat(allBuilders).map(function(b) {
       return '<button class="wizard-filter-tab ' + (b === activeFilter ? 'active' : '') + '" onclick="wizardFilterDesigns(\'' + b.replace(/'/g, "\\'") + '\')">' + (b === 'All' ? 'All Designs' : b) + '</button>';
@@ -2239,7 +2327,7 @@
     }).join('');
 
     return '<button class="wizard-back-btn" onclick="wizardBack()">← Back</button>' +
-      '<div class="wizard-step-heading"><h2>Choose a home design for ' + wizardState.project.name + '</h2><p>Select a design to continue to your package summary</p></div>' +
+      '<div class="wizard-step-heading"><h2>Compatible designs for ' + wizardState.project.name + '</h2><p>' + (maxFrontage < 99 ? 'Showing designs that fit your ' + frontageLabel + ' frontage lot' + (selectedLots.length > 1 ? 's' : '') : 'Select a design to continue') + '</p></div>' +
       '<div class="wizard-filter-tabs">' + tabs + '</div>' +
       '<div class="wizard-design-grid">' + cards + '</div>';
   }
