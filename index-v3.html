@@ -2059,7 +2059,7 @@
     const design = DESIGNS.find(function(d) { return d.name === designName; });
     if (!design) return;
     const builder = BUILDERS.find(function(b) { return b.name === design.builder; });
-    wizardState = { mode: 'builder', step: 4, region: null, project: null, builder: builder, design: design, buyerType: null, selectedLots: [], upgrades: [], _designFilter: 'All' };
+    wizardState = { mode: 'builder', step: 4, region: null, project: null, builder: builder, design: design, buyerType: null, selectedLots: [], financeStatus: null, upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2069,7 +2069,7 @@
   function openWizardForBuilder(builderId) {
     const builder = BUILDERS.find(function(b) { return b.id === builderId; });
     if (!builder) return;
-    wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: null, buyerType: null, selectedLots: [], upgrades: [], _designFilter: 'All' };
+    wizardState = { mode: 'builder', step: 3, region: null, project: null, builder: builder, design: null, buyerType: null, selectedLots: [], financeStatus: null, upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2079,7 +2079,7 @@
   function openWizardForProject(projectId) {
     const project = PROJECTS.find(function(p) { return p.id === projectId; });
     if (!project) return;
-    wizardState = { mode: 'land', step: 4, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedLots: [], upgrades: [], _designFilter: 'All' };
+    wizardState = { mode: 'land', step: 4, region: project.region, project: project, builder: null, design: null, buyerType: null, selectedLots: [], financeStatus: null, upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2087,7 +2087,7 @@
   }
 
   function openWizard(mode) {
-    wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, buyerType: null, selectedLots: [], upgrades: [], _designFilter: 'All' };
+    wizardState = { mode, step: 1, region: null, project: null, builder: null, design: null, buyerType: null, selectedLots: [], financeStatus: null, upgrades: [], _designFilter: 'All' };
     document.getElementById('wizard').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('wizard').scrollTop = 0;
@@ -2112,7 +2112,7 @@
   }
 
   function renderWizardStep() {
-    const totalSteps = wizardState.mode === 'land' ? 7 : 6;
+    const totalSteps = wizardState.mode === 'land' ? 8 : 7;
     const pct = (wizardState.step / totalSteps) * 100;
     document.getElementById('wizardProgressFill').style.width = Math.min(pct, 100) + '%';
     document.getElementById('wizardStepLabel').textContent = 'Step ' + wizardState.step + ' of ' + totalSteps;
@@ -2132,6 +2132,7 @@
         case 4: body.innerHTML = renderLandStep3(); break;
         case 5: body.innerHTML = renderLandStep4(); break;
         case 6: body.innerHTML = renderUpgradesStep(); break;
+        case 7: body.innerHTML = renderFinanceStep(); break;
         default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
       }
     } else {
@@ -2141,6 +2142,7 @@
         case 3: body.innerHTML = renderBuilderStep2(); break;
         case 4: body.innerHTML = renderBuilderStep3(); break;
         case 5: body.innerHTML = renderUpgradesStep(); break;
+        case 6: body.innerHTML = renderFinanceStep(); break;
         default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
       }
     }
@@ -2477,6 +2479,100 @@
     renderWizardStep();
   }
 
+  // ─── FINANCE QUALIFICATION STEP ───────────────────────────────────
+  function renderFinanceStep() {
+    const showCalc = wizardState.financeStatus === 'yes';
+    const answered = !!wizardState.financeStatus;
+
+    let calcHTML = '';
+    if (showCalc) {
+      const d = wizardState.design;
+      const defaultPrice = d ? parseInt(d.price.replace(/[^0-9]/g, '')) * 1000 || 650000 : 650000;
+      // Use lot price + build price if available
+      const lots = (SAMPLE_LOTS[wizardState.project ? wizardState.project.id : ''] || []);
+      const selectedLot = (wizardState.selectedLots || []).length > 0 ? lots.find(function(l) { return l.id === wizardState.selectedLots[0]; }) : null;
+      const lotPrice = selectedLot ? selectedLot.price : 0;
+      const buildPrice = d ? parseInt(d.price.replace(/[^0-9]/g, '')) || 0 : 0;
+      const totalEst = lotPrice + buildPrice > 0 ? lotPrice + buildPrice : 650000;
+
+      calcHTML = '<div style="margin-top:20px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:24px">' +
+        '<div style="font-size:15px;font-weight:800;color:var(--primary);margin-bottom:16px">\uD83E\uDDEE Repayment Calculator</div>' +
+        '<div style="margin-bottom:14px">' +
+        '<label style="font-size:12px;font-weight:600;color:var(--text-light);display:block;margin-bottom:6px">Estimated Package Price</label>' +
+        '<input type="range" min="300000" max="2000000" value="' + totalEst + '" step="10000" id="fCalcPrice" oninput="updateFinanceCalc()" style="width:100%;accent-color:var(--accent)"/>' +
+        '<div style="font-size:16px;font-weight:800;color:var(--primary)" id="fCalcPriceLabel">$' + totalEst.toLocaleString() + '</div>' +
+        '</div>' +
+        '<div style="margin-bottom:14px">' +
+        '<label style="font-size:12px;font-weight:600;color:var(--text-light);display:block;margin-bottom:6px">Deposit</label>' +
+        '<input type="range" min="5" max="30" value="10" step="1" id="fCalcDeposit" oninput="updateFinanceCalc()" style="width:100%;accent-color:var(--accent)"/>' +
+        '<div style="font-size:14px;font-weight:700;color:var(--primary)" id="fCalcDepositLabel">10%</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:12px;margin-bottom:16px">' +
+        '<div style="flex:1"><label style="font-size:12px;font-weight:600;color:var(--text-light);display:block;margin-bottom:6px">Rate (%)</label>' +
+        '<input type="number" value="6.29" step="0.01" id="fCalcRate" oninput="updateFinanceCalc()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:Montserrat,sans-serif"/></div>' +
+        '<div style="flex:1"><label style="font-size:12px;font-weight:600;color:var(--text-light);display:block;margin-bottom:6px">Term</label>' +
+        '<select id="fCalcTerm" onchange="updateFinanceCalc()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:Montserrat,sans-serif">' +
+        '<option value="30">30 years</option><option value="25">25 years</option></select></div>' +
+        '</div>' +
+        '<div style="background:var(--bg-alt);border-radius:10px;padding:20px;text-align:center">' +
+        '<div style="font-size:12px;color:var(--text-light);margin-bottom:6px">Estimated Monthly Repayment</div>' +
+        '<div style="font-size:32px;font-weight:900;color:var(--primary)" id="fCalcResult">$0</div>' +
+        '<div style="font-size:11px;color:var(--text-xlight);margin-top:6px">Indicative only. Speak to our finance partner for an accurate quote.</div>' +
+        '</div>' +
+        '</div>';
+    }
+
+    let helpHTML = '';
+    if (wizardState.financeStatus === 'no' || wizardState.financeStatus === 'help') {
+      helpHTML = '<div style="margin-top:20px;background:rgba(5,150,105,0.06);border:1px solid rgba(5,150,105,0.2);border-radius:var(--radius);padding:24px">' +
+        '<div style="font-size:15px;font-weight:800;color:#059669;margin-bottom:8px">\uD83C\uDFE6 We can help with that</div>' +
+        '<div style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:16px">Our finance partners at <strong>Mortgage Choice</strong> can help you understand your borrowing capacity and get pre-approved — at no cost to you. We\'ll connect you with them as part of your consultation.</div>' +
+        '</div>';
+    }
+
+    return '<button class="wizard-back-btn" onclick="wizardBack()">\u2190 Back</button>' +
+      '<div class="wizard-step-heading"><h2>Finance</h2><p>Let us know where you\'re at so we can tailor your consultation.</p></div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;max-width:700px;margin:0 auto 24px">' +
+      '<div style="background:var(--bg);border:2px solid ' + (wizardState.financeStatus === 'yes' ? 'var(--accent)' : 'var(--border)') + ';border-radius:var(--radius);padding:24px;text-align:center;cursor:pointer;transition:all 0.2s" onclick="selectFinance(\'yes\')">' +
+      '<div style="font-size:28px;margin-bottom:8px">\u2705</div>' +
+      '<div style="font-size:14px;font-weight:700;color:var(--primary)">Pre-approved</div>' +
+      '<div style="font-size:12px;color:var(--text-light);margin-top:4px">I\'ve got finance sorted</div></div>' +
+      '<div style="background:var(--bg);border:2px solid ' + (wizardState.financeStatus === 'no' ? 'var(--accent)' : 'var(--border)') + ';border-radius:var(--radius);padding:24px;text-align:center;cursor:pointer;transition:all 0.2s" onclick="selectFinance(\'no\')">' +
+      '<div style="font-size:28px;margin-bottom:8px">\uD83D\uDD04</div>' +
+      '<div style="font-size:14px;font-weight:700;color:var(--primary)">Not yet</div>' +
+      '<div style="font-size:12px;color:var(--text-light);margin-top:4px">Still exploring my options</div></div>' +
+      '<div style="background:var(--bg);border:2px solid ' + (wizardState.financeStatus === 'help' ? 'var(--accent)' : 'var(--border)') + ';border-radius:var(--radius);padding:24px;text-align:center;cursor:pointer;transition:all 0.2s" onclick="selectFinance(\'help\')">' +
+      '<div style="font-size:28px;margin-bottom:8px">\uD83E\uDD1D</div>' +
+      '<div style="font-size:14px;font-weight:700;color:var(--primary)">Help me</div>' +
+      '<div style="font-size:12px;color:var(--text-light);margin-top:4px">I\'d like a finance referral</div></div>' +
+      '</div>' +
+      helpHTML + calcHTML +
+      (answered ? '<div style="text-align:center;margin-top:24px"><button class="wizard-submit-btn" onclick="wizardNext()" style="max-width:320px">Continue \u2192</button></div>' : '');
+  }
+
+  function selectFinance(status) {
+    wizardState.financeStatus = status;
+    renderWizardStep();
+    if (status === 'yes') setTimeout(updateFinanceCalc, 100);
+  }
+
+  function updateFinanceCalc() {
+    var priceEl = document.getElementById('fCalcPrice');
+    if (!priceEl) return;
+    var price = parseInt(priceEl.value);
+    var depPct = parseInt(document.getElementById('fCalcDeposit').value);
+    var rate = parseFloat(document.getElementById('fCalcRate').value);
+    var term = parseInt(document.getElementById('fCalcTerm').value);
+    var dep = Math.round(price * depPct / 100);
+    var loan = price - dep;
+    var mr = rate / 100 / 12;
+    var n = term * 12;
+    var mp = mr > 0 ? loan * (mr * Math.pow(1+mr,n)) / (Math.pow(1+mr,n)-1) : loan / n;
+    document.getElementById('fCalcPriceLabel').textContent = '$' + price.toLocaleString();
+    document.getElementById('fCalcDepositLabel').textContent = depPct + '% ($' + dep.toLocaleString() + ')';
+    document.getElementById('fCalcResult').textContent = '$' + Math.round(mp).toLocaleString();
+  }
+
   function renderLeadCapture() {
     const d = wizardState.design;
     const p = wizardState.project;
@@ -2502,7 +2598,9 @@
     const buyerLabel = wizardState.buyerType === 'owner' ? '🏡 Owner Occupier' : wizardState.buyerType === 'investor' ? '📈 Investor' : '—';
     const selectedUpgrades = (wizardState.upgrades || []).map(function(uid) { var u = UPGRADE_OPTIONS.find(function(x){return x.id===uid}); return u ? u.name : ''; }).filter(Boolean);
 
+    const financeLabel = wizardState.financeStatus === 'yes' ? '✅ Pre-approved' : wizardState.financeStatus === 'no' ? '🔄 Not yet' : wizardState.financeStatus === 'help' ? '🤝 Needs referral' : '—';
     summaryRows.unshift({label: 'Buyer Type', value: buyerLabel, sub: ''});
+    summaryRows.push({label: 'Finance', value: financeLabel, sub: ''});
     if (selectedUpgrades.length > 0) {
       summaryRows.push({label: 'Upgrades (' + selectedUpgrades.length + ')', value: selectedUpgrades.join(', '), sub: ''});
     }
