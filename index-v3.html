@@ -2320,7 +2320,7 @@
   }
 
   function renderWizardStep() {
-    const totalSteps = wizardState.mode === 'land' ? 7 : 6;
+    const totalSteps = wizardState.mode === 'land' ? 5 : 4;
     const pct = (wizardState.step / totalSteps) * 100;
     document.getElementById('wizardProgressFill').style.width = Math.min(pct, 100) + '%';
     document.getElementById('wizardStepLabel').textContent = 'Step ' + wizardState.step + ' of ' + totalSteps;
@@ -2338,8 +2338,6 @@
         case 2: body.innerHTML = renderLandStep2(); break;
         case 3: body.innerHTML = renderLandStep3(); break;
         case 4: body.innerHTML = renderLandStep4(); break;
-        case 5: body.innerHTML = renderFinanceStep(); break;
-        case 6: body.innerHTML = renderBuyerProfile(); break;
         default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
       }
     } else {
@@ -2347,8 +2345,6 @@
         case 1: body.innerHTML = renderBuilderStep1(); break;
         case 2: body.innerHTML = renderBuilderStep2(); break;
         case 3: body.innerHTML = renderBuilderStep3(); break;
-        case 4: body.innerHTML = renderFinanceStep(); break;
-        case 5: body.innerHTML = renderBuyerProfile(); break;
         default: body.innerHTML = renderLeadCapture(); setTimeout(updateWizardCalc, 100); break;
       }
     }
@@ -2501,7 +2497,7 @@
         '<div style="font-size:16px;font-weight:800;color:var(--primary);margin-bottom:6px">Lots Coming Soon</div>' +
         '<div style="font-size:13px;color:var(--text-light);margin-bottom:20px">Lot details and pricing for ' + p.name + ' are being finalised. Register your interest to be first notified.</div>' +
         '<a href="#" onclick="event.preventDefault()" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;font-family:Montserrat,sans-serif;margin:0 auto 16px;transition:all 0.2s">\ud83d\udcc4 Download Brochure</a>' +
-        '<button class="wizard-submit-btn" onclick="wizardState.selectedFrontage=null;wizardState.step=' + (wizardState.mode === 'land' ? 7 : 6) + ';renderWizardStep()" style="max-width:300px;margin:0 auto">Register Interest \u2192</button>' +
+        '<button class="wizard-submit-btn" onclick="wizardState.selectedFrontage=null;wizardState.step=' + (wizardState.mode === 'land' ? 5 : 4) + ';renderWizardStep()" style="max-width:300px;margin:0 auto">Register Interest \u2192</button>' +
         '</div>';
     }
 
@@ -3063,6 +3059,10 @@
       '</div>' +
       '<div class="wizard-form-panel">' +
       '<form id="wizardLeadForm" onsubmit="submitWizardLead(event)">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">' +
+      '<div class="wizard-form-group"><label class="wizard-form-label">I am a...</label><select class="wizard-form-select" id="wLeadBuyerType"><option value="owner">Owner Occupier</option><option value="investor">Investor</option></select></div>' +
+      '<div class="wizard-form-group"><label class="wizard-form-label">Finance Status</label><select class="wizard-form-select" id="wLeadFinance"><option value="pre-approved">Pre-approved</option><option value="not-yet">Not yet started</option><option value="need-help">Need finance help</option></select></div>' +
+      '</div>' +
       '<details class="wizard-calc-details" style="margin-bottom:20px;border:1px solid var(--border);border-radius:10px;overflow:hidden">' +
       '<summary style="padding:14px 18px;font-size:14px;font-weight:700;color:var(--primary);cursor:pointer;background:var(--bg-alt)">Mortgage Choice Repayment Calculator</summary>' +
       '<div style="padding:18px">' +
