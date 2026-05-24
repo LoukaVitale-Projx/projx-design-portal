@@ -1430,13 +1430,143 @@
     .compare-pill:hover { transform: translateX(-50%) translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.25); }
 
     /* ─── TESTIMONIALS ──────────────────────────────────────────── */
+    .testimonial-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--card-shadow-hover);
+      border-color: rgba(59,125,221,0.2);
+    }
+    .testimonial-quote {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.8;
+      font-style: italic;
+      flex: 1;
+    }
+    .testimonial-stars { font-size: 15px; letter-spacing: 2px; }
+    .testimonial-author { font-size: 13px; font-weight: 700; color: var(--primary); }
+    .testimonial-estate { font-size: 12px; color: var(--text-light); font-weight: 500; }
 
     @media (max-width: 640px) {
+      #testimonials { padding: 48px 16px !important; }
     }
   </style>
 </head>
 <body>
 
+<!-- ═══════════════════ PASSWORD GATE ═══════════════════ -->
+<div id="gate" style="display:none">
+  <div class="gate-inner">
+    <div class="gate-logo">
+      <img src="projx-logo-dark.png" alt="ProjX" style="height:40px" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span style="display:none;font-size:28px;font-weight:900;letter-spacing:-1px;color:var(--primary)">ProjX</span>
+    </div>
+    <div class="gate-tagline">House &amp; Land Design Portal</div>
+    <div class="invite-badge">Invitation Only</div>
+    <p class="gate-subtitle">This portal is exclusively available to invited buyers and partners.</p>
+    <div class="gate-input-wrap">
+      <input type="password" class="gate-input" id="gateInput" placeholder="Enter access code" maxlength="20" autocomplete="off" />
+    </div>
+    <button class="gate-btn" onclick="checkPassword()">Access Portal</button>
+    <p class="gate-error" id="gateError">Incorrect access code. Please try again.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+<div id="main-content">
+
+<!-- ─── NAVBAR ─── -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">
+      <img src="projx-logo-dark.png" alt="ProjX" style="height:36px" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span style="display:none;font-size:22px;font-weight:900;letter-spacing:-0.5px;color:var(--primary)">ProjX</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#estates">Estates</a></li>
+      <li><a href="#builders">Builders</a></li>
+      <li><a href="#" class="nav-cta" onclick="event.preventDefault();openWizard('land')">Register Interest</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero" style="min-height:auto;padding:100px 32px 48px;background:linear-gradient(160deg, var(--bg-alt) 0%, var(--bg) 60%);border-bottom:1px solid var(--border)">
+  <div style="max-width:700px;margin:0 auto;text-align:center">
+    
+    <h1 class="hero-title" style="font-size:clamp(30px,4.5vw,48px);margin-bottom:16px;letter-spacing:-2px">Your Dream Home,<br><span style="color:var(--accent)">One Click Away</span></h1>
+    <p style="font-size:clamp(14px,1.5vw,16px);color:var(--text-light);margin-bottom:32px;line-height:1.75;max-width:520px;margin-left:auto;margin-right:auto">Browse 4,500+ house &amp; land lots across 18 projects. Match with Australia&rsquo;s best builders. Get your keys faster.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:40px">
+      <button onclick="openWizard('land')" style="display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:#fff;padding:15px 30px;border-radius:10px;font-family:Montserrat,sans-serif;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:all 0.2s">&#x1f5fa;&#xfe0f; Find Land First</button>
+      <button onclick="openWizard('builder')" style="display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--primary);padding:14px 28px;border-radius:10px;border:1.5px solid var(--border);font-family:Montserrat,sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s">&#x1f3d7;&#xfe0f; Choose a Builder</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);background:var(--primary);border-radius:12px;overflow:hidden;max-width:500px;margin:0 auto">
+      <div style="padding:16px 10px;text-align:center;border-right:1px solid rgba(255,255,255,0.08)"><div style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:#fff">4,500+</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase">Lots</div></div>
+      <div style="padding:16px 10px;text-align:center;border-right:1px solid rgba(255,255,255,0.08)"><div style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:#fff">18</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase">Projects</div></div>
+      <div style="padding:16px 10px;text-align:center;border-right:1px solid rgba(255,255,255,0.08)"><div style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:#fff">12</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase">Regions</div></div>
+      <div style="padding:16px 10px;text-align:center"><div style="font-size:clamp(18px,2.5vw,24px);font-weight:900;color:#fff">4</div><div style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1px;text-transform:uppercase">Builders</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ESTATES ─── -->
+<section id="estates">
+  <div class="section-inner">
+    <div class="estates-header fade-in">
+      <div>
+        <h2 class="section-title">Our Estates</h2>
+        <p class="section-subtitle">18 active projects — 4,500+ lots available</p>
+      </div>
+      <div class="view-toggle">
+        <button class="toggle-btn" onclick="switchView('list')" id="toggleList">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="1" width="16" height="2.5" rx="1"/><rect x="0" y="6.75" width="16" height="2.5" rx="1"/><rect x="0" y="12.5" width="16" height="2.5" rx="1"/></svg>
+          List
+        </button>
+        <button class="toggle-btn active" onclick="switchView('map')" id="toggleMap">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M5 1L0 3v12l5-2 6 2 5-2V1l-5 2-6-2zm0 1.5v10l-3.5 1.4V3.5L5 2.5zm1 10V2.5L11 4.3v10.2l-5-1.7zm6 .1V2.6l3.5-1.4v10.4L12 12.6z"/></svg>
+          Map
+        </button>
+      </div>
+    </div>
+    <div id="listView" style="display:none">
+      <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">
+        <button class="estate-filter filter-chip active" data-filter="all" onclick="renderProjects('all')">All Estates</button>
+        <button class="estate-filter filter-chip" data-filter="available" onclick="renderProjects('available')" style="border-color:#059669;color:#059669">🟢 Available Now</button>
+        <button class="estate-filter filter-chip" data-filter="coming-soon" onclick="renderProjects('coming-soon')" style="border-color:#D97706;color:#D97706">🟡 Coming Soon</button>
+      </div>
+      <div id="projectsGrid" class="projects-grid"></div>
+    </div>
+    <div id="mapView">
+      <div id="map" style="height:600px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── BUILDERS ─── -->
+<section id="builders">
+  <div class="section-inner">
+    <div class="section-header fade-in">
+      <h2 class="section-title">Our Builders</h2>
+      <p class="section-subtitle">Browse designs from our trusted builder network</p>
+    </div>
+    <div class="builders-grid" id="buildersGrid"></div>
+  </div>
+</section>
+
+<!-- ─── TESTIMONIALS ─── -->
 
 
 <!-- ─── FOOTER ─── -->
