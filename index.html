@@ -1935,7 +1935,7 @@
         <div class="project-img">
           <img src="${getProjectImage(p)}" alt="${p.name}" loading="lazy"
             onerror="this.src='https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop&q=80'" />
-          <div style="position:absolute;top:12px;left:12px;background:${status === 'available' ? '#059669' : '#D97706'};color:#fff;font-size:11px;font-weight:700;padding:6px 14px;border-radius:8px;letter-spacing:0.3px;box-shadow:0 2px 8px rgba(0,0,0,0.3)">${statusLabel}</div>
+          <div style="position:absolute;top:10px;right:10px;background:${status === 'available' ? '#059669' : '#D97706'};color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:6px;letter-spacing:0.3px;box-shadow:0 2px 8px rgba(0,0,0,0.25)">${statusLabel}</div>
         </div>
         <div class="project-body">
           <div class="project-region region-${p.region.replace(/ /g, '\\ ')}">${p.region}</div>
