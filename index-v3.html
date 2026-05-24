@@ -943,10 +943,12 @@
     }
 
     .leaflet-popup-content-wrapper {
-      background: var(--bg); color: var(--text); border-radius: 12px;
-      box-shadow: var(--shadow-xl); border: 1px solid var(--border);
-      padding: 0;
+      background: var(--bg); color: var(--text); border-radius: 14px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15); border: none;
+      padding: 0; overflow: hidden;
     }
+    .leaflet-popup-content { margin: 0; padding: 0; overflow: hidden; border-radius: 14px; }
+    .leaflet-popup-tip { display: none; }
     .leaflet-popup-content { margin: 0; padding: 0; }
     .leaflet-popup-tip { background: var(--bg); }
 
