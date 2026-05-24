@@ -1685,31 +1685,59 @@
   };
 
   // Fallback pool for project cards (premium renders cycling)
-  // Per-project images — real ProjX images where available, stock suburb imagery for the rest
+  // Per-project images — real ProjX images + location-matched stock
   const PROJECT_IMAGE_MAP = {
-    'peregian': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=400&fit=crop&q=80',
-    'bellmere': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop&q=80',
-    'woodchester': 'img/woodchester.jpg',
-    'lakeviewestate': 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600&h=400&fit=crop&q=80',
-    'hoya': 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&h=400&fit=crop&q=80',
-    'hellidon': 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&h=400&fit=crop&q=80',
-    'harvestestate': 'img/harvest.jpg',
-    'fernvale': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=400&fit=crop&q=80',
-    'oakey': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop&q=80',
-    'barrensroad': 'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=600&h=400&fit=crop&q=80',
-    'sorensenrise': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop&q=80',
-    'banorapoint': 'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600&h=400&fit=crop&q=80',
+    // Real ProjX project images
     'oaklandestate': 'img/oakland.jpg',
-    'sevenhills': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop&q=80',
-    'cranley': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop&q=80',
-    'markwellroad': 'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=600&h=400&fit=crop&q=80',
+    'woodchester': 'img/woodchester.jpg',
     'riverina': 'img/riverina.jpg',
-    'ormistonpoint': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=400&fit=crop&q=80'
+    'harvestestate': 'img/harvest.jpg',
+
+    // Peregian Springs — Sunshine Coast beachside golf community
+    'peregian': 'https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=600&h=400&fit=crop&q=80',
+
+    // Bellmere — Moreton Bay semi-rural, green paddocks transitioning to residential
+    'bellmere': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop&q=80',
+
+    // Lakeview Estate — Gatton, Lockyer Valley lakeside
+    'lakeviewestate': 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600&h=400&fit=crop&q=80',
+
+    // Hoya / Boonah — Scenic Rim, mountains and green valleys
+    'hoya': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop&q=80',
+
+    // Hellidon — Lockyer Valley farming country, Great Dividing Range foothills
+    'hellidon': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop&q=80&crop=bottom',
+
+    // Fernvale — Somerset, Brisbane River semi-rural township
+    'fernvale': 'https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=600&h=400&fit=crop&q=80',
+
+    // Oakey — Darling Downs near Toowoomba, flat open agricultural plains
+    'oakey': 'https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=600&h=400&fit=crop&q=80',
+
+    // Barrens Road / South Ripley — Ipswich growth corridor, new residential development
+    'barrensroad': 'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=600&h=400&fit=crop&q=80',
+
+    // Sorensen Rise / Gympie — Mary Valley hinterland, bush and rural character
+    'sorensenrise': 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=400&fit=crop&q=80',
+
+    // Banora Point — Tweed Coast, waterways near Gold Coast border
+    'banorapoint': 'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600&h=400&fit=crop&q=80',
+
+    // Seven Hills / Warwick — Southern Downs, rolling green hills
+    'sevenhills': 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&h=400&fit=crop&q=80',
+
+    // Cranley / Toowoomba — Garden City, elevated plateau, established
+    'cranley': 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&h=400&fit=crop&q=80',
+
+    // Markwell Road / Caboolture — Moreton Bay growth corridor
+    'markwellroad': 'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=600&h=400&fit=crop&q=80&crop=center',
+
+    // Ormiston Point — Redlands bayside, waterfront
+    'ormistonpoint': 'https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=600&h=400&fit=crop&q=80&crop=center'
   };
   function getProjectImage(p) {
     return PROJECT_IMAGE_MAP[p.id] || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop&q=80';
   }
-  // Keep PROJECT_IMAGES as fallback array for legacy references
   const PROJECT_IMAGES = Object.values(PROJECT_IMAGE_MAP);
 
   // ─── DATA ─────────────────────────────────────────────────────────
