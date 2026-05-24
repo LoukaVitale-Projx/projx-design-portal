@@ -2052,11 +2052,11 @@
  const status = getProjectStatus(p);
  const dotColor = status === 'available' ? '#059669' : '#D97706';
  const icon = L.divIcon({
- className: 'map-pin',
- html: '<div class="pin-dot" style="background:' + dotColor + '"></div><div class="pin-label">' + label + '</div>',
- iconSize: [12, 30],
- iconAnchor: [6, 6]
- });
+        className: '',
+        html: '<div style="width:10px;height:10px;background:' + dotColor + ';border:2px solid #fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></div>',
+        iconSize: [10, 10],
+        iconAnchor: [5, 5]
+      })
 
  const marker = L.marker([p.lat, p.lng], {icon}).addTo(window._portalMap);
  window._mapMarkers[p.id] = marker;
@@ -2845,11 +2845,13 @@
  var status = getProjectStatus(p);
  var dotColor = status === 'available' ? '#059669' : '#D97706';
  var icon = L.divIcon({
- className: 'map-pin',
- html: '<div class="pin-dot" style="background:' + dotColor + '"></div><div class="pin-label">' + p.name + '</div>',
- iconSize: [12,12], iconAnchor: [6,6]
- });
+        className: '',
+        html: '<div style="width:10px;height:10px;background:' + dotColor + ';border:2px solid #fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></div>',
+        iconSize: [10, 10],
+        iconAnchor: [5, 5]
+      })
  var marker = L.marker([p.lat, p.lng], {icon: icon}).addTo(wMap);
+ marker.bindTooltip(p.name, {permanent: true, direction: 'bottom', offset: [0, 6], className: 'pin-tooltip'});
  marker.on('click', function() { showProjectDetail(p.id); });
  });
  setTimeout(function() { wMap.invalidateSize(); }, 300);
