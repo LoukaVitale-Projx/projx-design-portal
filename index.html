@@ -1638,30 +1638,26 @@
 <script>
   // ─── DESIGN IMAGES ────────────────────────────────────────────────
   const DESIGN_IMAGES = {
-    // FRD Homes
-    'FRD Single 170': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Contemporary-Greenbank.png',
-    'FRD Single 195': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Traditional-Greenbank.png',
-    'FRD Double 230': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Hamptons-home.jpg',
-    'FRD Dual Key 260': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Contemporary-Greenbank.png',
-    'FRD Duplex 200': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Traditional-Greenbank.png',
-    // Creation Homes
+    // FRD
+    'FRD Classic 170': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Contemporary-Greenbank.png',
+    'FRD Ranch 210': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Traditional-Greenbank.png',
+    'FRD Hampton 230': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Hamptons-home.jpg',
+    'FRD Estate 280': 'https://frdhomes.com.au/wp-content/uploads/2026/05/FRD-Homes-Contemporary-Greenbank.png',
+    // Creation
     'Hillcrest 18': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R1_10_Hip_Hillcrest-16_DS_230530-scaled.jpg',
-    'Fairview 20': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R1_10_Gable-Hampton_Fairview-20_230523-1.jpg',
     'Southcote 23': 'https://qld.creationhomes.com.au/wp-content/uploads/2024/07/R1_12.5_Flat_Southcote-23_LS_230524-scaled.jpg',
-    'Fernbrook 28': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R2_12.5_Hamptons_Brookside-33_LS3_230428.jpg',
-    'Silverwood 45': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R2_12.5_Hamptons_Silverwood-45_LS_240321.jpg',
-    // AVIA Homes
+    'Willow 26': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R2_12.5_Hamptons_Brookside-33_LS3_230428.jpg',
+    'Fernbrook 28': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R2_12.5_Gable_Silverwood-45_LS_240321.jpg',
+    // AVIA
     'Marseille': 'https://framerusercontent.com/images/4SYNhhT0LE7A7F9ibPpaMypqCVU.jpg?scale-down-to=1024',
     'Dublin': 'https://framerusercontent.com/images/8jJn3N4PRgDX1wwiJWy3Iy251vY.jpg?scale-down-to=1024',
-    'Geneva': 'https://framerusercontent.com/images/MR5sh6ih0HrjUC2Gu5VL5LriU0.jpg?scale-down-to=1024',
-    'Almada 210': 'https://framerusercontent.com/images/4SYNhhT0LE7A7F9ibPpaMypqCVU.jpg?scale-down-to=1024',
-    'Catalina': 'https://framerusercontent.com/images/8jJn3N4PRgDX1wwiJWy3Iy251vY.jpg?scale-down-to=1024',
+    'Almada 210': 'https://framerusercontent.com/images/MR5sh6ih0HrjUC2Gu5VL5LriU0.jpg?scale-down-to=1024',
+    'Catalina': 'https://framerusercontent.com/images/4SYNhhT0LE7A7F9ibPpaMypqCVU.jpg?scale-down-to=1024',
     // Metricon
     'Kirra': 'https://www.metricon.com.au/home-designs/kirra/facades/Kirra_Modern_Light-scheme_FINAL3840-x2160.jpg',
-    'Amira': 'https://www.metricon.com.au/home-designs/amira/facades/Amira-28-facade-cut-for-web_2026-01-14-225151_gdtz.jpg',
+    'Ella': 'https://www.metricon.com.au/home-designs/ella/facades/Freedom-SS-003_Avalon_Light-scheme_FINAL3840-x-2160.jpg',
     'Glendale': 'https://www.metricon.com.au/home-designs/glendale/facades/Isla-as-displayed-on-the-Glendale.jpg',
-    'Doulton': 'https://www.metricon.com.au/home-designs/doulton/facades/Doulton-56-Classique-Facade-Burwood-vic-1.jpg',
-    'Hampshire': 'https://www.metricon.com.au/home-designs/hampshire/exterior/Hampshire-Stamford.jpg'
+    'Fintona': 'https://www.metricon.com.au/home-designs/fintona/facades/Fintona-Alpine-as-displayed.jpg'
   };
 
   // Fallback pool for project cards (premium renders cycling)
@@ -1714,37 +1710,33 @@
   ];
 
   const BUILDERS = [
-    {id:'frd', name:'FRD Homes', color:'#059669', tier:'Wholesale', tagline:'Queensland\'s #1 wholesale builder — proven, consistent, trusted', designs:5, priceRange:'$245k – $380k'},
-    {id:'creation', name:'Creation Homes', color:'#3B7DDD', tier:'Entry–Mid', tagline:'Award-winning QLD builder — fixed-price, premium inclusions', designs:5, priceRange:'$285k – $460k'},
-    {id:'avia', name:'AVIA Homes', color:'#7C3AED', tier:'Mid-Range', tagline:'Homes worth living in — 1,200+ completed, on time, above standard', designs:5, priceRange:'$340k – $520k'},
-    {id:'metricon', name:'Metricon', color:'#C8A96E', tier:'Premium', tagline:'Australia\'s largest builder — HomeSolution to Signature range', designs:5, priceRange:'$380k – $650k'}
+    {id:'frd', name:'FRD Homes', color:'#059669', tier:'Wholesale', tagline:'Queensland\'s #1 wholesale builder — proven, consistent, trusted', designs:4, priceRange:'$245k – $380k'},
+    {id:'creation', name:'Creation Homes', color:'#3B7DDD', tier:'Entry–Mid', tagline:'Award-winning QLD builder — fixed-price, premium inclusions', designs:4, priceRange:'$285k – $460k'},
+    {id:'avia', name:'AVIA Homes', color:'#7C3AED', tier:'Mid-Range', tagline:'Homes worth living in — 1,200+ completed, on time, above standard', designs:4, priceRange:'$340k – $520k'},
+    {id:'metricon', name:'Metricon', color:'#C8A96E', tier:'Premium', tagline:'Australia\'s largest builder — HomeSolution to Signature range', designs:4, priceRange:'$380k – $650k'}
   ];
 
   const DESIGNS = [
-    // FRD Homes — Wholesale (entry)
-    {name:'FRD Single 170', builder:'FRD Homes', beds:4, baths:2, garage:2, sqm:170, price:'$245,000', frontage:'10m+', tier:'entry'},
-    {name:'FRD Single 195', builder:'FRD Homes', beds:4, baths:2, garage:2, sqm:195, price:'$275,000', frontage:'10m+', tier:'entry'},
-    {name:'FRD Double 230', builder:'FRD Homes', beds:4, baths:2, garage:2, sqm:230, price:'$320,000', frontage:'10m+', tier:'entry'},
-    {name:'FRD Dual Key 260', builder:'FRD Homes', beds:5, baths:3, garage:2, sqm:260, price:'$355,000', frontage:'12.5m+', tier:'entry'},
-    {name:'FRD Duplex 200', builder:'FRD Homes', beds:3, baths:2, garage:1, sqm:200, price:'$380,000', frontage:'12.5m+', tier:'entry'},
-    // Creation Homes — Entry-Mid
+    // FRD Homes — 4 designs (entry single, larger single, entry double, larger double)
+    {name:'FRD Classic 170', builder:'FRD Homes', beds:3, baths:2, garage:1, sqm:170, price:'$245,000', frontage:'10m+', tier:'entry'},
+    {name:'FRD Ranch 210', builder:'FRD Homes', beds:4, baths:2, garage:2, sqm:210, price:'$295,000', frontage:'12.5m+', tier:'entry'},
+    {name:'FRD Hampton 230', builder:'FRD Homes', beds:4, baths:2, garage:2, sqm:230, price:'$335,000', frontage:'10m+', tier:'mid'},
+    {name:'FRD Estate 280', builder:'FRD Homes', beds:5, baths:3, garage:2, sqm:280, price:'$380,000', frontage:'12.5m+', tier:'mid'},
+    // Creation Homes — 4 designs
     {name:'Hillcrest 18', builder:'Creation Homes', beds:4, baths:2, garage:1, sqm:165, price:'$285,000', frontage:'10m+', tier:'entry'},
-    {name:'Fairview 20', builder:'Creation Homes', beds:4, baths:2, garage:2, sqm:186, price:'$310,000', frontage:'10m+', tier:'entry'},
     {name:'Southcote 23', builder:'Creation Homes', beds:4, baths:2, garage:2, sqm:215, price:'$365,000', frontage:'12.5m+', tier:'mid'},
-    {name:'Fernbrook 28', builder:'Creation Homes', beds:5, baths:3, garage:2, sqm:265, price:'$420,000', frontage:'12.5m+', tier:'mid'},
-    {name:'Silverwood 45', builder:'Creation Homes', beds:5, baths:3, garage:2, sqm:423, price:'$460,000', frontage:'14m+', tier:'mid'},
-    // AVIA Homes — Mid-Range
+    {name:'Willow 26', builder:'Creation Homes', beds:4, baths:2, garage:2, sqm:243, price:'$395,000', frontage:'10m+', tier:'mid'},
+    {name:'Fernbrook 28', builder:'Creation Homes', beds:5, baths:3, garage:2, sqm:265, price:'$440,000', frontage:'12.5m+', tier:'mid'},
+    // AVIA Homes — 4 designs
     {name:'Marseille', builder:'AVIA Homes', beds:4, baths:2, garage:1, sqm:161, price:'$340,000', frontage:'10m+', tier:'mid'},
-    {name:'Dublin', builder:'AVIA Homes', beds:4, baths:2, garage:2, sqm:180, price:'$385,000', frontage:'10m+', tier:'mid'},
-    {name:'Geneva', builder:'AVIA Homes', beds:4, baths:2, garage:2, sqm:201, price:'$430,000', frontage:'12.5m+', tier:'mid'},
-    {name:'Almada 210', builder:'AVIA Homes', beds:4, baths:2, garage:1, sqm:211, price:'$465,000', frontage:'12.5m+', tier:'mid'},
-    {name:'Catalina', builder:'AVIA Homes', beds:4, baths:2, garage:2, sqm:210, price:'$520,000', frontage:'14m+', tier:'premium'},
-    // Metricon — Premium
+    {name:'Dublin', builder:'AVIA Homes', beds:4, baths:2, garage:2, sqm:180, price:'$395,000', frontage:'12.5m+', tier:'mid'},
+    {name:'Almada 210', builder:'AVIA Homes', beds:4, baths:2, garage:2, sqm:211, price:'$450,000', frontage:'12.5m+', tier:'mid'},
+    {name:'Catalina', builder:'AVIA Homes', beds:4, baths:2, garage:2, sqm:210, price:'$490,000', frontage:'14m+', tier:'premium'},
+    // Metricon — 4 designs
     {name:'Kirra', builder:'Metricon', beds:3, baths:2, garage:2, sqm:168, price:'$380,000', frontage:'12.5m+', tier:'mid'},
-    {name:'Amira', builder:'Metricon', beds:4, baths:2, garage:2, sqm:195, price:'$420,000', frontage:'12.5m+', tier:'mid'},
-    {name:'Glendale', builder:'Metricon', beds:4, baths:2, garage:2, sqm:235, price:'$485,000', frontage:'14m+', tier:'premium'},
-    {name:'Doulton', builder:'Metricon', beds:5, baths:3, garage:2, sqm:290, price:'$560,000', frontage:'14m+', tier:'premium'},
-    {name:'Hampshire', builder:'Metricon', beds:5, baths:4, garage:3, sqm:350, price:'$650,000', frontage:'16m+', tier:'premium'}
+    {name:'Ella', builder:'Metricon', beds:4, baths:2, garage:2, sqm:195, price:'$435,000', frontage:'12.5m+', tier:'mid'},
+    {name:'Glendale', builder:'Metricon', beds:4, baths:2, garage:2, sqm:235, price:'$510,000', frontage:'14m+', tier:'premium'},
+    {name:'Fintona', builder:'Metricon', beds:5, baths:3, garage:2, sqm:280, price:'$580,000', frontage:'14m+', tier:'premium'}
   ];
 
   // ─── SUBURB LIFESTYLE DATA ───────────────────────────────────────────────
@@ -1858,26 +1850,22 @@
 
   // Design descriptions for detail view (AVIA-style)
   const DESIGN_DESCRIPTIONS = {
-    'FRD Single 170': 'A compact yet cleverly designed single-storey home that maximises every square metre. Open-plan living flows to the alfresco, with four bedrooms grouped for family convenience. The perfect entry point for first home buyers.',
-    'FRD Single 195': 'A generous single-storey layout with spacious open-plan living, a well-appointed kitchen, and four comfortable bedrooms. The master suite sits at the front for privacy, while the remaining bedrooms share a central bathroom.',
-    'FRD Double 230': 'A smart double-storey design that delivers space without the land premium. Living areas downstairs open to the alfresco, while four bedrooms upstairs provide a quiet retreat. Perfect for growing families on standard lots.',
-    'FRD Dual Key 260': 'Two homes under one roof — ideal for investors or multi-generational families. Each dwelling has its own entrance, kitchen, and living areas. Rental yields are maximised with dual income streams from a single build.',
-    'FRD Duplex 200': 'A purpose-built duplex design delivering two quality residences side by side. Each unit features three bedrooms, open-plan living, and a private outdoor area. Built for investors who want scale.',
-    'Hillcrest 18': 'A thoughtful single-storey home designed for 10m lots. Four bedrooms, two bathrooms, and a seamless flow from kitchen to living to alfresco. The Hillcrest proves you don\u2019t need a wide lot to live well.',
-    'Fairview 20': 'Light-filled and considered, the Fairview features open-plan living at the rear with kitchen, dining and lounge flowing to the outdoor entertaining area. Four bedrooms plus a separate study nook for flexible family living.',
-    'Southcote 23': 'Generous proportions and a smart floorplan define the Southcote. The open-plan hub connects kitchen, dining and living, while four bedrooms are zoned for privacy. A dedicated laundry and separate toilet add everyday practicality.',
-    'Fernbrook 28': 'A striking double-storey home with five bedrooms and three bathrooms across two levels. Downstairs is designed for entertaining — open kitchen, living and dining flowing to the alfresco. Upstairs is a private family retreat.',
-    'Silverwood 45': 'A statement home for those who want it all. Five bedrooms, three bathrooms, and expansive living across two storeys. The ground floor features a grand open-plan kitchen, butler\u2019s pantry, and seamless indoor-outdoor flow.',
-    'Marseille': 'Everyday moments feel elevated in the Marseille. Soft light, stylish finishes and a thoughtful layout create a warm, welcoming home with open-plan spaces alongside restful corners. Designed for comfortable family living.',
-    'Dublin': 'The Dublin delivers generous living with a practical footprint. An expansive open-plan zone anchors the home, with the master suite privately positioned and three additional bedrooms grouped near the main bathroom.',
-    'Geneva': 'A home designed for the way modern families actually live. The Geneva features a chef\u2019s kitchen at the heart, flowing to living, dining and alfresco. Four bedrooms, two bathrooms, and a dedicated multi-purpose room.',
-    'Almada 210': 'Centred around a light-filled open-plan kitchen, dining and living space that flows effortlessly to the rear alfresco. The master suite is thoughtfully positioned for privacy, while the remaining bedrooms support easy family living.',
-    'Catalina': 'Architecturally considered with a focus on natural light and connection. The Catalina\u2019s open-plan living is complemented by distinct zones for rest and retreat. Four bedrooms, two bathrooms, and a design that feels larger than its footprint.',
-    'Kirra': 'Purpose-built for Queensland\u2019s climate and lifestyle. The Kirra features open-plan living with seamless indoor-outdoor flow, three bedrooms, and a compact yet functional kitchen. Ideal for first home buyers and downsizers.',
-    'Amira': 'Designed for narrow lots without compromise, the Amira delivers four bedrooms, open-plan living, and a clever layout that maximises natural light. The master suite includes a walk-in robe and ensuite.',
-    'Glendale': 'A family favourite with multiple living zones, four bedrooms, and a gourmet kitchen. The Glendale\u2019s flexible floorplan adapts to your lifestyle — from home office to kids\u2019 rumpus to guest retreat.',
-    'Doulton': 'A premium double-storey design with five bedrooms, three bathrooms, and statement living spaces. The ground floor features a grand open-plan area with butler\u2019s pantry, while upstairs provides a private family wing.',
-    'Hampshire': 'The flagship. Five bedrooms, four bathrooms, and architectural detailing throughout. The Hampshire features a master wing with luxury ensuite, a chef\u2019s kitchen with stone benchtops, and indoor-outdoor living designed for entertaining.'
+    'FRD Classic 170': 'A compact single-storey home perfect for first buyers or investors. Three bedrooms, open-plan living flowing to the alfresco, and a functional kitchen. Proven FRD quality at an entry price point.',
+    'FRD Ranch 210': 'A generous single-storey with four bedrooms, two bathrooms, and double garage. The open-plan living hub connects kitchen, dining and lounge with seamless flow to outdoor entertaining.',
+    'FRD Hampton 230': 'A smart double-storey with living downstairs and sleeping upstairs. Four bedrooms, double garage, and the signature FRD Hamptons facade. Perfect for families on standard lots.',
+    'FRD Estate 280': 'FRD\'s premium double-storey — five bedrooms, three bathrooms, and expansive living across two levels. Multiple living zones, butler\'s pantry option, and architectural facade.',
+    'Hillcrest 18': 'A thoughtful single-storey designed for 10m lots. Four bedrooms, two bathrooms, and a seamless flow from kitchen to living to alfresco. Proves you don\'t need a wide lot to live well.',
+    'Southcote 23': 'Generous proportions and a smart floorplan. The open-plan hub connects kitchen, dining and living, while four bedrooms are zoned for privacy. Practical everyday living.',
+    'Willow 26': 'A clever double-storey that delivers space on a narrow lot. Four bedrooms upstairs with the master suite enjoying walk-in robe and ensuite. Open-plan living downstairs flows to alfresco.',
+    'Fernbrook 28': 'A striking double-storey with five bedrooms and three bathrooms. Downstairs is designed for entertaining — open kitchen, living and dining flowing to the alfresco. Upstairs is a private family retreat.',
+    'Marseille': 'Everyday moments feel elevated in the Marseille. Soft light, stylish finishes and a thoughtful layout create a warm, welcoming home with open-plan spaces alongside restful corners.',
+    'Dublin': 'The Dublin delivers generous living with a practical footprint. An expansive open-plan zone anchors the home, with the master suite privately positioned for a true retreat.',
+    'Almada 210': 'Centred around a light-filled open-plan kitchen, dining and living space that flows effortlessly to the rear alfresco. The master suite is thoughtfully positioned for privacy.',
+    'Catalina': 'Architecturally considered with a focus on natural light and connection. The Catalina\'s open-plan living is complemented by distinct zones for rest and retreat. Feels larger than its footprint.',
+    'Kirra': 'Purpose-built for Queensland\'s climate and lifestyle. Open-plan living with seamless indoor-outdoor flow, three bedrooms, and a compact yet functional kitchen. Ideal for first buyers.',
+    'Ella': 'A single-storey family home with four bedrooms, open-plan living, and flexible spaces. The Ella adapts to your lifestyle — from home office to kids\' play area.',
+    'Glendale': 'A family favourite with multiple living zones, four bedrooms, and a gourmet kitchen. The Glendale\'s flexible floorplan adapts to your lifestyle with room to grow.',
+    'Fintona': 'A premium double-storey with five bedrooms, three bathrooms, and statement living spaces. Ground floor features a grand open-plan area, while upstairs provides a private family wing.'
   };
 
   // Auto-init (gate disabled during development)
@@ -2513,6 +2501,7 @@
         '<div style="font-size:28px;margin-bottom:10px">\ud83d\udee0\ufe0f</div>' +
         '<div style="font-size:16px;font-weight:800;color:var(--primary);margin-bottom:6px">Lots Coming Soon</div>' +
         '<div style="font-size:13px;color:var(--text-light);margin-bottom:20px">Lot details and pricing for ' + p.name + ' are being finalised. Register your interest to be first notified.</div>' +
+        '<a href="#" onclick="event.preventDefault()" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;font-family:Montserrat,sans-serif;margin:0 auto 16px;transition:all 0.2s">\ud83d\udcc4 Download Brochure</a>' +
         '<button class="wizard-submit-btn" onclick="wizardState.selectedFrontage=null;wizardState.step=' + (wizardState.mode === 'land' ? 7 : 6) + ';renderWizardStep()" style="max-width:300px;margin:0 auto">Register Interest \u2192</button>' +
         '</div>';
     }
@@ -2544,6 +2533,10 @@
 
     return '<button class="wizard-back-btn" onclick="wizardBack()">\u2190 Back</button>' +
       projectDetails +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px">' +
+      '<a href="#" onclick="event.preventDefault()" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;font-family:Montserrat,sans-serif;transition:all 0.2s">\ud83d\udcc4 Download Brochure</a>' +
+      '<a href="#" onclick="event.preventDefault()" style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--primary);text-decoration:none;font-family:Montserrat,sans-serif;transition:all 0.2s">\ud83d\uddfa\ufe0f View Masterplan</a>' +
+      '</div>' +
       '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:6px">Select Your Lot Size</h3>' +
       '<p style="font-size:13px;color:var(--text-light);margin-bottom:20px">Choose a lot width to see compatible home designs</p>' +
       '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:24px">' + cards + '</div>' +
