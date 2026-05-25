@@ -1958,6 +1958,9 @@
  document.addEventListener('keydown', e => {
  if (e.key === 'Enter' && document.getElementById('gate').style.display !== 'none') checkPassword();
  });
+ // AUTO-BYPASS GATE
+ window.addEventListener("load", function() { document.getElementById("gate").style.display = "none"; document.getElementById("main-content").style.display = "block"; initPortal(); 
+ });
 
 
  // Design descriptions for detail view
