@@ -1470,6 +1470,59 @@
  @media (max-width: 640px) {
  #testimonials { padding: 48px 16px !important; }
  }
+
+/* Builder Profile */
+.bp-hero { position:relative; width:100%; height:320px; border-radius:var(--radius); overflow:hidden; margin-bottom:0; background:#0a0a1a; }
+.bp-hero img { width:100%; height:100%; object-fit:cover; opacity:0.65; }
+.bp-hero-overlay { position:absolute; bottom:0; left:0; right:0; padding:36px 28px 28px; background:linear-gradient(transparent, rgba(0,0,0,0.85)); color:#fff; }
+.bp-hero-logo { height:40px; margin-bottom:14px; filter:brightness(10); }
+.bp-hero h2 { font-size:30px; font-weight:900; margin-bottom:6px; letter-spacing:-0.5px; }
+.bp-hero-sub { font-size:13px; font-weight:500; opacity:0.8; }
+.bp-stats { display:flex; background:var(--primary); color:#fff; border-radius:0 0 var(--radius) var(--radius); overflow-x:auto; margin-bottom:24px; }
+.bp-stat { flex:1; min-width:80px; padding:18px 14px; text-align:center; border-right:1px solid rgba(255,255,255,0.1); }
+.bp-stat:last-child { border-right:none; }
+.bp-stat-val { font-size:24px; font-weight:900; margin-bottom:3px; }
+.bp-stat-label { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; opacity:0.65; }
+.bp-trust { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; padding:20px 0; margin-bottom:28px; }
+.bp-trust-item { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:0.3px; }
+.bp-trust-icon { font-size:16px; color:var(--accent); }
+.bp-section { margin-bottom:36px; }
+.bp-section-title { font-size:20px; font-weight:800; color:var(--primary); margin-bottom:4px; }
+.bp-section-sub { font-size:13px; color:var(--text-light); margin-bottom:20px; line-height:1.5; }
+.bp-tagline { font-size:15px; color:var(--text); line-height:1.9; margin-bottom:36px; padding:0 4px; }
+.bp-diff-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:14px; }
+.bp-diff-card { background:var(--bg-alt); border:1.5px solid var(--border); border-radius:var(--radius); padding:22px; transition:all 0.2s; cursor:default; }
+.bp-diff-card:hover { border-color:var(--accent); box-shadow:0 4px 12px rgba(0,0,0,0.06); transform:translateY(-1px); }
+.bp-diff-title { font-size:14px; font-weight:800; color:var(--primary); margin-bottom:6px; }
+.bp-diff-desc { font-size:12px; color:var(--text-light); line-height:1.7; }
+.bp-gallery { display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; border-radius:var(--radius); overflow:hidden; }
+.bp-gallery img { width:100%; height:180px; object-fit:cover; transition:transform 0.3s; cursor:pointer; }
+.bp-gallery img:hover { transform:scale(1.03); }
+.bp-gallery img:first-child { grid-column:span 2; grid-row:span 2; height:100%; }
+.bp-inc-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:10px; }
+.bp-inc-item { display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--bg-alt); border-radius:10px; font-size:13px; font-weight:600; color:var(--text); }
+.bp-inc-check { color:var(--success); font-weight:900; font-size:16px; flex-shrink:0; }
+.bp-founder { display:flex; gap:24px; align-items:center; flex-wrap:wrap; }
+.bp-founder-img { width:120px; height:120px; border-radius:50%; object-fit:cover; flex-shrink:0; border:4px solid var(--bg-alt); box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+.bp-founder-quote { font-size:14px; color:var(--text); line-height:1.8; font-style:italic; }
+.bp-founder-name { display:block; font-weight:800; font-size:14px; color:var(--primary); margin-top:12px; font-style:normal; }
+.bp-cta { background:var(--primary); color:#fff; border-radius:var(--radius); padding:40px 32px; text-align:center; }
+.bp-cta h3 { font-size:22px; font-weight:900; margin-bottom:8px; }
+.bp-cta p { font-size:13px; opacity:0.7; margin-bottom:24px; max-width:450px; margin-left:auto; margin-right:auto; line-height:1.6; }
+.bp-cta-btn { display:inline-block; background:#fff; color:var(--primary); padding:14px 40px; border-radius:10px; font-family:'Montserrat',sans-serif; font-size:14px; font-weight:800; border:none; cursor:pointer; transition:all 0.2s; }
+.bp-cta-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.2); }
+@media (max-width:640px) {
+  .bp-hero { height:260px; }
+  .bp-hero h2 { font-size:24px; }
+  .bp-founder { flex-direction:column; text-align:center; }
+  .bp-founder-img { width:100px; height:100px; }
+  .bp-gallery { grid-template-columns:1fr 1fr; }
+  .bp-gallery img:first-child { grid-column:span 2; height:200px; }
+  .bp-gallery img { height:130px; }
+  .bp-stat-val { font-size:20px; }
+  .bp-diff-grid { grid-template-columns:1fr; }
+}
+
  </style>
 </head>
 <body>
@@ -2882,68 +2935,73 @@
  }
 
 
+
   function renderBuilderProfile() {
     var b = wizardState.builder;
     if (!b) return '<p>No builder selected</p>';
     var p = BUILDER_PROFILES[b.id] || {};
     var logoSrc = BUILDER_LOGOS[b.id] || '';
     var statsHtml = (p.stats || []).map(function(s) {
-      return '<div style="flex:1;min-width:70px;padding:16px 12px;text-align:center;border-right:1px solid rgba(255,255,255,0.1)">' +
-        '<div style="font-size:22px;font-weight:900;margin-bottom:2px">' + s.val + '</div>' +
-        '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;opacity:0.7">' + s.label + '</div></div>';
+      return '<div class="bp-stat"><div class="bp-stat-val">' + s.val + '</div><div class="bp-stat-label">' + s.label + '</div></div>';
     }).join('');
     var trustHtml = (p.trust || []).map(function(t) {
-      return '<span style="font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.3px">' + t + '</span>';
-    }).join('<span style="color:var(--border);margin:0 8px">|</span>');
+      return '<div class="bp-trust-item"><span class="bp-trust-icon">&#9733;</span>' + t + '</div>';
+    }).join('');
     var diffsHtml = (p.diffs || []).map(function(d) {
-      return '<div style="background:var(--bg-alt);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px">' +
-        '<div style="font-size:14px;font-weight:800;color:var(--primary);margin-bottom:6px">' + d.title + '</div>' +
-        '<div style="font-size:12px;color:var(--text-light);line-height:1.6">' + d.desc + '</div></div>';
+      return '<div class="bp-diff-card"><div class="bp-diff-title">' + d.title + '</div><div class="bp-diff-desc">' + d.desc + '</div></div>';
     }).join('');
     var incHtml = (p.inclusions || []).map(function(inc) {
-      return '<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--bg-alt);border-radius:8px;font-size:12px;font-weight:600;color:var(--text)"><span style="color:var(--success);font-weight:900;font-size:14px">\u2713</span> ' + inc + '</div>';
+      return '<div class="bp-inc-item"><span class="bp-inc-check">&#10003;</span>' + inc + '</div>';
     }).join('');
-    var galImgs = (p.gallery || []);
     var galHtml = '';
+    var galImgs = (p.gallery || []);
     if (galImgs.length > 0) {
-      galHtml = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;border-radius:var(--radius);overflow:hidden;margin-bottom:32px">';
-      galImgs.forEach(function(img, i) {
-        var style = i === 0 ? 'grid-column:span 2;grid-row:span 2;height:100%' : 'height:140px';
-        galHtml += '<img src="' + img + '" alt="' + b.name + '" style="width:100%;' + style + ';object-fit:cover" onerror="this.style.display=\'none\'">';
-      });
+      galHtml = '<div class="bp-gallery">';
+      galImgs.forEach(function(img) { galHtml += '<img src="' + img + '" alt="' + b.name + '" onerror="this.style.display=\'none\'">'; });
       galHtml += '</div>';
     }
     var founderHtml = '';
     if (p.founderQuote) {
-      founderHtml = '<div style="margin-bottom:32px">' +
-        '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:16px">The Story</h3>' +
-        '<div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">' +
-        (p.founderImg ? '<img src="' + p.founderImg + '" style="width:100px;height:100px;border-radius:50%;object-fit:cover;flex-shrink:0;border:3px solid var(--bg-alt)" onerror="this.style.display=\'none\'">' : '') +
-        '<div style="flex:1;min-width:200px"><div style="font-size:13px;color:var(--text);line-height:1.8;font-style:italic">"' + p.founderQuote + '"</div>' +
-        '<div style="margin-top:10px;font-weight:800;font-size:13px;color:var(--primary)">' + p.founderName + '</div></div></div></div>';
+      founderHtml = '<div class="bp-section">' +
+        '<h3 class="bp-section-title">The Story</h3>' +
+        '<p class="bp-section-sub">Built on vision. Backed by legacy.</p>' +
+        '<div class="bp-founder">' +
+        (p.founderImg ? '<img class="bp-founder-img" src="' + p.founderImg + '" onerror="this.style.display=\'none\'">' : '') +
+        '<div style="flex:1;min-width:200px"><div class="bp-founder-quote">"' + p.founderQuote + '"</div>' +
+        '<span class="bp-founder-name">' + p.founderName + '</span>' +
+        '</div></div></div>';
     }
     return '<div style="max-width:800px;margin:0 auto">' +
-      '<div style="position:relative;width:100%;height:280px;border-radius:var(--radius);overflow:hidden;margin-bottom:0;background:#0a0a1a">' +
-        '<img src="' + (p.heroImg || '') + '" style="width:100%;height:100%;object-fit:cover;opacity:0.7" onerror="this.style.display=\'none\'">' +
-        '<div style="position:absolute;bottom:0;left:0;right:0;padding:32px 24px 24px;background:linear-gradient(transparent,rgba(0,0,0,0.8));color:#fff">' +
-          (logoSrc ? '<img src="' + logoSrc + '" style="height:36px;margin-bottom:12px;filter:brightness(10)" onerror="this.style.display=\'none\'">' : '') +
-          '<h2 style="font-size:28px;font-weight:900;margin-bottom:6px;letter-spacing:-0.5px">' + b.name + '</h2>' +
-          '<div style="font-size:12px;font-weight:500;opacity:0.85">' + b.tier + ' Builder | ' + b.priceRange + '</div>' +
+      '<div class="bp-hero">' +
+        '<img src="' + (p.heroImg || '') + '" onerror="this.style.display=\'none\'">' +
+        '<div class="bp-hero-overlay">' +
+          (logoSrc ? '<img class="bp-hero-logo" src="' + logoSrc + '" onerror="this.style.display=\'none\'">' : '') +
+          '<h2>' + b.name + '</h2>' +
+          '<div class="bp-hero-sub">' + b.tier + ' Builder  |  ' + b.priceRange + '</div>' +
         '</div></div>' +
-      '<div style="display:flex;background:var(--primary);color:#fff;border-radius:0 0 var(--radius) var(--radius);overflow-x:auto;margin-bottom:20px">' + statsHtml + '</div>' +
-      '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:16px 0;margin-bottom:24px">' + trustHtml + '</div>' +
-      '<div style="font-size:14px;color:var(--text);line-height:1.8;margin-bottom:32px;padding:0 4px">' + (p.tagline || b.tagline) + '</div>' +
+      '<div class="bp-stats">' + statsHtml + '</div>' +
+      '<div class="bp-trust">' + trustHtml + '</div>' +
+      '<div class="bp-tagline">' + (p.tagline || b.tagline) + '</div>' +
       founderHtml +
-      '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:16px">Why ' + b.name + '</h3>' +
-      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:32px">' + diffsHtml + '</div>' +
-      '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:16px">Recent Builds</h3>' +
-      galHtml +
-      '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:16px">Standard Inclusions</h3>' +
-      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:32px">' + incHtml + '</div>' +
-      '<div style="background:var(--primary);color:#fff;border-radius:var(--radius);padding:32px 24px;text-align:center;margin-bottom:24px">' +
-        '<h3 style="font-size:20px;font-weight:900;margin-bottom:6px">Ready to explore ' + b.name + '?</h3>' +
-        '<p style="font-size:12px;opacity:0.7;margin-bottom:20px;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.6">Browse their full design range matched to available ProjX lots.</p>' +
-        '<button class="wizard-submit-btn" onclick="wizardNext()" style="background:#fff;color:var(--primary);max-width:320px">Browse ' + b.name + ' Designs \u2192</button>' +
+      '<div class="bp-section">' +
+        '<h3 class="bp-section-title">Why ' + b.name + '</h3>' +
+        '<p class="bp-section-sub">What sets them apart from every other builder</p>' +
+        '<div class="bp-diff-grid">' + diffsHtml + '</div>' +
+      '</div>' +
+      '<div class="bp-section">' +
+        '<h3 class="bp-section-title">Recent Builds</h3>' +
+        '<p class="bp-section-sub">Completed homes across South East Queensland</p>' +
+        galHtml +
+      '</div>' +
+      '<div class="bp-section">' +
+        '<h3 class="bp-section-title">Standard Inclusions</h3>' +
+        '<p class="bp-section-sub">Included as standard — not as upgrades</p>' +
+        '<div class="bp-inc-grid">' + incHtml + '</div>' +
+      '</div>' +
+      '<div class="bp-cta">' +
+        '<h3>Ready to explore ' + b.name + '?</h3>' +
+        '<p>Browse their full design range matched to available ProjX lots.</p>' +
+        '<button class="bp-cta-btn" onclick="wizardNext()">Browse ' + b.name + ' Designs &#8594;</button>' +
       '</div></div>';
   }
 
