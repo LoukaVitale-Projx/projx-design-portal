@@ -1655,12 +1655,12 @@
  'Southcote 23': 'https://qld.creationhomes.com.au/wp-content/uploads/2024/07/R1_12.5_Flat_Southcote-23_LS_230524-scaled.jpg',
  'Willow 26': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R2_12.5_Hamptons_Brookside-33_LS3_230428.jpg',
  'Fernbrook 28': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R2_12.5_Gable_Silverwood-45_LS_240321.jpg',
- // AVIA
+ // Dare
  'Marseille': 'https://framerusercontent.com/images/4SYNhhT0LE7A7F9ibPpaMypqCVU.jpg?scale-down-to=1024',
  'Dublin': 'https://framerusercontent.com/images/8jJn3N4PRgDX1wwiJWy3Iy251vY.jpg?scale-down-to=1024',
  'Almada 210': 'https://framerusercontent.com/images/MR5sh6ih0HrjUC2Gu5VL5LriU0.jpg?scale-down-to=1024',
  'Catalina': 'https://framerusercontent.com/images/PWYwpjw5FfGTUDtL5wUQ2nt941Q.jpg?scale-down-to=1024',
- // Metricon
+ // Oxford Green
  'Kirra': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R1_10_Skillion_Hillcrest-16_LS_230530-scaled.jpg',
  'Ella': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R1_10_Flat_Hillcrest-16_LS_230524-scaled.jpg',
  'Glendale': 'https://qld.creationhomes.com.au/wp-content/uploads/2023/02/R2_12.5_Flat_Brookside-33_LS_230524.jpg',
@@ -1719,8 +1719,8 @@
  const BUILDERS = [
  {id:'frd', name:'FRD Homes', color:'#059669', tier:'Wholesale', tagline:'Queensland\'s #1 wholesale builder — proven, consistent, trusted', designs:4, priceRange:'$245k – $380k'},
  {id:'creation', name:'Creation Homes', color:'#3B7DDD', tier:'Entry–Mid', tagline:'Award-winning QLD builder — fixed-price, premium inclusions', designs:4, priceRange:'$285k – $460k'},
- {id:'avia', name:'AVIA Homes', color:'#7C3AED', tier:'Mid-Range', tagline:'Homes worth living in — 1,200+ completed, on time, above standard', designs:4, priceRange:'$340k – $520k'},
- {id:'metricon', name:'Metricon', color:'#C8A96E', tier:'Premium', tagline:'Australia\'s largest builder — HomeSolution to Signature range', designs:4, priceRange:'$380k – $650k'}
+ {id:'dare', name:'Dare Homes', color:'#1a1a2e', tier:'Mid-Range Retail', tagline:'1,800+ homes built — upfront designs, no hidden costs, personal service', designs:4, priceRange:'$320k – $480k'},
+ {id:'oxfordgreen', name:'Oxford Green Homes', color:'#2d6a4f', tier:'Budget / Speed', tagline:'10-week builds — EarthWall™ construction, 7+ star energy, unmatched speed', designs:4, priceRange:'$220k – $340k'}
  ];
 
  const DESIGNS = [
@@ -1734,16 +1734,16 @@
  {name:'Southcote 23', builder:'Creation Homes', beds:4, baths:2, garage:2, sqm:215, price:'$365,000', frontage:'12.5m+', tier:'mid'},
  {name:'Willow 26', builder:'Creation Homes', beds:4, baths:2, garage:2, sqm:243, price:'$395,000', frontage:'10m+', tier:'mid'},
  {name:'Fernbrook 28', builder:'Creation Homes', beds:5, baths:3, garage:2, sqm:265, price:'$440,000', frontage:'12.5m+', tier:'mid'},
- // AVIA Homes — 4 designs
- {name:'Marseille', builder:'AVIA Homes', beds:4, baths:2, garage:1, sqm:161, price:'$340,000', frontage:'10m+', tier:'mid'},
- {name:'Dublin', builder:'AVIA Homes', beds:4, baths:2, garage:2, sqm:180, price:'$395,000', frontage:'12.5m+', tier:'mid'},
- {name:'Almada 210', builder:'AVIA Homes', beds:4, baths:2, garage:2, sqm:211, price:'$450,000', frontage:'12.5m+', tier:'mid'},
- {name:'Catalina', builder:'AVIA Homes', beds:4, baths:2, garage:2, sqm:210, price:'$490,000', frontage:'14m+', tier:'premium'},
- // Metricon — 4 designs
- {name:'Kirra', builder:'Metricon', beds:3, baths:2, garage:2, sqm:168, price:'$380,000', frontage:'12.5m+', tier:'mid'},
- {name:'Ella', builder:'Metricon', beds:4, baths:2, garage:2, sqm:195, price:'$435,000', frontage:'12.5m+', tier:'mid'},
- {name:'Glendale', builder:'Metricon', beds:4, baths:2, garage:2, sqm:235, price:'$510,000', frontage:'14m+', tier:'premium'},
- {name:'Fintona', builder:'Metricon', beds:5, baths:3, garage:2, sqm:280, price:'$580,000', frontage:'14m+', tier:'premium'}
+ // Dare Homes — 4 designs
+ {name:'Marseille', builder:'Dare Homes', beds:4, baths:2, garage:1, sqm:161, price:'$340,000', frontage:'10m+', tier:'mid'},
+ {name:'Dublin', builder:'Dare Homes', beds:4, baths:2, garage:2, sqm:180, price:'$395,000', frontage:'12.5m+', tier:'mid'},
+ {name:'Almada 210', builder:'Dare Homes', beds:4, baths:2, garage:2, sqm:211, price:'$450,000', frontage:'12.5m+', tier:'mid'},
+ {name:'Catalina', builder:'Dare Homes', beds:4, baths:2, garage:2, sqm:210, price:'$490,000', frontage:'14m+', tier:'premium'},
+ // Oxford Green Homes — 4 designs
+ {name:'Kirra', builder:'Oxford Green Homes', beds:3, baths:2, garage:2, sqm:168, price:'$380,000', frontage:'12.5m+', tier:'mid'},
+ {name:'Ella', builder:'Oxford Green Homes', beds:4, baths:2, garage:2, sqm:195, price:'$435,000', frontage:'12.5m+', tier:'mid'},
+ {name:'Glendale', builder:'Oxford Green Homes', beds:4, baths:2, garage:2, sqm:235, price:'$510,000', frontage:'14m+', tier:'premium'},
+ {name:'Fintona', builder:'Oxford Green Homes', beds:5, baths:3, garage:2, sqm:280, price:'$580,000', frontage:'14m+', tier:'premium'}
  ];
 
  // ─── SUBURB LIFESTYLE DATA ───────────────────────────────────────────────
@@ -1779,7 +1779,7 @@
  'riverina': {
  schools: ['Emmanuel College (3km)', 'All Saints Anglican (2km)', 'Nerang SHS (4km)'],
  commute: '15 min to Surfers Paradise',
- amenities: ['Metricon Stadium (2km)', 'Pacific Fair (10km)', 'Carrara Markets'],
+ amenities: ['Cbus Super Stadium (2km)', 'Pacific Fair (10km)', 'Carrara Markets'],
  medianPrice: '$820,000',
  growth: '+6.1% annual'
  },
@@ -1817,15 +1817,15 @@
  const BUILDER_LOGOS = {
  'frd': 'img/builders/frd-dark.png',
  'creation': 'img/builders/creation.png',
- 'avia': 'img/builders/avia-v2.png',
- 'metricon': 'img/builders/metricon.png'
+ 'dare': 'img/builders/dare.svg',
+ 'oxfordgreen': 'img/builders/oxfordgreen.png'
  };
 
  const BUILDER_TOUR_LINKS = {
  'FRD Homes': 'https://frdhomes.com.au/',
  'Creation Homes': 'https://qld.creationhomes.com.au/designs/',
- 'AVIA Homes': 'https://www.aviahomes.com.au/homes',
- 'Metricon': 'https://www.metricon.com.au/house-designs/queensland'
+ 'Dare Homes': 'https://www.darehomes.com.au',
+ 'Oxford Green Homes': 'https://www.oxfordgreen.com.au/our-homes'
  };
 
  // ─── PASSWORD GATE ────────────────────────────────────────────────
@@ -1855,7 +1855,7 @@
  });
 
 
- // Design descriptions for detail view (AVIA-style)
+ // Design descriptions for detail view
  const DESIGN_DESCRIPTIONS = {
  'FRD Classic 170': 'A compact single-storey home perfect for first buyers or investors. Three bedrooms, open-plan living flowing to the alfresco, and a functional kitchen. Proven FRD quality at an entry price point.',
  'FRD Ranch 210': 'A generous single-storey with four bedrooms, two bathrooms, and double garage. The open-plan living hub connects kitchen, dining and lounge with seamless flow to outdoor entertaining.',
@@ -2075,8 +2075,8 @@
  const logoStyles = {
  'frd': 'max-height:70px;max-width:140px;',
  'creation': 'max-height:50px;max-width:50px;',
- 'avia': 'max-height:60px;max-width:160px;',
- 'metricon': 'max-height:70px;max-width:70px;'
+ 'dare': 'max-height:50px;max-width:140px;',
+ 'oxfordgreen': 'max-height:50px;max-width:180px;'
  };
  const logoStyle = logoStyles[b.id] || 'max-height:60px;max-width:160px;';
  const needsLabel = (b.id === 'creation'); // Creation icon has no text
@@ -2969,7 +2969,7 @@
  
  // Back button
  
- // === HERO IMAGE (full width, large like AVIA) ===
+ // === HERO IMAGE ===
  '<div style="width:100%;height:420px;border-radius:16px;overflow:hidden;margin-bottom:32px;position:relative">' +
  '<img src="' + imgSrc + '" alt="' + d.name + '" style="width:100%;height:100%;object-fit:cover" onerror="this.onerror=null"/>' +
  '<div style="position:absolute;bottom:16px;left:16px;display:flex;gap:8px">' +
@@ -2977,7 +2977,7 @@
  '<span style="background:rgba(5,150,105,0.9);color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700">' + d.sqm + 'm\u00b2</span>' +
  '</div></div>' +
  
- // === DESIGN NAME + KEY SPECS (AVIA style) ===
+ // === DESIGN NAME + KEY SPECS ===
  '<div style="margin-bottom:32px">' +
  '<h1 style="font-size:clamp(28px,4vw,38px);font-weight:900;color:var(--primary);letter-spacing:-1.5px;margin-bottom:8px">' + d.name.toUpperCase() + '</h1>' +
  '<div style="display:flex;gap:24px;flex-wrap:wrap;font-size:13px;color:var(--text-light)">' +
@@ -2991,7 +2991,7 @@
  '<p style="font-size:16px;color:var(--text);line-height:1.85">' + desc + '</p>' +
  '</div>' +
  
- // === SPECS GRID (AVIA style - big numbers) ===
+ // === SPECS GRID ===
  '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:1px;background:var(--border);border-radius:14px;overflow:hidden;margin-bottom:40px">' +
  '<div style="background:var(--bg-alt);padding:24px 16px;text-align:center"><div style="font-size:28px;font-weight:900;color:var(--primary)">' + d.beds + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Bedrooms</div></div>' +
  '<div style="background:var(--bg-alt);padding:24px 16px;text-align:center"><div style="font-size:28px;font-weight:900;color:var(--primary)">' + d.baths + '</div><div style="font-size:10px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Bathrooms</div></div>' +
