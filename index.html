@@ -2878,6 +2878,72 @@
  wizardNext();
  }
 
+
+  function renderBuilderProfile() {
+    var b = wizardState.builder;
+    if (!b) return '<p>No builder selected</p>';
+    var p = BUILDER_PROFILES[b.id] || {};
+    var logoSrc = BUILDER_LOGOS[b.id] || '';
+    var statsHtml = (p.stats || []).map(function(s) {
+      return '<div style="flex:1;min-width:70px;padding:16px 12px;text-align:center;border-right:1px solid rgba(255,255,255,0.1)">' +
+        '<div style="font-size:22px;font-weight:900;margin-bottom:2px">' + s.val + '</div>' +
+        '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;opacity:0.7">' + s.label + '</div></div>';
+    }).join('');
+    var trustHtml = (p.trust || []).map(function(t) {
+      return '<span style="font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.3px">' + t + '</span>';
+    }).join('<span style="color:var(--border);margin:0 8px">|</span>');
+    var diffsHtml = (p.diffs || []).map(function(d) {
+      return '<div style="background:var(--bg-alt);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px">' +
+        '<div style="font-size:14px;font-weight:800;color:var(--primary);margin-bottom:6px">' + d.title + '</div>' +
+        '<div style="font-size:12px;color:var(--text-light);line-height:1.6">' + d.desc + '</div></div>';
+    }).join('');
+    var incHtml = (p.inclusions || []).map(function(inc) {
+      return '<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--bg-alt);border-radius:8px;font-size:12px;font-weight:600;color:var(--text)"><span style="color:var(--success);font-weight:900;font-size:14px">\u2713</span> ' + inc + '</div>';
+    }).join('');
+    var galImgs = (p.gallery || []);
+    var galHtml = '';
+    if (galImgs.length > 0) {
+      galHtml = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;border-radius:var(--radius);overflow:hidden;margin-bottom:32px">';
+      galImgs.forEach(function(img, i) {
+        var style = i === 0 ? 'grid-column:span 2;grid-row:span 2;height:100%' : 'height:140px';
+        galHtml += '<img src="' + img + '" alt="' + b.name + '" style="width:100%;' + style + ';object-fit:cover" onerror="this.style.display=\'none\'">';
+      });
+      galHtml += '</div>';
+    }
+    var founderHtml = '';
+    if (p.founderQuote) {
+      founderHtml = '<div style="margin-bottom:32px">' +
+        '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:16px">The Story</h3>' +
+        '<div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">' +
+        (p.founderImg ? '<img src="' + p.founderImg + '" style="width:100px;height:100px;border-radius:50%;object-fit:cover;flex-shrink:0;border:3px solid var(--bg-alt)" onerror="this.style.display=\'none\'">' : '') +
+        '<div style="flex:1;min-width:200px"><div style="font-size:13px;color:var(--text);line-height:1.8;font-style:italic">"' + p.founderQuote + '"</div>' +
+        '<div style="margin-top:10px;font-weight:800;font-size:13px;color:var(--primary)">' + p.founderName + '</div></div></div></div>';
+    }
+    return '<div style="max-width:800px;margin:0 auto">' +
+      '<div style="position:relative;width:100%;height:280px;border-radius:var(--radius);overflow:hidden;margin-bottom:0;background:#0a0a1a">' +
+        '<img src="' + (p.heroImg || '') + '" style="width:100%;height:100%;object-fit:cover;opacity:0.7" onerror="this.style.display=\'none\'">' +
+        '<div style="position:absolute;bottom:0;left:0;right:0;padding:32px 24px 24px;background:linear-gradient(transparent,rgba(0,0,0,0.8));color:#fff">' +
+          (logoSrc ? '<img src="' + logoSrc + '" style="height:36px;margin-bottom:12px;filter:brightness(10)" onerror="this.style.display=\'none\'">' : '') +
+          '<h2 style="font-size:28px;font-weight:900;margin-bottom:6px;letter-spacing:-0.5px">' + b.name + '</h2>' +
+          '<div style="font-size:12px;font-weight:500;opacity:0.85">' + b.tier + ' Builder | ' + b.priceRange + '</div>' +
+        '</div></div>' +
+      '<div style="display:flex;background:var(--primary);color:#fff;border-radius:0 0 var(--radius) var(--radius);overflow-x:auto;margin-bottom:20px">' + statsHtml + '</div>' +
+      '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:16px 0;margin-bottom:24px">' + trustHtml + '</div>' +
+      '<div style="font-size:14px;color:var(--text);line-height:1.8;margin-bottom:32px;padding:0 4px">' + (p.tagline || b.tagline) + '</div>' +
+      founderHtml +
+      '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:16px">Why ' + b.name + '</h3>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:32px">' + diffsHtml + '</div>' +
+      '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:16px">Recent Builds</h3>' +
+      galHtml +
+      '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin-bottom:16px">Standard Inclusions</h3>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:32px">' + incHtml + '</div>' +
+      '<div style="background:var(--primary);color:#fff;border-radius:var(--radius);padding:32px 24px;text-align:center;margin-bottom:24px">' +
+        '<h3 style="font-size:20px;font-weight:900;margin-bottom:6px">Ready to explore ' + b.name + '?</h3>' +
+        '<p style="font-size:12px;opacity:0.7;margin-bottom:20px;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.6">Browse their full design range matched to available ProjX lots.</p>' +
+        '<button class="wizard-submit-btn" onclick="wizardNext()" style="background:#fff;color:var(--primary);max-width:320px">Browse ' + b.name + ' Designs \u2192</button>' +
+      '</div></div>';
+  }
+
  function renderBuilderStep2() {
  const builderDesigns = DESIGNS.filter(function(d) { return d.builder === wizardState.builder.name; });
  const cards = builderDesigns.map(function(d) {
