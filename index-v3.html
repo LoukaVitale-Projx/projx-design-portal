@@ -2037,7 +2037,7 @@
  };
 
  // Auto-init (gate disabled during development)
- document.addEventListener('DOMContentLoaded', function() { initPortal(); });
+ // Removed: DOMContentLoaded init (window.load handles gate bypass + initPortal)
 
  // ─── INIT ─────────────────────────────────────────────────────────
  function initPortal() {
@@ -2386,6 +2386,8 @@
 
  // ─── INTERSECTION OBSERVER ────────────────────────────────────────
  function initObserver() {
+    // Fallback: force-show all cards after 800ms in case observer misses them
+    setTimeout(function() { document.querySelectorAll(".fade-in").forEach(function(el) { el.classList.add("visible"); }); }, 800);
  const obs = new IntersectionObserver((entries) => {
  entries.forEach(e => {
  if (e.isIntersecting) {
