@@ -1527,29 +1527,11 @@
 </head>
 <body>
 
-<!-- ═══════════════════ PASSWORD GATE ═══════════════════ -->
-<div id="gate">
- <div class="gate-inner">
- <div class="gate-logo">
- <img src="projx-logo-dark.png" alt="ProjX" style="height:40px" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
- <span style="display:none;font-size:28px;font-weight:900;letter-spacing:-1px;color:var(--primary)">ProjX</span>
- </div>
- <div class="gate-tagline">House &amp; Land Design Portal</div>
- 
- 
- <div class="gate-input-wrap">
- <input type="password" class="gate-input" id="gateInput" placeholder="Enter access code" maxlength="20" autocomplete="off" />
- </div>
- <button class="gate-btn" onclick="checkPassword()">Access Portal</button>
- <p class="gate-error" id="gateError">Incorrect access code. Please try again.</p>
- </div>
-</div>
-
 <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
-<div id="main-content">
+<div id="main-content" style="display:block">
 
 <!-- ─── NAVBAR ─── -->
-<nav id="navbar" style="display:none">
+<nav id="navbar">
  <div class="nav-inner">
  <a href="#hero" class="nav-logo">
  <img src="projx-logo-dark.png" alt="ProjX" style="height:36px" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
@@ -1986,34 +1968,12 @@
 
 
 
- // ─── PASSWORD GATE ────────────────────────────────────────────────
- function checkPassword() {
- const val = document.getElementById('gateInput').value.trim().toUpperCase();
- const err = document.getElementById('gateError');
- const inp = document.getElementById('gateInput');
- if (val === 'LV9') {
- const gate = document.getElementById('gate');
- gate.style.opacity = '0';
- gate.style.transition = 'opacity 0.5s ease';
- setTimeout(() => {
- gate.style.display = 'none';
- document.getElementById('main-content').style.display = 'block';
- initPortal();
- }, 500);
- } else {
- inp.classList.add('error');
- err.classList.add('show');
- setTimeout(() => inp.classList.remove('error'), 500);
- setTimeout(() => err.classList.remove('show'), 3000);
- }
- }
+  }
 
  document.addEventListener('keydown', e => {
- if (e.key === 'Enter' && document.getElementById('gate').style.display !== 'none') checkPassword();
+ 
  });
- // AUTO-BYPASS GATE
- window.addEventListener("load", function() { document.getElementById("gate").style.display = "none"; document.getElementById("main-content").style.display = "block"; initPortal(); 
- });
+ window.addEventListener("load", function() { initPortal(); });
 
 
  // Design descriptions for detail view
@@ -2036,8 +1996,7 @@
  'Fintona': 'A premium double-storey with five bedrooms, three bathrooms, and statement living spaces. Ground floor features a grand open-plan area, while upstairs provides a private family wing.'
  };
 
- // Auto-init (gate disabled during development)
- document.addEventListener('DOMContentLoaded', function() { initPortal(); });
+
 
  // ─── INIT ─────────────────────────────────────────────────────────
  function initPortal() {
@@ -2433,10 +2392,7 @@
  }
  });
 
- // Allow enter key on gate
- document.getElementById('gateInput').addEventListener('keydown', e => {
- if (e.key === 'Enter') checkPassword();
- });
+
 
  // ─── VIEW SWITCHER ────────────────────────────────────────────
  function switchView(view) {
